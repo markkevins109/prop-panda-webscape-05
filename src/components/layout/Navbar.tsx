@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { PandaAvatar } from "../PandaAvatar";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -16,7 +16,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -30,7 +29,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close menu when route changes
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
@@ -42,12 +40,11 @@ export default function Navbar() {
       }`}
     >
       <div className="container-custom flex items-center justify-between">
-        {/* Logo */}
-        <NavLink to="/" className="flex items-center">
+        <NavLink to="/" className="flex items-center space-x-3">
+          <PandaAvatar />
           <span className="text-xl font-bold">Prop Panda</span>
         </NavLink>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
             <NavLink
@@ -62,7 +59,6 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Try Demo Button */}
         <NavLink 
           to="/live-chat" 
           className="hidden md:block btn-primary"
@@ -70,7 +66,6 @@ export default function Navbar() {
           Try the Demo
         </NavLink>
 
-        {/* Mobile Menu Button */}
         <button
           className="md:hidden focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
@@ -84,7 +79,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Navigation */}
       {isOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-background shadow-md px-4 py-5 animate-fade-in">
           <nav className="flex flex-col space-y-4">

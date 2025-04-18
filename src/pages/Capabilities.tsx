@@ -111,7 +111,16 @@ export default function Capabilities() {
         </div>
       </section>
 
-      
+      {/* Integration Section */}
+      <section className="section-padding bg-secondary">
+        <div className="container-custom">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Seamless Integration</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Prop Panda connects effortlessly with your existing tools and platforms
+            </p>
+          </div>
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {/* Integration logos - using gray rectangles as placeholders */}
             {[1, 2, 3, 4].map((item) => (

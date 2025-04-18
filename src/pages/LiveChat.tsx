@@ -223,8 +223,6 @@ export default function LiveChat() {
             <p className="text-xl md:text-2xl italic mb-6">
               "Prop Panda has completely transformed how we handle client inquiries. Our response time has decreased from hours to seconds, and we've seen a 40% increase in lead conversions since implementation."
             </p>
-            <div className="font-medium">Sarah Johnson</div>
-            <div className="text-sm text-muted-foreground">CEO, Metropolitan Realty</div>
           </div>
         </div>
       </section>

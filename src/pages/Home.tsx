@@ -1,4 +1,3 @@
-
 import { ArrowRight, MessageSquare, Clock, Shield, BarChart } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -122,8 +121,8 @@ export default function Home() {
               </div>
               <div className="rounded-lg overflow-hidden border shadow-sm">
                 <img 
-                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1073&q=80" 
-                  alt="Real estate professionals using Prop Panda" 
+                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f" 
+                  alt="Real estate professionals collaborating" 
                   className="w-full h-full object-cover"
                 />
               </div>

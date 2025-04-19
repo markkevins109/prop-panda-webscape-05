@@ -1,10 +1,7 @@
-
 import { useState } from "react";
-import { Send, Bot, BrainCircuit, Sparkles, Zap, TrendingUp } from "lucide-react";
+import { Send, Bot } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { PandaAvatar } from "@/components/PandaAvatar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LiveChat() {
   // Sample conversation starter
@@ -77,8 +74,8 @@ export default function LiveChat() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
-            {/* Chat Demo - Left Side */}
-            <div className="lg:w-2/3">
+            {/* Chat Demo - Full Width */}
+            <div className="w-full">
               <div className="border rounded-xl overflow-hidden shadow-sm bg-card h-[600px] flex flex-col">
                 <div className="bg-primary text-white p-4 flex items-center">
                   <Bot className="h-5 w-5 mr-2" />
@@ -175,43 +172,6 @@ export default function LiveChat() {
                   </div>
                 </form>
               </div>
-            </div>
-            
-            {/* Avatar and Info - Right Side */}
-            <div className="lg:w-1/3">
-              <Card className="h-full">
-                <CardHeader>
-                  <CardTitle className="text-center">Meet Your Assistant</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col items-center space-y-6">
-                  <div className="flex justify-center">
-                    <PandaAvatar />
-                  </div>
-                  <h3 className="text-xl font-semibold text-center">Prop Panda</h3>
-                  <p className="text-center text-muted-foreground">
-                    Your AI-powered real estate assistant that helps you find properties, answer questions, and connect with agents.
-                  </p>
-                  
-                  <div className="grid grid-cols-2 gap-4 w-full mt-4">
-                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
-                      <BrainCircuit className="h-6 w-6 text-primary mb-2" />
-                      <span className="text-sm font-medium">Smart Answers</span>
-                    </div>
-                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
-                      <Sparkles className="h-6 w-6 text-primary mb-2" />
-                      <span className="text-sm font-medium">Personalized</span>
-                    </div>
-                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
-                      <Zap className="h-6 w-6 text-primary mb-2" />
-                      <span className="text-sm font-medium">Fast Responses</span>
-                    </div>
-                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
-                      <TrendingUp className="h-6 w-6 text-primary mb-2" />
-                      <span className="text-sm font-medium">Market Insights</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>

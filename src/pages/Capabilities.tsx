@@ -1,9 +1,13 @@
-
-import { SearchCheck, Clock, CalendarCheck, BarChart3, UserCheck, MessageSquareText, Building2, LineChart, BrainCircuit, ShieldCheck } from "lucide-react";
+import { SearchCheck, Clock, CalendarCheck, BarChart3, UserCheck, MessageSquareText, Building2, LineChart, BrainCircuit, ShieldCheck, HandCoins, Target, Users } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 export default function Capabilities() {
   const capabilities = [
+    {
+      icon: UserCheck,
+      title: "Lead Qualification",
+      description: "Pre-qualify leads by collecting necessary information and determining client readiness before agent involvement."
+    },
     {
       icon: MessageSquareText,
       title: "Intelligent Conversations",
@@ -30,9 +34,19 @@ export default function Capabilities() {
       description: "Provide clients with real-time information about market conditions, pricing trends, and neighborhood statistics."
     },
     {
-      icon: UserCheck,
-      title: "Lead Qualification",
-      description: "Pre-qualify leads by collecting necessary information and determining client readiness before agent involvement."
+      icon: HandCoins,
+      title: "Rent Negotiation",
+      description: "Assist in rental price negotiations by providing market data and comparable property insights."
+    },
+    {
+      icon: Target,
+      title: "Objection Handling",
+      description: "Professionally address and resolve common client concerns and objections during the property search process."
+    },
+    {
+      icon: Users,
+      title: "Persona Matching",
+      description: "Match clients with properties that align with their lifestyle, preferences, and specific needs."
     }
   ];
 

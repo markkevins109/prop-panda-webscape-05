@@ -24,7 +24,7 @@ export default function CaseStudies() {
         { label: "Growth in property listings", value: "65%" },
         { label: "Increase in agent productivity", value: "30%" }
       ],
-      image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1073&q=80"
+      image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c"
     },
     {
       company: "EastCoast Homes",

@@ -1,5 +1,5 @@
 
-import { Hubspot, Sheets, Xero, Zapier, WhatsApp } from "lucide-react";
+import { FileSpreadsheet, BarChart3, MessageSquare, Share2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Integrations() {
@@ -7,35 +7,35 @@ export default function Integrations() {
     {
       title: "Google Sheets",
       description: "Automatically sync chats, leads, and data into your sheets.",
-      icon: Sheets,
+      icon: FileSpreadsheet,
       color: "text-green-600",
       bgColor: "bg-green-50",
     },
     {
       title: "XERO",
       description: "Integrate client interactions with accounting and invoicing.",
-      icon: Xero,
+      icon: BarChart3,
       color: "text-blue-600",
       bgColor: "bg-blue-50",
     },
     {
       title: "Hubspot",
       description: "Push new leads and contacts from conversations to your CRM.",
-      icon: Hubspot,
+      icon: FileText,
       color: "text-orange-600",
       bgColor: "bg-orange-50",
     },
     {
       title: "Zapier",
       description: "Automate repetitive tasks and connect with 5000+ apps.",
-      icon: Zapier,
+      icon: Share2,
       color: "text-purple-600",
       bgColor: "bg-purple-50",
     },
     {
       title: "WhatsApp",
       description: "Offer real-time client assistance directly through messaging.",
-      icon: WhatsApp,
+      icon: MessageSquare,
       color: "text-green-600",
       bgColor: "bg-green-50",
     },

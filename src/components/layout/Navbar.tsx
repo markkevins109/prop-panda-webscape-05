@@ -63,7 +63,7 @@ export default function Navbar() {
 
         <NavLink 
           to="/live-chat" 
-          className="hidden md:block btn-primary"
+          className="hidden md:block btn-primary px-4 py-2 text-sm rounded-md"
         >
           Try the Demo
         </NavLink>
@@ -97,7 +97,7 @@ export default function Navbar() {
             ))}
             <NavLink 
               to="/live-chat" 
-              className="btn-primary text-center mt-2"
+              className="btn-primary text-center mt-2 py-2 rounded-md text-sm"
             >
               Try the Demo
             </NavLink>
@@ -107,3 +107,4 @@ export default function Navbar() {
     </header>
   );
 }
+

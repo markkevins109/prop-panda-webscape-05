@@ -1,42 +1,41 @@
 
-import { GoogleSheets, WhatsApp } from "@/components/ui/icons";
+import { Hubspot, Sheets, Xero, Zapier, WhatsApp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FileSpreadsheet, MessageCircle, Router, Building2 } from "lucide-react";
 
 export default function Integrations() {
   const integrations = [
     {
       title: "Google Sheets",
       description: "Automatically sync chats, leads, and data into your sheets.",
-      icon: FileSpreadsheet,
+      icon: Sheets,
       color: "text-green-600",
       bgColor: "bg-green-50",
     },
     {
       title: "XERO",
       description: "Integrate client interactions with accounting and invoicing.",
-      icon: Building2,
+      icon: Xero,
       color: "text-blue-600",
       bgColor: "bg-blue-50",
     },
     {
       title: "Hubspot",
       description: "Push new leads and contacts from conversations to your CRM.",
-      icon: Building2,
+      icon: Hubspot,
       color: "text-orange-600",
       bgColor: "bg-orange-50",
     },
     {
       title: "Zapier",
       description: "Automate repetitive tasks and connect with 5000+ apps.",
-      icon: Router,
+      icon: Zapier,
       color: "text-purple-600",
       bgColor: "bg-purple-50",
     },
     {
       title: "WhatsApp",
       description: "Offer real-time client assistance directly through messaging.",
-      icon: MessageCircle,
+      icon: WhatsApp,
       color: "text-green-600",
       bgColor: "bg-green-50",
     },
@@ -77,28 +76,6 @@ export default function Integrations() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="rounded-xl bg-gradient-to-r from-black to-neutral-800 text-white p-8 md:p-12">
-            <div className="max-w-2xl mx-auto text-center space-y-6">
-              <h2 className="text-2xl md:text-3xl font-bold">
-                Ready to Streamline Your Workflow?
-              </h2>
-              <p className="text-lg opacity-90">
-                Connect your tools and automate your real estate processes today.
-              </p>
-              <Button
-                className="bg-white text-black hover:bg-white/90"
-                size="lg"
-              >
-                Get Started
-              </Button>
-            </div>
           </div>
         </div>
       </section>

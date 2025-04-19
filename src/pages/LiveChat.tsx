@@ -1,6 +1,10 @@
+
 import { useState } from "react";
 import { Send, Bot, BrainCircuit, Sparkles, Zap, TrendingUp } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { PandaAvatar } from "@/components/PandaAvatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LiveChat() {
   // Sample conversation starter
@@ -72,78 +76,142 @@ export default function LiveChat() {
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto">
-            {/* Chat Demo */}
-            <div className="border rounded-xl overflow-hidden shadow-sm bg-card h-[600px] flex flex-col">
-              <div className="bg-primary text-white p-4 flex items-center">
-                <Bot className="h-5 w-5 mr-2" />
-                <span className="font-medium">Prop Panda Chat</span>
-              </div>
-              
-              <div className="flex-grow overflow-y-auto p-4 space-y-4">
-                {messages.map((message, index) => (
-                  <div 
-                    key={index} 
-                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                  >
-                    <div 
-                      className={`max-w-[80%] rounded-lg p-3 ${
-                        message.role === "user" 
-                          ? "bg-primary text-white" 
-                          : "bg-secondary"
-                      }`}
-                    >
-                      <p>{message.content}</p>
-                    </div>
-                  </div>
-                ))}
+          <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
+            {/* Chat Demo - Left Side */}
+            <div className="lg:w-2/3">
+              <div className="border rounded-xl overflow-hidden shadow-sm bg-card h-[600px] flex flex-col">
+                <div className="bg-primary text-white p-4 flex items-center">
+                  <Bot className="h-5 w-5 mr-2" />
+                  <span className="font-medium">Prop Panda Chat</span>
+                </div>
                 
-                {isTyping && (
-                  <div className="flex justify-start">
-                    <div className="bg-secondary rounded-lg p-3 max-w-[80%]">
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse"></div>
-                        <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse delay-100"></div>
-                        <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse delay-200"></div>
+                <div className="flex-grow overflow-y-auto p-4 space-y-4">
+                  {messages.map((message, index) => (
+                    <div 
+                      key={index} 
+                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                    >
+                      {message.role === "assistant" && (
+                        <div className="mr-2">
+                          <Avatar className="h-8 w-8 border border-primary">
+                            <AvatarImage src="/panda-ai-logo.svg" alt="Prop Panda" />
+                            <AvatarFallback>
+                              <Bot className="h-5 w-5" />
+                            </AvatarFallback>
+                          </Avatar>
+                        </div>
+                      )}
+                      <div 
+                        className={`max-w-[80%] rounded-lg p-3 ${
+                          message.role === "user" 
+                            ? "bg-primary text-white" 
+                            : "bg-secondary"
+                        }`}
+                      >
+                        <p>{message.content}</p>
+                      </div>
+                      {message.role === "user" && (
+                        <div className="ml-2">
+                          <Avatar className="h-8 w-8 bg-muted">
+                            <AvatarFallback>You</AvatarFallback>
+                          </Avatar>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  
+                  {isTyping && (
+                    <div className="flex justify-start">
+                      <div className="mr-2">
+                        <Avatar className="h-8 w-8 border border-primary">
+                          <AvatarImage src="/panda-ai-logo.svg" alt="Prop Panda" />
+                          <AvatarFallback>
+                            <Bot className="h-5 w-5" />
+                          </AvatarFallback>
+                        </Avatar>
+                      </div>
+                      <div className="bg-secondary rounded-lg p-3 max-w-[80%]">
+                        <div className="flex space-x-1">
+                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse"></div>
+                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse delay-100"></div>
+                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse delay-200"></div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-              
-              <form onSubmit={handleSubmit} className="p-4 border-t bg-card">
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Type your question here..."
-                    className="flex-grow border rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-primary"
-                  />
-                  <button 
-                    type="submit"
-                    className="btn-primary px-4"
-                    disabled={!inputValue.trim()}
-                  >
-                    <Send className="h-5 w-5" />
-                  </button>
+                  )}
                 </div>
+                
+                <form onSubmit={handleSubmit} className="p-4 border-t bg-card">
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      placeholder="Type your question here..."
+                      className="flex-grow border rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                    <button 
+                      type="submit"
+                      className="btn-primary px-4"
+                      disabled={!inputValue.trim()}
+                    >
+                      <Send className="h-5 w-5" />
+                    </button>
+                  </div>
 
-                <div className="mt-4">
-                  <p className="text-sm text-muted-foreground mb-2">Try asking:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {demoScenarios.map((scenario, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleDemoClick(scenario)}
-                        className="bg-secondary hover:bg-secondary/80 text-sm rounded-full px-3 py-1 transition-colors"
-                      >
-                        {scenario}
-                      </button>
-                    ))}
+                  <div className="mt-4">
+                    <p className="text-sm text-muted-foreground mb-2">Try asking:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {demoScenarios.map((scenario, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleDemoClick(scenario)}
+                          className="bg-secondary hover:bg-secondary/80 text-sm rounded-full px-3 py-1 transition-colors"
+                        >
+                          {scenario}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </form>
+                </form>
+              </div>
+            </div>
+            
+            {/* Avatar and Info - Right Side */}
+            <div className="lg:w-1/3">
+              <Card className="h-full">
+                <CardHeader>
+                  <CardTitle className="text-center">Meet Your Assistant</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center space-y-6">
+                  <div className="flex justify-center">
+                    <PandaAvatar />
+                  </div>
+                  <h3 className="text-xl font-semibold text-center">Prop Panda</h3>
+                  <p className="text-center text-muted-foreground">
+                    Your AI-powered real estate assistant that helps you find properties, answer questions, and connect with agents.
+                  </p>
+                  
+                  <div className="grid grid-cols-2 gap-4 w-full mt-4">
+                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
+                      <BrainCircuit className="h-6 w-6 text-primary mb-2" />
+                      <span className="text-sm font-medium">Smart Answers</span>
+                    </div>
+                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
+                      <Sparkles className="h-6 w-6 text-primary mb-2" />
+                      <span className="text-sm font-medium">Personalized</span>
+                    </div>
+                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
+                      <Zap className="h-6 w-6 text-primary mb-2" />
+                      <span className="text-sm font-medium">Fast Responses</span>
+                    </div>
+                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
+                      <TrendingUp className="h-6 w-6 text-primary mb-2" />
+                      <span className="text-sm font-medium">Market Insights</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>

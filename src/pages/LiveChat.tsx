@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Send, Bot, BrainCircuit, Sparkles, Zap, TrendingUp } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -73,141 +72,78 @@ export default function LiveChat() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="max-w-3xl mx-auto">
             {/* Chat Demo */}
-            <div className="lg:col-span-3">
-              <div className="border rounded-xl overflow-hidden shadow-sm bg-card h-[600px] flex flex-col">
-                <div className="bg-primary text-white p-4 flex items-center">
-                  <Bot className="h-5 w-5 mr-2" />
-                  <span className="font-medium">Prop Panda Chat</span>
-                </div>
-                
-                <div className="flex-grow overflow-y-auto p-4 space-y-4">
-                  {messages.map((message, index) => (
+            <div className="border rounded-xl overflow-hidden shadow-sm bg-card h-[600px] flex flex-col">
+              <div className="bg-primary text-white p-4 flex items-center">
+                <Bot className="h-5 w-5 mr-2" />
+                <span className="font-medium">Prop Panda Chat</span>
+              </div>
+              
+              <div className="flex-grow overflow-y-auto p-4 space-y-4">
+                {messages.map((message, index) => (
+                  <div 
+                    key={index} 
+                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                  >
                     <div 
-                      key={index} 
-                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                      className={`max-w-[80%] rounded-lg p-3 ${
+                        message.role === "user" 
+                          ? "bg-primary text-white" 
+                          : "bg-secondary"
+                      }`}
                     >
-                      <div 
-                        className={`max-w-[80%] rounded-lg p-3 ${
-                          message.role === "user" 
-                            ? "bg-primary text-white" 
-                            : "bg-secondary"
-                        }`}
-                      >
-                        <p>{message.content}</p>
-                      </div>
+                      <p>{message.content}</p>
                     </div>
-                  ))}
-                  
-                  {isTyping && (
-                    <div className="flex justify-start">
-                      <div className="bg-secondary rounded-lg p-3 max-w-[80%]">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse"></div>
-                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse delay-100"></div>
-                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse delay-200"></div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                ))}
                 
-                <form onSubmit={handleSubmit} className="p-4 border-t bg-card">
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      placeholder="Type your question here..."
-                      className="flex-grow border rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-primary"
-                    />
-                    <button 
-                      type="submit"
-                      className="btn-primary px-4"
-                      disabled={!inputValue.trim()}
-                    >
-                      <Send className="h-5 w-5" />
-                    </button>
-                  </div>
-
-                  <div className="mt-4">
-                    <p className="text-sm text-muted-foreground mb-2">Try asking:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {demoScenarios.map((scenario, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleDemoClick(scenario)}
-                          className="bg-secondary hover:bg-secondary/80 text-sm rounded-full px-3 py-1 transition-colors"
-                        >
-                          {scenario}
-                        </button>
-                      ))}
+                {isTyping && (
+                  <div className="flex justify-start">
+                    <div className="bg-secondary rounded-lg p-3 max-w-[80%]">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse"></div>
+                        <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse delay-100"></div>
+                        <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse delay-200"></div>
+                      </div>
                     </div>
                   </div>
-                </form>
+                )}
               </div>
-            </div>
-
-            {/* Why Prop Panda */}
-            <div className="lg:col-span-2 space-y-6">
-              <h2 className="text-2xl font-bold">Why Prop Panda?</h2>
-
-              <div className="space-y-4">
-                <div className="flex gap-4 border-b pb-4">
-                  <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <Bot className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Always Available</h3>
-                    <p className="text-muted-foreground">Respond to client inquiries 24/7, never missing a potential lead</p>
-                  </div>
+              
+              <form onSubmit={handleSubmit} className="p-4 border-t bg-card">
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Type your question here..."
+                    className="flex-grow border rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                  <button 
+                    type="submit"
+                    className="btn-primary px-4"
+                    disabled={!inputValue.trim()}
+                  >
+                    <Send className="h-5 w-5" />
+                  </button>
                 </div>
 
-                <div className="flex gap-4 border-b pb-4">
-                  <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <BrainCircuit className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Industry Expertise</h3>
-                    <p className="text-muted-foreground">Trained on real estate data to provide accurate, helpful information</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4 border-b pb-4">
-                  <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <Sparkles className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Natural Conversation</h3>
-                    <p className="text-muted-foreground">Human-like interactions create a seamless client experience</p>
+                <div className="mt-4">
+                  <p className="text-sm text-muted-foreground mb-2">Try asking:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {demoScenarios.map((scenario, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleDemoClick(scenario)}
+                        className="bg-secondary hover:bg-secondary/80 text-sm rounded-full px-3 py-1 transition-colors"
+                      >
+                        {scenario}
+                      </button>
+                    ))}
                   </div>
                 </div>
-
-                <div className="flex gap-4 border-b pb-4">
-                  <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <Zap className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Increased Efficiency</h3>
-                    <p className="text-muted-foreground">Automate routine inquiries while you focus on closing deals</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <TrendingUp className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Better Conversions</h3>
-                    <p className="text-muted-foreground">Qualify leads and capture information to improve conversion rates</p>
-                  </div>
-                </div>
-              </div>
-
-              <NavLink to="/pricing" className="btn-primary w-full text-center mt-6">
-                View Pricing Plans
-              </NavLink>
+              </form>
             </div>
           </div>
         </div>

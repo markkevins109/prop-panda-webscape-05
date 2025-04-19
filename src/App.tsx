@@ -10,6 +10,7 @@ import Capabilities from "./pages/Capabilities";
 import LiveChat from "./pages/LiveChat";
 import Pricing from "./pages/Pricing";
 import CaseStudies from "./pages/CaseStudies";
+import Integrations from "./pages/Integrations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/live-chat" element={<Layout><LiveChat /></Layout>} />
           <Route path="/pricing" element={<Layout><Pricing /></Layout>} />
           <Route path="/case-studies" element={<Layout><CaseStudies /></Layout>} />
+          <Route path="/integrations" element={<Layout><Integrations /></Layout>} />
           <Route path="*" element={<Layout><NotFound /></Layout>} />
         </Routes>
       </BrowserRouter>

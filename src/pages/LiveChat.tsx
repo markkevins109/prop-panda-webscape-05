@@ -176,10 +176,10 @@ export default function LiveChat() {
                     <img 
                       src="/lovable-uploads/53a9dbd1-92fb-4378-b5af-9e8d9e272e4a.png" 
                       alt="AI Assistant Avatar" 
-                      className="w-48 h-auto"
+                      className="w-32 h-auto"
                     />
                   </div>
-                  <h3 className="text-xl font-semibold text-center">Prop Panda</h3>
+                  <h3 className="text-lg font-semibold text-center">Prop Panda</h3>
                 </CardContent>
               </Card>
             </div>

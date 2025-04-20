@@ -1,11 +1,9 @@
-
 import { useState } from "react";
 import { Send, Bot } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LiveChat() {
-  // Sample conversation starter
   const initialMessages = [
     {
       role: "assistant",
@@ -13,7 +11,6 @@ export default function LiveChat() {
     }
   ];
 
-  // Demo conversation flows
   const demoScenarios = [
     "I'm looking for a 3-bedroom house under $500,000",
     "What are the current mortgage rates?",
@@ -21,7 +18,6 @@ export default function LiveChat() {
     "Tell me about property tax in San Francisco"
   ];
 
-  // Sample responses for demo
   const demoResponses: { [key: string]: string } = {
     "I'm looking for a 3-bedroom house under $500,000": "I'd be happy to help you find a 3-bedroom house under $500,000. To provide the most relevant options, could you tell me which neighborhoods or areas you're interested in, and any specific features you're looking for (like garage, yard size, etc.)?",
     
@@ -40,15 +36,12 @@ export default function LiveChat() {
     e.preventDefault();
     if (!inputValue.trim()) return;
 
-    // Add user message
     const userMessage = { role: "user", content: inputValue };
     setMessages(prev => [...prev, userMessage]);
     setInputValue("");
     
-    // Show typing indicator
     setIsTyping(true);
 
-    // Simulate AI response after a delay
     setTimeout(() => {
       const response = demoResponses[inputValue] || 
         "Thank you for your message. This is a demo version of Prop Panda. In the full version, I would provide detailed information about your real estate inquiry. Would you like to know more about our capabilities?";
@@ -64,7 +57,6 @@ export default function LiveChat() {
 
   return (
     <div>
-      {/* Header */}
       <section className="section-padding">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto text-center space-y-4 mb-12">
@@ -75,7 +67,6 @@ export default function LiveChat() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-12 max-w-7xl mx-auto">
-            {/* Chat Demo - Left Side */}
             <div className="lg:w-3/5">
               <div className="border rounded-xl overflow-hidden shadow-sm bg-card h-[600px] flex flex-col">
                 <div className="bg-primary text-white p-4 flex items-center">
@@ -175,21 +166,20 @@ export default function LiveChat() {
               </div>
             </div>
             
-            {/* Avatar Section - Right Side */}
             <div className="lg:w-2/5">
-              <Card className="h-full flex flex-col justify-center p-8">
+              <Card className="h-full flex flex-col justify-center p-6">
                 <CardHeader>
                   <CardTitle className="text-center">Your AI Assistant</CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-col items-center space-y-8">
+                <CardContent className="flex flex-col items-center space-y-6">
                   <div className="flex justify-center w-full">
                     <img 
                       src="/lovable-uploads/53a9dbd1-92fb-4378-b5af-9e8d9e272e4a.png" 
                       alt="AI Assistant Avatar" 
-                      className="w-64 h-auto"
+                      className="w-48 h-auto"
                     />
                   </div>
-                  <h3 className="text-2xl font-semibold text-center">Prop Panda</h3>
+                  <h3 className="text-xl font-semibold text-center">Prop Panda</h3>
                 </CardContent>
               </Card>
             </div>
@@ -197,7 +187,6 @@ export default function LiveChat() {
         </div>
       </section>
 
-      {/* Testimonial */}
       <section className="section-padding bg-secondary">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">

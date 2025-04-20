@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Send, Bot, BrainCircuit, Sparkles, Zap, TrendingUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -189,29 +188,7 @@ export default function LiveChat() {
                       className="w-48 h-auto"
                     />
                   </div>
-                  <h3 className="text-xl font-semibold text-center">John Doe</h3>
-                  <p className="text-center text-muted-foreground">
-                    Your AI-powered real estate assistant, here to help you find properties and answer your questions.
-                  </p>
-                  
-                  <div className="grid grid-cols-2 gap-4 w-full mt-4">
-                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
-                      <BrainCircuit className="h-6 w-6 text-primary mb-2" />
-                      <span className="text-sm font-medium">Smart Answers</span>
-                    </div>
-                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
-                      <Sparkles className="h-6 w-6 text-primary mb-2" />
-                      <span className="text-sm font-medium">Personalized</span>
-                    </div>
-                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
-                      <Zap className="h-6 w-6 text-primary mb-2" />
-                      <span className="text-sm font-medium">Fast Responses</span>
-                    </div>
-                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
-                      <TrendingUp className="h-6 w-6 text-primary mb-2" />
-                      <span className="text-sm font-medium">Market Insights</span>
-                    </div>
-                  </div>
+                  <h3 className="text-xl font-semibold text-center">Prop Panda</h3>
                 </CardContent>
               </Card>
             </div>

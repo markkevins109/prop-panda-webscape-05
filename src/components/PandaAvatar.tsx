@@ -12,7 +12,7 @@ export const PandaAvatar = () => {
         className="object-contain p-1"
       />
       <AvatarFallback>
-        <Bot className="h-10 w-10 text-primary" />
+        <Bot className="h-20 w-20 text-primary" />
       </AvatarFallback>
     </Avatar>
   );

@@ -1,7 +1,8 @@
+
 import { useState } from "react";
-import { Send, Bot } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { Send, Bot, BrainCircuit, Sparkles, Zap, TrendingUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LiveChat() {
   // Sample conversation starter
@@ -74,8 +75,8 @@ export default function LiveChat() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
-            {/* Chat Demo - Full Width */}
-            <div className="w-full">
+            {/* Chat Demo - Left Side */}
+            <div className="lg:w-2/3">
               <div className="border rounded-xl overflow-hidden shadow-sm bg-card h-[600px] flex flex-col">
                 <div className="bg-primary text-white p-4 flex items-center">
                   <Bot className="h-5 w-5 mr-2" />
@@ -172,6 +173,47 @@ export default function LiveChat() {
                   </div>
                 </form>
               </div>
+            </div>
+            
+            {/* Avatar Section - Right Side */}
+            <div className="lg:w-1/3">
+              <Card className="h-full">
+                <CardHeader>
+                  <CardTitle className="text-center">Your AI Assistant</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center space-y-6">
+                  <div className="flex justify-center">
+                    <img 
+                      src="/lovable-uploads/53a9dbd1-92fb-4378-b5af-9e8d9e272e4a.png" 
+                      alt="AI Assistant Avatar" 
+                      className="w-48 h-auto"
+                    />
+                  </div>
+                  <h3 className="text-xl font-semibold text-center">John Doe</h3>
+                  <p className="text-center text-muted-foreground">
+                    Your AI-powered real estate assistant, here to help you find properties and answer your questions.
+                  </p>
+                  
+                  <div className="grid grid-cols-2 gap-4 w-full mt-4">
+                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
+                      <BrainCircuit className="h-6 w-6 text-primary mb-2" />
+                      <span className="text-sm font-medium">Smart Answers</span>
+                    </div>
+                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
+                      <Sparkles className="h-6 w-6 text-primary mb-2" />
+                      <span className="text-sm font-medium">Personalized</span>
+                    </div>
+                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
+                      <Zap className="h-6 w-6 text-primary mb-2" />
+                      <span className="text-sm font-medium">Fast Responses</span>
+                    </div>
+                    <div className="flex flex-col items-center p-3 bg-secondary rounded-lg">
+                      <TrendingUp className="h-6 w-6 text-primary mb-2" />
+                      <span className="text-sm font-medium">Market Insights</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>

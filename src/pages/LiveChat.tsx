@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { Send, Bot, BrainCircuit, Sparkles, Zap, TrendingUp } from "lucide-react";
+import { Send, Bot } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -73,9 +74,9 @@ export default function LiveChat() {
             </p>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
+          <div className="flex flex-col lg:flex-row gap-12 max-w-7xl mx-auto">
             {/* Chat Demo - Left Side */}
-            <div className="lg:w-2/3">
+            <div className="lg:w-3/5">
               <div className="border rounded-xl overflow-hidden shadow-sm bg-card h-[600px] flex flex-col">
                 <div className="bg-primary text-white p-4 flex items-center">
                   <Bot className="h-5 w-5 mr-2" />
@@ -175,20 +176,20 @@ export default function LiveChat() {
             </div>
             
             {/* Avatar Section - Right Side */}
-            <div className="lg:w-1/3">
-              <Card className="h-full">
+            <div className="lg:w-2/5">
+              <Card className="h-full flex flex-col justify-center p-8">
                 <CardHeader>
                   <CardTitle className="text-center">Your AI Assistant</CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-col items-center space-y-6">
-                  <div className="flex justify-center">
+                <CardContent className="flex flex-col items-center space-y-8">
+                  <div className="flex justify-center w-full">
                     <img 
                       src="/lovable-uploads/53a9dbd1-92fb-4378-b5af-9e8d9e272e4a.png" 
                       alt="AI Assistant Avatar" 
-                      className="w-48 h-auto"
+                      className="w-64 h-auto"
                     />
                   </div>
-                  <h3 className="text-xl font-semibold text-center">Prop Panda</h3>
+                  <h3 className="text-2xl font-semibold text-center">Prop Panda</h3>
                 </CardContent>
               </Card>
             </div>

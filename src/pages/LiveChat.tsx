@@ -167,19 +167,19 @@ export default function LiveChat() {
             </div>
             
             <div className="lg:w-2/5">
-              <Card className="h-full flex flex-col justify-center p-6">
+              <Card className="h-full flex flex-col justify-center p-4">
                 <CardHeader>
-                  <CardTitle className="text-center">Your AI Assistant</CardTitle>
+                  <CardTitle className="text-center text-lg">Your AI Assistant</CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-col items-center space-y-6">
+                <CardContent className="flex flex-col items-center space-y-4">
                   <div className="flex justify-center w-full">
                     <img 
                       src="/lovable-uploads/53a9dbd1-92fb-4378-b5af-9e8d9e272e4a.png" 
                       alt="AI Assistant Avatar" 
-                      className="w-32 h-auto"
+                      className="w-24 h-auto"
                     />
                   </div>
-                  <h3 className="text-lg font-semibold text-center">Prop Panda</h3>
+                  <h3 className="text-base font-semibold text-center">Prop Panda</h3>
                 </CardContent>
               </Card>
             </div>

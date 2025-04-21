@@ -1,4 +1,4 @@
-import { SearchCheck, Clock, CalendarCheck, BarChart3, UserCheck, MessageSquareText, Building2, LineChart, BrainCircuit, ShieldCheck, HandCoins, Target, Users } from "lucide-react";
+import { SearchCheck, Clock, CalendarCheck, BarChart3, UserCheck, MessageSquareText, Building2, LineChart, BrainCircuit, ShieldCheck, HandCoins, Target, Users, FileText, PieChart } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 export default function Capabilities() {
@@ -70,6 +70,16 @@ export default function Capabilities() {
       icon: ShieldCheck,
       title: "Security & Compliance",
       description: "Enterprise-grade security and compliance with real estate regulations built into every interaction."
+    },
+    {
+      icon: FileText,
+      title: "Competitor Price Tracking",
+      description: "Monitor competitor property prices and provide insights for optimal pricing strategies."
+    },
+    {
+      icon: PieChart,
+      title: "Persona to Property Match Scoring",
+      description: "Score and suggest the best property matches for each client persona using advanced matching algorithms."
     }
   ];
 

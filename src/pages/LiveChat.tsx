@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Send, Bot } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -82,7 +83,7 @@ export default function LiveChat() {
                     >
                       {message.role === "assistant" && (
                         <div className="mr-2">
-                          <Avatar className="h-8 w-8 border border-primary">
+                          <Avatar className="h-8 w-8 bg-transparent">
                             <AvatarImage src="/panda-ai-logo.svg" alt="Prop Panda" />
                             <AvatarFallback>
                               <Bot className="h-5 w-5" />
@@ -112,7 +113,7 @@ export default function LiveChat() {
                   {isTyping && (
                     <div className="flex justify-start">
                       <div className="mr-2">
-                        <Avatar className="h-8 w-8 border border-primary">
+                        <Avatar className="h-8 w-8 bg-transparent">
                           <AvatarImage src="/panda-ai-logo.svg" alt="Prop Panda" />
                           <AvatarFallback>
                             <Bot className="h-5 w-5" />

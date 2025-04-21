@@ -63,18 +63,18 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 mr-2 text-primary shrink-0 mt-0.5" />
-                <span>123 Real Estate Ave, Silicon Valley, CA 94000</span>
+                <span>21 Tan Quee Lan Street, #02-04 Heritage place, Singapore, 188108.</span>
               </li>
               <li className="flex items-center">
                 <Phone className="h-5 w-5 mr-2 text-primary" />
-                <a href="tel:+11234567890" className="hover:text-primary/80 transition-colors">
-                  +1 (123) 456-7890
+                <a href="tel:+65 8795 8800" className="hover:text-primary/80 transition-colors">
+                  +65 8795 8800
                 </a>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 mr-2 text-primary" />
                 <a href="mailto:info@proppanda.ai" className="hover:text-primary/80 transition-colors">
-                  info@proppanda.ai
+                  hello@genzi.ai
                 </a>
               </li>
             </ul>

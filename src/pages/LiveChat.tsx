@@ -68,7 +68,7 @@ export default function LiveChat() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-12 max-w-7xl mx-auto">
-            <div className="lg:w-3/5">
+            <div className="lg:w-full">
               <div className="border rounded-xl overflow-hidden shadow-sm bg-card h-[600px] flex flex-col">
                 <div className="bg-primary text-white p-4 flex items-center">
                   <Bot className="h-5 w-5 mr-2" />
@@ -83,8 +83,8 @@ export default function LiveChat() {
                     >
                       {message.role === "assistant" && (
                         <div className="mr-2">
-                          <Avatar className="h-8 w-8 bg-transparent">
-                            <AvatarImage src="/panda-ai-logo.svg" alt="Prop Panda" />
+                          <Avatar className="h-8 w-8 bg-transparent border-0">
+                            <AvatarImage src="/panda-ai-logo.svg" alt="Prop Panda" className="border-0" />
                             <AvatarFallback>
                               <Bot className="h-5 w-5" />
                             </AvatarFallback>
@@ -102,7 +102,7 @@ export default function LiveChat() {
                       </div>
                       {message.role === "user" && (
                         <div className="ml-2">
-                          <Avatar className="h-8 w-8 bg-muted">
+                          <Avatar className="h-8 w-8 bg-muted border-0">
                             <AvatarFallback>You</AvatarFallback>
                           </Avatar>
                         </div>
@@ -113,8 +113,8 @@ export default function LiveChat() {
                   {isTyping && (
                     <div className="flex justify-start">
                       <div className="mr-2">
-                        <Avatar className="h-8 w-8 bg-transparent">
-                          <AvatarImage src="/panda-ai-logo.svg" alt="Prop Panda" />
+                        <Avatar className="h-8 w-8 bg-transparent border-0">
+                          <AvatarImage src="/panda-ai-logo.svg" alt="Prop Panda" className="border-0" />
                           <AvatarFallback>
                             <Bot className="h-5 w-5" />
                           </AvatarFallback>
@@ -167,23 +167,6 @@ export default function LiveChat() {
               </div>
             </div>
             
-            <div className="lg:w-2/5">
-              <Card className="h-full flex flex-col justify-center p-6">
-                <CardHeader>
-                  <CardTitle className="text-center">Your AI Assistant</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col items-center space-y-6">
-                  <div className="flex justify-center w-full">
-                    <img 
-                      src="/lovable-uploads/53a9dbd1-92fb-4378-b5af-9e8d9e272e4a.png" 
-                      alt="AI Assistant Avatar" 
-                      className="w-32 h-auto"
-                    />
-                  </div>
-                  <h3 className="text-lg font-semibold text-center">Prop Panda</h3>
-                </CardContent>
-              </Card>
-            </div>
           </div>
         </div>
       </section>

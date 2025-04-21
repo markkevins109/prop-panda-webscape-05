@@ -175,7 +175,7 @@ export default function LiveChat() {
                 <CardContent className="flex flex-col items-center space-y-6">
                   <div className="flex justify-center w-full">
                     <img 
-                      src="/lovable-uploads/53a9dbd1-92fb-4378-b5af-9e8d9e272e4a.png" 
+                      src="/lovable-uploads/6fa4e3f1-4d6c-450d-acd2-283e74344ea4.png" 
                       alt="AI Assistant Avatar" 
                       className="w-32 h-auto"
                     />

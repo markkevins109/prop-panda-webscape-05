@@ -19,11 +19,6 @@ const videoSections = [
     image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
   },
   {
-    title: "Advanced Features & Analytics",
-    description: "Explore advanced features and track performance",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
-  },
-  {
     title: "Real Estate Chat Automation",
     description: "Automate common real estate queries and responses",
     image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",

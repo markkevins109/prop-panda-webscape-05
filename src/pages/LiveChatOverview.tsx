@@ -2,7 +2,7 @@
 import { Video } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const videoDemoSections = [
+const videoSections = [
   {
     title: "Getting Started with Live Chat",
     description: "Learn how to set up and start using our live chat feature",
@@ -38,12 +38,12 @@ export default function LiveChat() {
           <div className="max-w-3xl mx-auto text-center space-y-4 mb-12">
             <h1 className="text-4xl md:text-5xl font-bold">Live Chat Demo</h1>
             <p className="text-lg text-muted-foreground">
-              Explore our comprehensive live chat solution for real estate professionals
+              Learn how to leverage our AI-powered live chat to enhance your real estate business
             </p>
           </div>
 
           <div className="grid gap-8">
-            {videoDemoSections.map((section, index) => (
+            {videoSections.map((section, index) => (
               <Card key={index} className="overflow-hidden">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="relative aspect-video">

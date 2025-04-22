@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 
 export default function LiveChat() {
@@ -61,7 +60,6 @@ export default function LiveChat() {
                     <span className="font-semibold">Send</span>
                   </button>
                 </div>
-                <div className="text-sm text-muted-foreground mt-2 pl-1">Try asking:</div>
               </div>
             </div>
             {/* Avatar Section (Right) - Increased width and padding */}

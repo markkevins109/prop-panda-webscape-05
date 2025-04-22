@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -46,6 +45,7 @@ export default {
           foreground: "hsl(var(--muted-foreground))"
         },
         accent: {
+          blue: "#1EAEDB",
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))"
         },

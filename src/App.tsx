@@ -13,6 +13,7 @@ import Integrations from "./pages/Integrations";
 import NotFound from "./pages/NotFound";
 import Blog from "./pages/Blog";
 import Community from "./pages/Community";
+import LiveChat from "./pages/LiveChat";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/pricing" element={<Layout><Pricing /></Layout>} />
           <Route path="/case-studies" element={<Layout><CaseStudies /></Layout>} />
           <Route path="/integrations" element={<Layout><Integrations /></Layout>} />
+          <Route path="/live-chat" element={<Layout><LiveChat /></Layout>} />
           <Route path="*" element={<Layout><NotFound /></Layout>} />
         </Routes>
       </BrowserRouter>

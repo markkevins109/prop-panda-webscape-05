@@ -11,7 +11,8 @@ const navLinks = [
   { name: "Community", path: "/community" },
   { name: "Integrations", path: "/integrations" },
   { name: "Pricing", path: "/pricing" },
-  { name: "Case Studies", path: "/case-studies" }
+  { name: "Case Studies", path: "/case-studies" },
+  { name: "Live Chat", path: "/live-chat" }
 ];
 
 export default function Navbar() {

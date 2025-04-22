@@ -1,26 +1,31 @@
 
-import { Video, Play } from "lucide-react";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Video } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const videoSections = [
   {
     title: "Getting Started with Live Chat",
-    description: "Learn how to set up and start using our live chat feature.",
+    description: "Learn how to set up and start using our live chat feature",
     image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
   },
   {
     title: "AI-Powered Responses",
-    description: "See how our AI helps you respond to queries instantly.",
+    description: "See how our AI helps you respond to queries instantly",
     image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
   },
   {
     title: "Customizing Your Chat Interface",
-    description: "Customize the chat widget to match your brand.",
+    description: "Customize the chat widget to match your brand",
     image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
   },
   {
+    title: "Advanced Features & Analytics",
+    description: "Explore advanced features and track performance",
+    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
+  },
+  {
     title: "Real Estate Chat Automation",
-    description: "Automate common real estate queries and responses.",
+    description: "Automate common real estate queries and responses",
     image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
   }
 ];
@@ -33,7 +38,7 @@ export default function LiveChat() {
           <div className="max-w-3xl mx-auto text-center space-y-4 mb-12">
             <h1 className="text-4xl md:text-5xl font-bold">Live Chat Demo</h1>
             <p className="text-lg text-muted-foreground">
-              Learn how to leverage our AI-powered live chat to enhance your real estate business.
+              Learn how to leverage our AI-powered live chat to enhance your real estate business
             </p>
           </div>
 
@@ -48,7 +53,7 @@ export default function LiveChat() {
                       className="object-cover w-full h-full"
                     />
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <Play className="w-16 h-16 text-white opacity-90" />
+                      <Video className="w-16 h-16 text-white opacity-80" />
                     </div>
                   </div>
                   <CardContent className="flex items-center p-6">
@@ -66,4 +71,3 @@ export default function LiveChat() {
     </div>
   );
 }
-

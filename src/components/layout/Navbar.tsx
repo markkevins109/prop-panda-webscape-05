@@ -43,7 +43,7 @@ export default function Navbar() {
     >
       <div className="container-custom flex items-center justify-between">
         <NavLink to="/" className="flex items-center space-x-3">
-          <Avatar className="h-10 w-10 border-2 border-accent-blue">
+          <Avatar>
             <AvatarImage 
               src="/lovable-uploads/e5e3fd4d-75ad-4c2f-a2d2-a37743ee1940.png" 
               alt="Prop Panda AI Logo" 

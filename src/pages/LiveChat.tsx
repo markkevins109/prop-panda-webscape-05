@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
+import { PandaAvatar } from "@/components/PandaAvatar";
 
 export default function LiveChat() {
   return (
@@ -26,7 +27,8 @@ export default function LiveChat() {
 
             <ScrollArea className="h-[500px] p-4">
               <div className="space-y-4">
-                <div className="bg-gray-100 rounded-lg p-4 max-w-[80%]">
+                <div className="flex items-start gap-3 bg-gray-100 rounded-lg p-4 max-w-[80%]">
+                  <PandaAvatar />
                   <p>Hello! I'm Prop Panda, your AI real estate assistant. How can I help you today?</p>
                 </div>
               </div>

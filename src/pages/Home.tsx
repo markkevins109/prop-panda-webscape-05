@@ -1,7 +1,53 @@
+import { useState } from 'react';
 import { ArrowRight, MessageSquare, Clock, Shield, BarChart } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PandaAvatar } from "@/components/PandaAvatar";
 
 export default function Home() {
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
+  const [userMessage, setUserMessage] = useState('');
+  const [conversation, setConversation] = useState([
+    { id: 1, sender: 'panda', message: 'Hello! I\'m Prop Panda, your AI real estate assistant. How can I help you today?' }
+  ]);
+
+  const handleSendMessage = () => {
+    if (userMessage.trim()) {
+      setConversation(prev => [
+        ...prev, 
+        { id: prev.length + 1, sender: 'user', message: userMessage }
+      ]);
+      
+      // Simulate a response
+      setTimeout(() => {
+        const pandaResponse = generatePandaResponse(userMessage);
+        setConversation(prev => [
+          ...prev, 
+          { id: prev.length + 2, sender: 'panda', message: pandaResponse }
+        ]);
+      }, 1000);
+
+      setUserMessage('');
+    }
+  };
+
+  const generatePandaResponse = (userQuery: string) => {
+    const queries = {
+      'house': 'I can help you find properties! What type of house are you looking for?',
+      'price': 'Prices vary based on location and property type. Can you tell me more about your budget range?',
+      'view': 'We offer virtual property tours. Would you like to schedule one?',
+      'default': 'Interesting query! How can I assist you with your real estate needs today?'
+    };
+
+    const matchedResponse = Object.entries(queries).find(([keyword]) => 
+      userQuery.toLowerCase().includes(keyword)
+    );
+
+    return matchedResponse ? matchedResponse[1] : queries['default'];
+  };
+
   return (
     <div>
       {/* Hero Section */}
@@ -20,9 +66,12 @@ export default function Home() {
                 schedules viewings, and provides market insights.
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
-                <NavLink to="/live-chat" className="btn-primary flex items-center justify-center sm:justify-start">
+                <Button 
+                  onClick={() => setIsDemoOpen(true)} 
+                  className="btn-primary flex items-center justify-center sm:justify-start"
+                >
                   Try the Demo <ArrowRight className="ml-2 h-5 w-5" />
-                </NavLink>
+                </Button>
                 <NavLink to="/capabilities" className="btn-secondary flex items-center justify-center sm:justify-start">
                   Explore Features
                 </NavLink>
@@ -52,6 +101,41 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Demo Dialog */}
+      <Dialog open={isDemoOpen} onOpenChange={setIsDemoOpen}>
+        <DialogContent className="max-w-2xl h-[600px] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Prop Panda Demo</DialogTitle>
+            <DialogDescription>
+              Experience our AI real estate assistant in action
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex-grow overflow-y-auto space-y-4 p-4">
+            {conversation.map((msg) => (
+              <div 
+                key={msg.id} 
+                className={`flex items-start gap-3 ${msg.sender === 'panda' ? 'bg-gray-100' : 'bg-blue-100'} rounded-lg p-4 max-w-[80%]`}
+              >
+                {msg.sender === 'panda' && <PandaAvatar />}
+                <p>{msg.message}</p>
+              </div>
+            ))}
+          </div>
+          
+          <div className="mt-auto flex gap-2 p-4">
+            <Input 
+              value={userMessage}
+              onChange={(e) => setUserMessage(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+              placeholder="Type your real estate query..." 
+              className="flex-grow"
+            />
+            <Button onClick={handleSendMessage}>Send</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Features Overview */}
       <section className="bg-secondary section-padding">

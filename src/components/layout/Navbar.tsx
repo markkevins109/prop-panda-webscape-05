@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -46,7 +45,7 @@ export default function Navbar() {
         <NavLink to="/" className="flex items-center space-x-3">
           <Avatar className="h-10 w-10 border-2 border-accent-blue">
             <AvatarImage 
-              src="/lovable-uploads/53a9dbd1-92fb-4378-b5af-9e8d9e272e4a.png" 
+              src="/lovable-uploads/e5e3fd4d-75ad-4c2f-a2d2-a37743ee1940.png" 
               alt="Prop Panda AI Logo" 
               className="object-contain p-1"
             />
@@ -117,4 +116,3 @@ export default function Navbar() {
     </header>
   );
 }
-

@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { ArrowRight, MessageSquare, Clock, Shield, BarChart } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PandaAvatar } from "@/components/PandaAvatar";
+import { useState } from 'react';
 
 export default function Home() {
   const [isDemoOpen, setIsDemoOpen] = useState(false);
@@ -66,12 +66,11 @@ export default function Home() {
                 schedules viewings, and provides market insights.
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
-                <Button 
-                  onClick={() => setIsDemoOpen(true)} 
+                <button 
                   className="btn-primary flex items-center justify-center sm:justify-start"
                 >
                   Try the Demo <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+                </button>
                 <NavLink to="/capabilities" className="btn-secondary flex items-center justify-center sm:justify-start">
                   Explore Features
                 </NavLink>
@@ -103,39 +102,6 @@ export default function Home() {
       </section>
 
       {/* Demo Dialog */}
-      <Dialog open={isDemoOpen} onOpenChange={setIsDemoOpen}>
-        <DialogContent className="max-w-2xl h-[600px] flex flex-col">
-          <DialogHeader>
-            <DialogTitle>Prop Panda Demo</DialogTitle>
-            <DialogDescription>
-              Experience our AI real estate assistant in action
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="flex-grow overflow-y-auto space-y-4 p-4">
-            {conversation.map((msg) => (
-              <div 
-                key={msg.id} 
-                className={`flex items-start gap-3 ${msg.sender === 'panda' ? 'bg-gray-100' : 'bg-blue-100'} rounded-lg p-4 max-w-[80%]`}
-              >
-                {msg.sender === 'panda' && <PandaAvatar />}
-                <p>{msg.message}</p>
-              </div>
-            ))}
-          </div>
-          
-          <div className="mt-auto flex gap-2 p-4">
-            <Input 
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder="Type your real estate query..." 
-              className="flex-grow"
-            />
-            <Button onClick={handleSendMessage}>Send</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* Features Overview */}
       <section className="bg-secondary section-padding">

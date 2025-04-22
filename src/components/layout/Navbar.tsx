@@ -7,7 +7,8 @@ import { Bot } from "lucide-react";
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "Capabilities", path: "/capabilities" },
-  { name: "Live Chat", path: "/live-chat" },
+  { name: "Blog", path: "/blog" },
+  { name: "Community", path: "/community" },
   { name: "Integrations", path: "/integrations" },
   { name: "Pricing", path: "/pricing" },
   { name: "Case Studies", path: "/case-studies" }

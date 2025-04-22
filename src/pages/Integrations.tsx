@@ -1,9 +1,15 @@
-
-import { FileSpreadsheet, BarChart3, MessageSquare, Share2, FileText } from "lucide-react";
+import { FileSpreadsheet, BarChart3, MessageSquare, Share2, FileText, DatabaseZap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Integrations() {
   const integrations = [
+    {
+      title: "Custom CRM Integration",
+      description: "Connect with your preferred CRM system for seamless data flow",
+      icon: DatabaseZap,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+    },
     {
       title: "Google Sheets",
       description: "Automatically sync chats, leads, and data into your sheets.",

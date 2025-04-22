@@ -27,8 +27,16 @@ export default function LiveChat() {
               </div>
               {/* Chat Body - Increased space */}
               <div className="flex flex-col flex-1">
-                <div className="mb-4">
-                  <div className="bg-muted px-4 py-3 rounded-md text-base max-w-xl">
+                <div className="mb-4 flex items-start">
+                  <img
+                    src="/lovable-uploads/7a66aa22-072b-4bf9-bf1e-ec32f5d99726.png"
+                    alt="Prop Panda Logo"
+                    className="w-12 h-12 rounded-full mr-3 border-2 border-accent-blue shadow"
+                    style={{
+                      background: "#fff",
+                    }}
+                  />
+                  <div className="bg-muted px-4 py-3 rounded-md text-base max-w-xl flex-1">
                     Hello! I'm Prop Panda, your AI real estate assistant. How can I help you today?
                   </div>
                 </div>

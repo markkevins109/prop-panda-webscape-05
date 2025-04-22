@@ -1,206 +1,73 @@
 
-import { useState } from "react";
-import { Send, Bot } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Video } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+const videoSections = [
+  {
+    title: "Getting Started with Live Chat",
+    description: "Learn how to set up and start using our live chat feature",
+    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+  },
+  {
+    title: "AI-Powered Responses",
+    description: "See how our AI helps you respond to queries instantly",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
+  },
+  {
+    title: "Customizing Your Chat Interface",
+    description: "Customize the chat widget to match your brand",
+    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
+  },
+  {
+    title: "Advanced Features & Analytics",
+    description: "Explore advanced features and track performance",
+    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
+  },
+  {
+    title: "Real Estate Chat Automation",
+    description: "Automate common real estate queries and responses",
+    image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
+  }
+];
+
 export default function LiveChat() {
-  const initialMessages = [
-    {
-      role: "assistant",
-      content: "Hello! I'm Prop Panda, your AI real estate assistant. How can I help you today?"
-    }
-  ];
-
-  const demoScenarios = [
-    "I'm looking for a 3-bedroom house under $500,000",
-    "What are the current mortgage rates?",
-    "Can you schedule a viewing for 123 Main Street?",
-    "Tell me about property tax in San Francisco"
-  ];
-
-  const demoResponses: { [key: string]: string } = {
-    "I'm looking for a 3-bedroom house under $500,000": "I'd be happy to help you find a 3-bedroom house under $500,000. To provide the most relevant options, could you tell me which neighborhoods or areas you're interested in, and any specific features you're looking for (like garage, yard size, etc.)?",
-    
-    "What are the current mortgage rates?": "As of today, average mortgage rates are around 6.8% for a 30-year fixed mortgage and 6.1% for a 15-year fixed rate. These can vary based on your credit score, down payment, and specific lender. Would you like me to connect you with a mortgage specialist who can provide personalized rates?",
-    
-    "Can you schedule a viewing for 123 Main Street?": "I'd be happy to help schedule a viewing for 123 Main Street. Could you provide me with a few date and time options that work for you? Also, is this your first viewing with our agency, or are you already working with a specific agent?",
-    
-    "Tell me about property tax in San Francisco": "Property tax in San Francisco is approximately 1.18% of the assessed value. For example, a property assessed at $1 million would have annual property taxes of around $11,800. Additionally, San Francisco has several special assessment districts that may add supplemental taxes depending on the property's location. Would you like more specific information about a particular neighborhood?"
-  };
-
-  const [messages, setMessages] = useState(initialMessages);
-  const [inputValue, setInputValue] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputValue.trim()) return;
-
-    const userMessage = { role: "user", content: inputValue };
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue("");
-    
-    setIsTyping(true);
-
-    setTimeout(() => {
-      const response = demoResponses[inputValue] || 
-        "Thank you for your message. This is a demo version of Prop Panda. In the full version, I would provide detailed information about your real estate inquiry. Would you like to know more about our capabilities?";
-      
-      setMessages(prev => [...prev, { role: "assistant", content: response }]);
-      setIsTyping(false);
-    }, 1500);
-  };
-
-  const handleDemoClick = (scenario: string) => {
-    setInputValue(scenario);
-  };
-
   return (
     <div>
       <section className="section-padding">
         <div className="container-custom">
-          <div className="max-w-4xl mx-auto text-center space-y-4 mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold">Experience Prop Panda</h1>
+          <div className="max-w-3xl mx-auto text-center space-y-4 mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold">Live Chat Demo</h1>
             <p className="text-lg text-muted-foreground">
-              Try our interactive demo and see how Prop Panda transforms real estate communication.
+              Learn how to leverage our AI-powered live chat to enhance your real estate business
             </p>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-12 max-w-7xl mx-auto">
-            <div className="lg:w-3/5">
-              <div className="border rounded-xl overflow-hidden shadow-sm bg-card h-[600px] flex flex-col">
-                <div className="bg-primary text-white p-4 flex items-center">
-                  <Bot className="h-5 w-5 mr-2" />
-                  <span className="font-medium">Prop Panda Chat</span>
-                </div>
-                
-                <div className="flex-grow overflow-y-auto p-4 space-y-4">
-                  {messages.map((message, index) => (
-                    <div 
-                      key={index} 
-                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                    >
-                      {message.role === "assistant" && (
-                        <div className="mr-2">
-                          <Avatar className="h-8 w-8 bg-transparent border-0">
-                            <AvatarImage src="/panda-ai-logo.svg" alt="Prop Panda" className="border-0" />
-                            <AvatarFallback>
-                              <Bot className="h-5 w-5" />
-                            </AvatarFallback>
-                          </Avatar>
-                        </div>
-                      )}
-                      <div 
-                        className={`max-w-[80%] rounded-lg p-3 ${
-                          message.role === "user" 
-                            ? "bg-primary text-white" 
-                            : "bg-secondary"
-                        }`}
-                      >
-                        <p>{message.content}</p>
-                      </div>
-                      {message.role === "user" && (
-                        <div className="ml-2">
-                          <Avatar className="h-8 w-8 bg-muted border-0">
-                            <AvatarFallback>You</AvatarFallback>
-                          </Avatar>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                  
-                  {isTyping && (
-                    <div className="flex justify-start">
-                      <div className="mr-2">
-                        <Avatar className="h-8 w-8 bg-transparent border-0">
-                          <AvatarImage src="/panda-ai-logo.svg" alt="Prop Panda" className="border-0" />
-                          <AvatarFallback>
-                            <Bot className="h-5 w-5" />
-                          </AvatarFallback>
-                        </Avatar>
-                      </div>
-                      <div className="bg-secondary rounded-lg p-3 max-w-[80%]">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse"></div>
-                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse delay-100"></div>
-                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-pulse delay-200"></div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                <form onSubmit={handleSubmit} className="p-4 border-t bg-card">
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      placeholder="Type your question here..."
-                      className="flex-grow border rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-primary"
+          <div className="grid gap-8">
+            {videoSections.map((section, index) => (
+              <Card key={index} className="overflow-hidden">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="relative aspect-video">
+                    <img
+                      src={section.image}
+                      alt={section.title}
+                      className="object-cover w-full h-full"
                     />
-                    <button 
-                      type="submit"
-                      className="btn-primary px-4"
-                      disabled={!inputValue.trim()}
-                    >
-                      <Send className="h-5 w-5" />
-                    </button>
-                  </div>
-
-                  <div className="mt-4">
-                    <p className="text-sm text-muted-foreground mb-2">Try asking:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {demoScenarios.map((scenario, index) => (
-                        <button
-                          key={index}
-                          onClick={() => handleDemoClick(scenario)}
-                          className="bg-secondary hover:bg-secondary/80 text-sm rounded-full px-3 py-1 transition-colors"
-                        >
-                          {scenario}
-                        </button>
-                      ))}
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <Video className="w-16 h-16 text-white opacity-80" />
                     </div>
                   </div>
-                </form>
-              </div>
-            </div>
-            
-            <div className="lg:w-2/5">
-              <Card className="h-full flex flex-col justify-center p-6">
-                <CardHeader>
-                  <CardTitle className="text-center">Your AI Assistant</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col items-center space-y-6">
-                  <div className="flex justify-center w-full">
-                    <img 
-                      src="/lovable-uploads/6fa4e3f1-4d6c-450d-acd2-283e74344ea4.png" 
-                      alt="AI Assistant Avatar" 
-                      className="w-32 h-auto"
-                    />
-                  </div>
-                  <h3 className="text-lg font-semibold text-center">Prop Panda</h3>
-                </CardContent>
+                  <CardContent className="flex items-center p-6">
+                    <div>
+                      <CardTitle className="text-2xl mb-4">{section.title}</CardTitle>
+                      <p className="text-muted-foreground">{section.description}</p>
+                    </div>
+                  </CardContent>
+                </div>
               </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding bg-secondary">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center">
-            <svg className="w-10 h-10 mx-auto mb-4 text-neutral-400" fill="currentColor" viewBox="0 0 32 32">
-              <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
-            </svg>
-            <p className="text-xl md:text-2xl italic mb-6">
-              "Prop Panda has completely transformed how we handle client inquiries. Our response time has decreased from hours to seconds, and we've seen a 40% increase in lead conversions since implementation."
-            </p>
+            ))}
           </div>
         </div>
       </section>
     </div>
   );
 }
-

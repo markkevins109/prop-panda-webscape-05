@@ -66,11 +66,12 @@ export default function Home() {
                 schedules viewings, and provides market insights.
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
-                <button 
+                <NavLink
+                  to="/demo"
                   className="btn-primary flex items-center justify-center sm:justify-start"
                 >
                   Try the Demo <ArrowRight className="ml-2 h-5 w-5" />
-                </button>
+                </NavLink>
                 <NavLink to="/capabilities" className="btn-secondary flex items-center justify-center sm:justify-start">
                   Explore Features
                 </NavLink>

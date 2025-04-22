@@ -71,13 +71,6 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <NavLink 
-          to="/live-chat" 
-          className="hidden md:block btn-primary px-4 py-2 text-sm rounded-md"
-        >
-          Try the Demo
-        </NavLink>
-
         <button
           className="md:hidden focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
@@ -105,12 +98,6 @@ export default function Navbar() {
                 {link.name}
               </NavLink>
             ))}
-            <NavLink 
-              to="/live-chat" 
-              className="btn-primary text-center mt-2 py-2 rounded-md text-sm"
-            >
-              Try the Demo
-            </NavLink>
           </nav>
         </div>
       )}

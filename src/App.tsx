@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import Capabilities from "./pages/Capabilities";
-import LiveChat from "./pages/LiveChat";
 import Pricing from "./pages/Pricing";
 import CaseStudies from "./pages/CaseStudies";
 import Integrations from "./pages/Integrations";
@@ -27,7 +27,6 @@ const App = () => (
           <Route path="/capabilities" element={<Layout><Capabilities /></Layout>} />
           <Route path="/blog" element={<Layout><Blog /></Layout>} />
           <Route path="/community" element={<Layout><Community /></Layout>} />
-          <Route path="/live-chat" element={<Layout><LiveChat /></Layout>} />
           <Route path="/pricing" element={<Layout><Pricing /></Layout>} />
           <Route path="/case-studies" element={<Layout><CaseStudies /></Layout>} />
           <Route path="/integrations" element={<Layout><Integrations /></Layout>} />

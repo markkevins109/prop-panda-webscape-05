@@ -1,64 +1,51 @@
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Send } from "lucide-react";
 
 export default function LiveChat() {
   return (
     <div className="section-padding">
-      <div className="container-custom">
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Chat Interface */}
-          <Card className="p-4">
-            <div className="flex flex-col h-[600px]">
-              <h2 className="text-2xl font-semibold mb-4">Live Chat Demo</h2>
-              <ScrollArea className="flex-grow border rounded-md p-4 mb-4">
-                <div className="space-y-4">
-                  <div className="flex gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage 
-                        src="/lovable-uploads/e5e3fd4d-75ad-4c2f-a2d2-a37743ee1940.png" 
-                        alt="Prop Panda AI"
-                      />
-                      <AvatarFallback>PP</AvatarFallback>
-                    </Avatar>
-                    <div className="bg-accent-blue/10 rounded-lg p-3 max-w-[80%]">
-                      <p>Hello! How can I assist you with your real estate needs today?</p>
-                    </div>
-                  </div>
-                </div>
-              </ScrollArea>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Type your message..."
-                  className="flex-grow p-2 rounded-md border"
-                />
-                <button className="bg-accent-blue text-white px-4 py-2 rounded-md hover:bg-accent-blue/90">
-                  Send
-                </button>
+      <div className="container-custom max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-semibold mb-4">Experience Prop Panda</h1>
+          <p className="text-lg text-muted-foreground">
+            Try our interactive demo and see how Prop Panda transforms real estate communication.
+          </p>
+        </div>
+
+        <Card className="overflow-hidden">
+          {/* Chat Header */}
+          <div className="bg-black text-white p-4 flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <h2 className="text-lg">Prop Panda Chat</h2>
+          </div>
+
+          {/* Chat Messages */}
+          <ScrollArea className="h-[400px] p-4">
+            <div className="space-y-4">
+              <div className="bg-gray-100 rounded-lg p-4 max-w-[80%]">
+                <p>Hello! I'm Prop Panda, your AI real estate assistant. How can I help you today?</p>
               </div>
             </div>
-          </Card>
+          </ScrollArea>
 
-          {/* Avatar Display */}
-          <div className="flex flex-col items-center justify-center">
-            <Avatar className="h-64 w-64 mb-6">
-              <AvatarImage 
-                src="/lovable-uploads/e5e3fd4d-75ad-4c2f-a2d2-a37743ee1940.png" 
-                alt="Prop Panda AI" 
+          {/* Input Area */}
+          <div className="p-4 border-t">
+            <div className="flex gap-2">
+              <Input 
+                placeholder="Type your question here..." 
+                className="flex-grow"
               />
-              <AvatarFallback>
-                <MessageCircle className="h-32 w-32" />
-              </AvatarFallback>
-            </Avatar>
-            <h2 className="text-2xl font-semibold mb-2">Prop Panda AI</h2>
-            <p className="text-muted-foreground text-center">
-              Your AI-powered real estate assistant, ready to help 24/7
-            </p>
+              <Button>
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground mt-4">Try asking:</p>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

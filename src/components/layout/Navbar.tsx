@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { PandaAvatar } from "../PandaAvatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Bot } from "lucide-react";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -43,7 +44,16 @@ export default function Navbar() {
     >
       <div className="container-custom flex items-center justify-between">
         <NavLink to="/" className="flex items-center space-x-3">
-          <PandaAvatar />
+          <Avatar className="h-10 w-10 border-2 border-accent-blue">
+            <AvatarImage 
+              src="/lovable-uploads/53a9dbd1-92fb-4378-b5af-9e8d9e272e4a.png" 
+              alt="Prop Panda AI Logo" 
+              className="object-contain p-1"
+            />
+            <AvatarFallback>
+              <Bot className="h-8 w-8 text-accent-blue" />
+            </AvatarFallback>
+          </Avatar>
           <span className="text-xl font-bold">Prop Panda</span>
         </NavLink>
 

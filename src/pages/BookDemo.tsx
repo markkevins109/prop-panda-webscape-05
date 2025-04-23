@@ -1,10 +1,9 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
-import { CalendarIcon, Clock } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -33,6 +32,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -62,7 +62,6 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Time slots from 9 AM to 6 PM in 30-minute intervals
 const timeSlots = Array.from({ length: 19 }, (_, i) => {
   const hour = Math.floor(i / 2) + 9;
   const minute = i % 2 === 0 ? "00" : "30";
@@ -101,12 +100,17 @@ export default function BookDemo() {
     setIsSubmitting(true);
 
     try {
-      // Here you would typically send the data to your backend
-      // This is a mock implementation for demonstration purposes
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const { error: emailError } = await supabase.functions.invoke('send-demo-confirmation', {
+        body: {
+          name: data.name,
+          email: data.email,
+          preferredDate: format(data.preferredDate, 'PPP'),
+          preferredTime: data.preferredTime
+        },
+      });
+
+      if (emailError) throw emailError;
       
-      // Simulate successful submission
-      console.log("Form submitted:", data);
       setIsSuccess(true);
       
       toast.success("Your demo has been booked successfully!", {

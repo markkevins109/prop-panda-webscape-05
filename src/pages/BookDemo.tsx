@@ -85,7 +85,6 @@ export default function BookDemo() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [debugInfo, setDebugInfo] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -102,10 +101,9 @@ export default function BookDemo() {
   async function onSubmit(data: FormValues) {
     setIsSubmitting(true);
     setErrorMessage(null);
-    setDebugInfo(null);
 
     try {
-      console.log("Submitting demo booking for:", data.email);
+      console.log("Sending demo confirmation email to:", data.email);
       
       const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-demo-confirmation', {
         body: {
@@ -118,17 +116,10 @@ export default function BookDemo() {
 
       if (emailError) {
         console.error("Error from edge function:", emailError);
-        setDebugInfo(`Edge function error: ${JSON.stringify(emailError)}`);
         throw new Error(emailError.message || "Failed to send confirmation email");
       }
       
       console.log("Email response:", emailResponse);
-      setDebugInfo(`Email API response: ${JSON.stringify(emailResponse)}`);
-      
-      if (emailResponse?.error) {
-        throw new Error(`Email service error: ${emailResponse.error}`);
-      }
-      
       setIsSuccess(true);
       
       toast.success("Your demo has been booked successfully!", {
@@ -139,7 +130,7 @@ export default function BookDemo() {
       const errorMsg = error instanceof Error ? error.message : "Please try again or contact support.";
       setErrorMessage(errorMsg);
       
-      toast.error("Something went wrong with the email!", {
+      toast.error("Something went wrong!", {
         description: errorMsg,
       });
     } finally {
@@ -162,15 +153,6 @@ export default function BookDemo() {
             <Alert variant="destructive" className="max-w-2xl mx-auto mb-6">
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{errorMessage}</AlertDescription>
-            </Alert>
-          )}
-
-          {debugInfo && (
-            <Alert className="max-w-2xl mx-auto mb-6 bg-gray-100">
-              <AlertTitle>Debug Information</AlertTitle>
-              <AlertDescription>
-                <pre className="whitespace-pre-wrap text-xs">{debugInfo}</pre>
-              </AlertDescription>
             </Alert>
           )}
 

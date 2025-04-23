@@ -25,21 +25,7 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { name, email, preferredDate, preferredTime }: DemoBookingRequest = await req.json();
-    
-    console.log("Received email request for:", email);
-    
-    if (!email) {
-      throw new Error("Email is required");
-    }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      throw new Error("Invalid email format");
-    }
-
-    console.log("Sending confirmation email to:", email);
-    
     const emailResponse = await resend.emails.send({
       from: "Prop Panda <onboarding@resend.dev>",
       to: [email],
@@ -56,17 +42,9 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Email send response:", JSON.stringify(emailResponse));
+    console.log("Email sent successfully:", emailResponse);
 
-    if (emailResponse.error) {
-      throw new Error(`Resend API error: ${JSON.stringify(emailResponse.error)}`);
-    }
-
-    return new Response(JSON.stringify({
-      success: true,
-      message: "Confirmation email sent",
-      recipient: email
-    }), {
+    return new Response(JSON.stringify(emailResponse), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -86,4 +64,3 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 serve(handler);
-

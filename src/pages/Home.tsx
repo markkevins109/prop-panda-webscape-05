@@ -68,7 +68,7 @@ export default function Home() {
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
                 <NavLink
-                  to="/demo"
+                  to="/book-demo"
                   className="btn-primary flex items-center justify-center sm:justify-start"
                 >
                   Book a free Demo <ArrowRight className="ml-2 h-5 w-5" />

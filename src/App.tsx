@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +15,7 @@ import Blog from "./pages/Blog";
 import Community from "./pages/Community";
 import LiveChat from "./pages/LiveChat";
 import Demo from "./pages/Demo";
+import BookDemo from "./pages/BookDemo";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,7 @@ const App = () => (
           <Route path="/integrations" element={<Layout><Integrations /></Layout>} />
           <Route path="/live-chat" element={<Layout><LiveChat /></Layout>} />
           <Route path="/demo" element={<Layout><Demo /></Layout>} />
+          <Route path="/book-demo" element={<Layout><BookDemo /></Layout>} />
           <Route path="*" element={<Layout><NotFound /></Layout>} />
         </Routes>
       </BrowserRouter>

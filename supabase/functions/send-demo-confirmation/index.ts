@@ -37,7 +37,7 @@ const handler = async (req: Request): Promise<Response> => {
         <p><strong>Date:</strong> ${preferredDate}<br>
         <strong>Time:</strong> ${preferredTime} SGT</p>
         <p>While you wait for your personalized demo, you can explore our interactive demo page to see Prop Panda in action:</p>
-        <p><a href="https://your-app-url.com/demo" style="display: inline-block; background-color: #1EAEDB; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 16px 0;">Watch Interactive Demo</a></p>
+        <p><a href="/demo" style="display: inline-block; background-color: #1EAEDB; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 16px 0;">Watch Interactive Demo</a></p>
         <p>We'll be sending you a calendar invite shortly with the meeting details.</p>
         <p>If you need to reschedule or have any questions, please don't hesitate to contact us.</p>
         <p>Best regards,<br>The Prop Panda Team</p>

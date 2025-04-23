@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
 import { toast } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -22,13 +21,39 @@ export default function UserRegistrationForm({ onSuccess }: { onSuccess: (userId
   const onSubmit = async (data: UserFormData) => {
     try {
       setIsSubmitting(true);
+      
+      // First check if the email already exists
+      const { data: existingUser, error: checkError } = await supabase
+        .from('community_users')
+        .select('id')
+        .eq('email', data.email)
+        .single();
+
+      if (existingUser) {
+        // If user already exists, just log them in with their existing ID
+        toast.success("Welcome back to the community!");
+        onSuccess(existingUser.id);
+        return;
+      }
+
+      // If user doesn't exist, create a new user
       const { data: user, error } = await supabase
         .from('community_users')
         .insert([data])
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        // Handle specific error codes
+        if (error.code === '23505') {
+          // This is a race condition - the email was just taken
+          toast.error("This email is already registered. Please try a different one.");
+        } else {
+          console.error('Error:', error);
+          toast.error("Failed to join. Please try again.");
+        }
+        return;
+      }
       
       toast.success("Welcome to the community!");
       onSuccess(user.id);

@@ -86,7 +86,6 @@ export default function BookDemo() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [debugInfo, setDebugInfo] = useState<string | null>(null);
-  const [testModeInfo, setTestModeInfo] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -104,7 +103,6 @@ export default function BookDemo() {
     setIsSubmitting(true);
     setErrorMessage(null);
     setDebugInfo(null);
-    setTestModeInfo(null);
 
     try {
       console.log("Submitting demo booking for:", data.email);
@@ -129,10 +127,6 @@ export default function BookDemo() {
       
       if (emailResponse?.error) {
         throw new Error(`Email service error: ${emailResponse.error}`);
-      }
-
-      if (emailResponse?.testMode) {
-        setTestModeInfo(`Note: Resend is in test mode. The confirmation was sent to ${emailResponse.testRecipient} instead of ${emailResponse.originalRecipient}`);
       }
       
       setIsSuccess(true);

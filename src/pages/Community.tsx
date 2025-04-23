@@ -1,8 +1,8 @@
 
 import { useState } from "react";
-import { UserRegistrationForm } from "@/components/community/UserRegistrationForm";
-import { QuestionForm } from "@/components/community/QuestionForm";
-import { QuestionList } from "@/components/community/QuestionList";
+import UserRegistrationForm from "@/components/community/UserRegistrationForm";
+import QuestionForm from "@/components/community/QuestionForm";
+import QuestionList from "@/components/community/QuestionList";
 
 export default function Community() {
   const [userId, setUserId] = useState<string | null>(null);

@@ -10,7 +10,7 @@ const blogPosts = [
     date: "April 23, 2025",
     readTime: "8 min read",
     category: "Technology",
-    image: "/lovable-uploads/dd2be9f3-db6f-4ce7-91e3-51204245dde6.png"
+    image: "/lovable-uploads/1488590528505-98d2b5aba04b.jpg" // Computer/tech image for AI chatbots
   },
   {
     title: "Maximizing ROI with Prop Panda AI Integration",
@@ -18,7 +18,7 @@ const blogPosts = [
     date: "April 20, 2025",
     readTime: "6 min read",
     category: "Case Study",
-    image: "/lovable-uploads/7a66aa22-072b-4bf9-bf1e-ec32f5d99726.png"
+    image: "/lovable-uploads/1487058792275-0ad4aaf24ca7.jpg" // Code/software image for AI integration
   },
   {
     title: "Real Estate Market Trends 2025: AI's Growing Impact",
@@ -26,7 +26,7 @@ const blogPosts = [
     date: "April 18, 2025",
     readTime: "10 min read",
     category: "Market Analysis",
-    image: "/lovable-uploads/c824f6c9-f5c0-4dee-a822-6b363b60e917.png"
+    image: "/lovable-uploads/1486312338219-ce68d2c6f44d.jpg" // Person using laptop for market analysis
   }
 ];
 

@@ -1,25 +1,26 @@
+
 import React from "react";
 
 const demoSections = [
   {
     title: "Getting Started with Prop Panda",
     description: "See how easy it is to start chatting with your AI real estate assistant.",
-    image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04",
+    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
   },
   {
     title: "Instant Market Insights",
     description: "Learn how Prop Panda helps you schedule and manage property viewings.",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+    image: "https://images.unsplash.com/photo-1483058712412-4245e9b90334",
   },
   {
     title: "Scheduling Property Tours",
     description: "Watch how you can get instant analytics and market data inside your chat.",
-    image: "https://images.unsplash.com/photo-1721322800607-8c38375eef04",
+    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
   },
   {
     title: "Secure and Compliant Chats",
     description: "Understand Prop Panda's security and compliance features in action.",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
   },
 ];
 

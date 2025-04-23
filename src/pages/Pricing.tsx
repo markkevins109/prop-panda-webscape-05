@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Check, X, HelpCircle, ArrowRight } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -163,7 +164,10 @@ export default function Pricing() {
                     {plan.features.map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center">
                         {feature.included ? (
-                          <Check className="h-5 w-5 text-green-500 mr-2" />
+                          <Check 
+                            className="h-5 w-5 text-emerald-600 mr-2" 
+                            strokeWidth={3} 
+                          />
                         ) : (
                           <X className="h-5 w-5 text-neutral-300 mr-2" />
                         )}

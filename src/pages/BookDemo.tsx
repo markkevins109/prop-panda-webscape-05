@@ -22,13 +22,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -51,9 +44,6 @@ const formSchema = z.object({
   preferredDate: z.date({
     required_error: "Please select a date for your demo.",
   }),
-  preferredTime: z.string({
-    required_error: "Please select a time for your demo.",
-  }),
   propertyTypeInterest: z.string().optional(),
   message: z.string().optional(),
   acceptTerms: z.boolean().refine((val) => val === true, {
@@ -62,17 +52,6 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
-
-const timeSlots = Array.from({ length: 19 }, (_, i) => {
-  const hour = Math.floor(i / 2) + 9;
-  const minute = i % 2 === 0 ? "00" : "30";
-  const amPm = hour >= 12 ? "PM" : "AM";
-  const displayHour = hour > 12 ? hour - 12 : hour;
-  return {
-    value: `${hour.toString().padStart(2, "0")}:${minute}`,
-    label: `${displayHour}:${minute} ${amPm}`,
-  };
-});
 
 const propertyTypes = [
   { value: "hdb", label: "HDB" },
@@ -110,7 +89,7 @@ export default function BookDemo() {
           name: data.name,
           email: data.email,
           preferredDate: format(data.preferredDate, 'PPP'),
-          preferredTime: data.preferredTime
+          // Removed preferredTime
         },
       });
 
@@ -236,7 +215,7 @@ export default function BookDemo() {
                       control={form.control}
                       name="preferredDate"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col">
+                        <FormItem className="flex flex-col col-span-full">
                           <FormLabel>Preferred Date*</FormLabel>
                           <Popover>
                             <PopoverTrigger asChild>
@@ -268,31 +247,6 @@ export default function BookDemo() {
                               />
                             </PopoverContent>
                           </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="preferredTime"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Preferred Time*</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select a time slot" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {timeSlots.map((slot) => (
-                                <SelectItem key={slot.value} value={slot.value}>
-                                  {slot.label} SGT
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}

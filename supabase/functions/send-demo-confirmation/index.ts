@@ -1,8 +1,10 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+
+// Define authorized test email for development
+const AUTHORIZED_TEST_EMAIL = "genzi.learning@gmail.com";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -40,9 +42,13 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sending confirmation email to:", email);
 
+    // In development/test mode, always send to the authorized test email
+    // while keeping the original content
+    const recipientEmail = AUTHORIZED_TEST_EMAIL;
+    
     const emailResponse = await resend.emails.send({
       from: "Prop Panda <onboarding@resend.dev>",
-      to: [email],
+      to: [recipientEmail],
       subject: "Your Prop Panda Demo Booking Confirmation",
       html: `
         <h1>Thank you for booking a demo with Prop Panda!</h1>
@@ -53,16 +59,24 @@ const handler = async (req: Request): Promise<Response> => {
         <p>We'll be sending you a calendar invite shortly with the meeting details.</p>
         <p>If you need to reschedule or have any questions, please don't hesitate to contact us.</p>
         <p>Best regards,<br>The Prop Panda Team</p>
+        <hr>
+        <p><small>Note: This is a test email. The actual recipient would be: ${email}</small></p>
       `,
     });
 
     console.log("Email send response:", JSON.stringify(emailResponse));
 
     if (emailResponse.error) {
-      throw new Error(`Resend API error: ${emailResponse.error}`);
+      throw new Error(`Resend API error: ${JSON.stringify(emailResponse.error)}`);
     }
 
-    return new Response(JSON.stringify(emailResponse), {
+    return new Response(JSON.stringify({
+      success: true,
+      message: "Confirmation email sent",
+      originalRecipient: email,
+      testMode: true,
+      testRecipient: recipientEmail,
+    }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

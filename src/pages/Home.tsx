@@ -169,7 +169,11 @@ export default function Home() {
             <div className="card hover-scale p-8">
               <div className="flex items-center mb-6">
                 <div className="mr-4">
-                  <UserRound className="h-12 w-12 text-primary" />
+                  <img 
+                    src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
+                    alt="Sarah Chen" 
+                    className="h-12 w-12 rounded-full object-cover"
+                  />
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">Sarah Chen</h3>
@@ -189,7 +193,11 @@ export default function Home() {
             <div className="card hover-scale p-8">
               <div className="flex items-center mb-6">
                 <div className="mr-4">
-                  <UserRound className="h-12 w-12 text-primary" />
+                  <img 
+                    src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158" 
+                    alt="Michael Tan" 
+                    className="h-12 w-12 rounded-full object-cover"
+                  />
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">Michael Tan</h3>
@@ -209,7 +217,11 @@ export default function Home() {
             <div className="card hover-scale p-8">
               <div className="flex items-center mb-6">
                 <div className="mr-4">
-                  <UserRound className="h-12 w-12 text-primary" />
+                  <img 
+                    src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952" 
+                    alt="Lisa Wong" 
+                    className="h-12 w-12 rounded-full object-cover"
+                  />
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">Lisa Wong</h3>

@@ -1,5 +1,4 @@
-
-import { ArrowRight, MessageSquare, Clock, Shield, BarChart } from "lucide-react";
+import { ArrowRight, MessageSquare, Clock, Shield, BarChart, UserRound } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -149,6 +148,83 @@ export default function Home() {
               <h3 className="text-xl font-semibold mb-2">Market Insights</h3>
               <p className="text-muted-foreground">
                 Real-time data and analytics on property trends and market conditions.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Users Say</h2>
+            <p className="text-muted-foreground text-lg">
+              Hear from real estate professionals who have transformed their business with Prop Panda
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Review 1 */}
+            <div className="card hover-scale p-8">
+              <div className="flex items-center mb-6">
+                <div className="mr-4">
+                  <UserRound className="h-12 w-12 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Sarah Chen</h3>
+                  <p className="text-muted-foreground">Real Estate Agent</p>
+                </div>
+              </div>
+              <div className="flex mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-muted-foreground">
+                "Prop Panda has revolutionized how I handle client inquiries. The 24/7 availability means I never miss an opportunity, and the AI responses are remarkably accurate and professional."
+              </p>
+            </div>
+
+            {/* Review 2 */}
+            <div className="card hover-scale p-8">
+              <div className="flex items-center mb-6">
+                <div className="mr-4">
+                  <UserRound className="h-12 w-12 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Michael Tan</h3>
+                  <p className="text-muted-foreground">Property Developer</p>
+                </div>
+              </div>
+              <div className="flex mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-muted-foreground">
+                "The market insights and analytics provided by Prop Panda are invaluable. It helps me make data-driven decisions and stay ahead of market trends. A game-changer for my business."
+              </p>
+            </div>
+
+            {/* Review 3 */}
+            <div className="card hover-scale p-8">
+              <div className="flex items-center mb-6">
+                <div className="mr-4">
+                  <UserRound className="h-12 w-12 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Lisa Wong</h3>
+                  <p className="text-muted-foreground">Property Manager</p>
+                </div>
+              </div>
+              <div className="flex mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                ))}
+              </div>
+              <p className="text-muted-foreground">
+                "Managing multiple properties became much easier with Prop Panda. The automated responses and scheduling features save me hours each week. Highly recommended!"
               </p>
             </div>
           </div>

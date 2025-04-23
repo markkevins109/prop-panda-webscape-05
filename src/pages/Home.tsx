@@ -1,3 +1,4 @@
+
 import { ArrowRight, MessageSquare, Clock, Shield, BarChart } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -70,7 +71,7 @@ export default function Home() {
                   to="/demo"
                   className="btn-primary flex items-center justify-center sm:justify-start"
                 >
-                  Try the Demo <ArrowRight className="ml-2 h-5 w-5" />
+                  Book a free Demo <ArrowRight className="ml-2 h-5 w-5" />
                 </NavLink>
                 <NavLink to="/capabilities" className="btn-secondary flex items-center justify-center sm:justify-start">
                   Explore Features

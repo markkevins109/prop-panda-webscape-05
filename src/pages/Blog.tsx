@@ -2,6 +2,7 @@
 import { Book, Calendar, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const blogPosts = [
   {
@@ -50,16 +51,18 @@ export default function Blog() {
 
       {/* Blog Posts Grid */}
       <section className="pb-20">
-        <div className="container-custom">
+        <div className="container mx-auto px-4">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {blogPosts.map((post, index) => (
               <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden">
-                <div className="aspect-video w-full overflow-hidden">
-                  <img 
-                    src={post.image} 
-                    alt={post.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                <div className="w-full overflow-hidden">
+                  <AspectRatio ratio={16/9}>
+                    <img 
+                      src={post.image} 
+                      alt={post.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </AspectRatio>
                 </div>
                 <CardHeader className="space-y-2">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">

@@ -1,8 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, CalendarPlus } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Bot } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -58,19 +60,27 @@ export default function Navbar() {
           <span className="text-lg font-bold">Prop Panda</span>
         </NavLink>
 
-        <nav className="hidden md:flex items-center space-x-8">
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.name}
-              to={link.path}
-              className={({ isActive }) => 
-                `nav-link ${isActive ? "font-medium after:scale-x-100" : ""}`
-              }
-            >
-              {link.name}
-            </NavLink>
-          ))}
-        </nav>
+        <div className="hidden md:flex items-center space-x-8">
+          <nav className="flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.name}
+                to={link.path}
+                className={({ isActive }) => 
+                  `nav-link ${isActive ? "font-medium after:scale-x-100" : ""}`
+                }
+              >
+                {link.name}
+              </NavLink>
+            ))}
+          </nav>
+          <NavLink to="/book-demo">
+            <Button variant="default" className="bg-accent-blue hover:bg-accent-blue/90">
+              <CalendarPlus className="mr-2" />
+              Book My Free Demo
+            </Button>
+          </NavLink>
+        </div>
 
         <button
           className="md:hidden focus:outline-none"
@@ -99,6 +109,15 @@ export default function Navbar() {
                 {link.name}
               </NavLink>
             ))}
+            <NavLink 
+              to="/book-demo"
+              className="w-full"
+            >
+              <Button variant="default" className="w-full bg-accent-blue hover:bg-accent-blue/90">
+                <CalendarPlus className="mr-2" />
+                Book My Free Demo
+              </Button>
+            </NavLink>
           </nav>
         </div>
       )}

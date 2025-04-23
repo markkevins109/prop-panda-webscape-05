@@ -173,13 +173,6 @@ export default function BookDemo() {
               </AlertDescription>
             </Alert>
           )}
-          
-          {testModeInfo && (
-            <Alert className="max-w-2xl mx-auto mb-6 bg-blue-50">
-              <AlertTitle>Resend Test Mode</AlertTitle>
-              <AlertDescription>{testModeInfo}</AlertDescription>
-            </Alert>
-          )}
 
           {isSuccess ? (
             <div className="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md text-center">

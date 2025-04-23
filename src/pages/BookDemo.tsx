@@ -33,6 +33,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -83,6 +84,7 @@ const propertyTypes = [
 export default function BookDemo() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -98,9 +100,12 @@ export default function BookDemo() {
 
   async function onSubmit(data: FormValues) {
     setIsSubmitting(true);
+    setErrorMessage(null);
 
     try {
-      const { error: emailError } = await supabase.functions.invoke('send-demo-confirmation', {
+      console.log("Sending demo confirmation email to:", data.email);
+      
+      const { data: emailResponse, error: emailError } = await supabase.functions.invoke('send-demo-confirmation', {
         body: {
           name: data.name,
           email: data.email,
@@ -109,8 +114,12 @@ export default function BookDemo() {
         },
       });
 
-      if (emailError) throw emailError;
+      if (emailError) {
+        console.error("Error from edge function:", emailError);
+        throw new Error(emailError.message || "Failed to send confirmation email");
+      }
       
+      console.log("Email response:", emailResponse);
       setIsSuccess(true);
       
       toast.success("Your demo has been booked successfully!", {
@@ -118,8 +127,11 @@ export default function BookDemo() {
       });
     } catch (error) {
       console.error("Error submitting form:", error);
+      const errorMsg = error instanceof Error ? error.message : "Please try again or contact support.";
+      setErrorMessage(errorMsg);
+      
       toast.error("Something went wrong!", {
-        description: "Please try again or contact support.",
+        description: errorMsg,
       });
     } finally {
       setIsSubmitting(false);
@@ -136,6 +148,13 @@ export default function BookDemo() {
               Experience how Prop Panda can transform your real estate business. Fill out the form below to schedule your personalized demo.
             </p>
           </div>
+
+          {errorMessage && (
+            <Alert variant="destructive" className="max-w-2xl mx-auto mb-6">
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </Alert>
+          )}
 
           {isSuccess ? (
             <div className="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md text-center">

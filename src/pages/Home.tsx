@@ -1,4 +1,4 @@
-import { ArrowRight, MessageSquare, Clock, Shield, BarChart, UserRound } from "lucide-react";
+import { ArrowRight, MessageSquare, Clock, Shield, BarChart, UserRound, BadgeCheck } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -176,10 +176,9 @@ export default function Home() {
                   <p className="text-muted-foreground">Real Estate Agent</p>
                 </div>
               </div>
-              <div className="flex mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                ))}
+              <div className="flex items-center mb-4">
+                <BadgeCheck className="h-6 w-6 text-green-500 mr-2" />
+                <span className="font-semibold text-green-700">5/5 Excellent</span>
               </div>
               <p className="text-muted-foreground">
                 "Prop Panda has revolutionized how I handle client inquiries. The 24/7 availability means I never miss an opportunity, and the AI responses are remarkably accurate and professional."
@@ -197,10 +196,9 @@ export default function Home() {
                   <p className="text-muted-foreground">Property Developer</p>
                 </div>
               </div>
-              <div className="flex mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                ))}
+              <div className="flex items-center mb-4">
+                <BadgeCheck className="h-6 w-6 text-green-500 mr-2" />
+                <span className="font-semibold text-green-700">4.5/5 Outstanding</span>
               </div>
               <p className="text-muted-foreground">
                 "The market insights and analytics provided by Prop Panda are invaluable. It helps me make data-driven decisions and stay ahead of market trends. A game-changer for my business."
@@ -218,10 +216,9 @@ export default function Home() {
                   <p className="text-muted-foreground">Property Manager</p>
                 </div>
               </div>
-              <div className="flex mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                ))}
+              <div className="flex items-center mb-4">
+                <BadgeCheck className="h-6 w-6 text-green-500 mr-2" />
+                <span className="font-semibold text-green-700">5/5 Exceptional</span>
               </div>
               <p className="text-muted-foreground">
                 "Managing multiple properties became much easier with Prop Panda. The automated responses and scheduling features save me hours each week. Highly recommended!"

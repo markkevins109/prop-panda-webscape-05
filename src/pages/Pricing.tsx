@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Check, X, HelpCircle, ArrowRight } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -11,10 +10,10 @@ export default function Pricing() {
     {
       name: "Starter",
       description: "Perfect for individual agents",
-      monthlyPrice: 49,
-      annualPrice: 39,
+      monthlyPrice: 99,
+      annualPrice: 79,
       features: [
-        { name: "Up to 100 AI conversations/month", included: true },
+        { name: "You can connect with up to 100 potential customers", included: true },
         { name: "Basic property search", included: true },
         { name: "Lead capture", included: true },
         { name: "Email notifications", included: true },
@@ -27,11 +26,11 @@ export default function Pricing() {
     {
       name: "Professional",
       description: "Ideal for growing teams",
-      monthlyPrice: 129,
-      annualPrice: 99,
+      monthlyPrice: 499,
+      annualPrice: 399,
       popular: true,
       features: [
-        { name: "Up to 500 AI conversations/month", included: true },
+        { name: "You can connect with up to 500 potential customers", included: true },
         { name: "Advanced property search", included: true },
         { name: "Lead capture & qualification", included: true },
         { name: "Email & SMS notifications", included: true },
@@ -44,10 +43,10 @@ export default function Pricing() {
     {
       name: "Enterprise",
       description: "For established brokerages",
-      monthlyPrice: 299,
-      annualPrice: 249,
+      monthlyPrice: 999,
+      annualPrice: 799,
       features: [
-        { name: "Unlimited AI conversations", included: true },
+        { name: "You can connect with unlimited potential customers", included: true },
         { name: "Full property database access", included: true },
         { name: "Advanced lead qualification", included: true },
         { name: "Multi-channel notifications", included: true },

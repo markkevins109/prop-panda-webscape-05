@@ -13,7 +13,7 @@ const tutorials = [
     title: "Exploring Market Insights",
     description: "Access real-time property data and understand price trends for HDBs and condos across Singapore.",
     videoUrl: "https://youtube.com/watch?v=example2",
-    thumbnailUrl: "/lovable-uploads/4e47f492-4503-48c4-a65a-f466f2262f02.png"
+    thumbnailUrl: "/lovable-uploads/8c5770e0-369c-4b42-ac1c-4d7a53f5b37b.png"
   },
   {
     title: "Scheduling Property Tours",

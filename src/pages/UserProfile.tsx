@@ -9,7 +9,6 @@ import { PandaAvatar } from "@/components/PandaAvatar";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -26,25 +25,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TrendingUp, MapPin, Home, DollarSign, Briefcase, UserRound } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { UserRound, Building, Phone, Mail, Clock, Award } from "lucide-react";
 
 // Form schema with validation
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  age: z.string().refine((val) => !val || !isNaN(parseInt(val)), {
-    message: "Age must be a valid number.",
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  phone_number: z.string().min(10, { message: "Please enter a valid phone number." }),
+  company_name: z.string().min(2, { message: "Company name must be at least 2 characters." }),
+  experience: z.string().refine((val) => !val || !isNaN(parseInt(val)), {
+    message: "Experience must be a valid number.",
   }),
-  occupation: z.string().min(2, { 
-    message: "Please provide your occupation." 
+  specialization: z.string({
+    required_error: "Please select a specialization.",
   }),
-  property_preferences: z.string().optional(),
-  investment_goals: z.string().min(10, { 
-    message: "Please provide some details about your investment goals." 
-  }),
-  budget_range: z.string().min(2, { 
-    message: "Please provide your budget range." 
-  }),
-  preferred_locations: z.string().optional(),
 });
 
 export default function UserProfile() {
@@ -53,17 +54,16 @@ export default function UserProfile() {
   const [userId, setUserId] = useState<string | null>(null);
   const [existingData, setExistingData] = useState<any>(null);
 
-  // Initialize form with existing data if available
+  // Initialize form with empty values
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      age: "",
-      occupation: "",
-      property_preferences: "",
-      investment_goals: "",
-      budget_range: "",
-      preferred_locations: "",
+      email: "",
+      phone_number: "",
+      company_name: "",
+      experience: "",
+      specialization: "",
     },
   });
 
@@ -72,7 +72,7 @@ export default function UserProfile() {
       const { data } = await supabase.auth.getSession();
       if (data.session?.user.id) {
         setUserId(data.session.user.id);
-        fetchUserData(data.session.user.id);
+        fetchAgentData(data.session.user.id);
       } else {
         toast.error("Please sign in to update your profile");
         navigate("/auth");
@@ -82,11 +82,11 @@ export default function UserProfile() {
     checkAuth();
   }, [navigate]);
 
-  const fetchUserData = async (uid: string) => {
+  const fetchAgentData = async (uid: string) => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('user_chatbot_data')
+        .from('agent_profiles')
         .select('*')
         .eq('user_id', uid)
         .single();
@@ -100,18 +100,15 @@ export default function UserProfile() {
         // Populate form with existing data
         form.reset({
           name: data.name || "",
-          age: data.age ? String(data.age) : "",
-          occupation: data.occupation || "",
-          property_preferences: data.property_preferences || "",
-          investment_goals: data.investment_goals || "",
-          budget_range: data.budget_range || "",
-          preferred_locations: Array.isArray(data.preferred_locations) 
-            ? data.preferred_locations.join(", ") 
-            : data.preferred_locations || "",
+          email: data.email || "",
+          phone_number: data.phone_number || "",
+          company_name: data.company_name || "",
+          experience: data.experience ? String(data.experience) : "",
+          specialization: data.specialization || "",
         });
       }
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error("Error fetching agent data:", error);
       toast.error("Failed to load your profile data");
     } finally {
       setLoading(false);
@@ -131,20 +128,17 @@ export default function UserProfile() {
       const formattedData = {
         user_id: userId,
         name: values.name,
-        age: values.age ? parseInt(values.age) : null,
-        occupation: values.occupation,
-        property_preferences: values.property_preferences,
-        investment_goals: values.investment_goals,
-        budget_range: values.budget_range,
-        preferred_locations: values.preferred_locations 
-          ? values.preferred_locations.split(',').map(loc => loc.trim())
-          : [],
+        email: values.email,
+        phone_number: values.phone_number,
+        company_name: values.company_name,
+        experience: parseInt(values.experience),
+        specialization: values.specialization,
       };
 
       if (existingData) {
         // Update existing record
         const { error } = await supabase
-          .from('user_chatbot_data')
+          .from('agent_profiles')
           .update(formattedData)
           .eq('id', existingData.id);
         
@@ -153,7 +147,7 @@ export default function UserProfile() {
       } else {
         // Insert new record
         const { error } = await supabase
-          .from('user_chatbot_data')
+          .from('agent_profiles')
           .insert([formattedData]);
         
         if (error) throw error;
@@ -176,10 +170,10 @@ export default function UserProfile() {
             <PandaAvatar />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-accent-blue to-primary">
-            Your Property AI Profile
+            Agent Profile
           </h1>
           <p className="mt-3 text-lg text-muted-foreground">
-            Help us understand your preferences so our AI can provide personalized assistance
+            Complete your profile to get started
           </p>
         </div>
 
@@ -187,7 +181,7 @@ export default function UserProfile() {
           <CardHeader>
             <CardTitle className="text-2xl">Personal Information</CardTitle>
             <CardDescription>
-              This information helps our AI assistant provide more relevant responses to your queries.
+              Please provide your professional details below
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -202,7 +196,7 @@ export default function UserProfile() {
                         <UserRound className="h-4 w-4" /> Full Name
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="Your name" {...field} />
+                        <Input placeholder="Your full name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -212,12 +206,14 @@ export default function UserProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
                     control={form.control}
-                    name="age"
+                    name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Age</FormLabel>
+                        <FormLabel className="flex items-center gap-2">
+                          <Mail className="h-4 w-4" /> Email
+                        </FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="Your age" {...field} />
+                          <Input type="email" placeholder="Your email address" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -226,14 +222,14 @@ export default function UserProfile() {
                   
                   <FormField
                     control={form.control}
-                    name="occupation"
+                    name="phone_number"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center gap-2">
-                          <Briefcase className="h-4 w-4" /> Occupation
+                          <Phone className="h-4 w-4" /> Phone Number
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder="Your occupation" {...field} />
+                          <Input placeholder="Your phone number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -243,87 +239,70 @@ export default function UserProfile() {
 
                 <FormField
                   control={form.control}
-                  name="budget_range"
+                  name="company_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="flex items-center gap-2">
-                        <DollarSign className="h-4 w-4" /> Budget Range
+                        <Building className="h-4 w-4" /> Company Name
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., $500,000 - $800,000" {...field} />
+                        <Input placeholder="Your company name" {...field} />
                       </FormControl>
-                      <FormDescription>
-                        The price range you're considering for property investment
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="preferred_locations"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4" /> Preferred Locations
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., Central District, East Coast, River Valley" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Enter locations separated by commas
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="experience"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Clock className="h-4 w-4" /> Years of Experience
+                        </FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            placeholder="Years of experience"
+                            min="0"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="property_preferences"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center gap-2">
-                        <Home className="h-4 w-4" /> Property Preferences
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="e.g., Condo with pool, 2-bedroom apartment, proximity to MRT"
-                          className="min-h-[100px]"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        What type of properties are you interested in?
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="investment_goals"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4" /> Investment Goals
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="e.g., Long-term rental income, capital appreciation, own stay"
-                          className="min-h-[100px]"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        What are you hoping to achieve with your property investment?
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="specialization"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Award className="h-4 w-4" /> Specialization
+                        </FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select your specialization" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="residence_agent">Residence Agent</SelectItem>
+                            <SelectItem value="rental_agent">Rental Agent</SelectItem>
+                            <SelectItem value="purchasing_agent">Purchasing Agent</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          Choose your area of specialization in real estate
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <Button 
                   type="submit" 

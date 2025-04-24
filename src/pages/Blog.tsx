@@ -33,6 +33,15 @@ const blogPosts = [
     image: "/lovable-uploads/f4657a83-6b0e-450a-ab34-18502b3896e2.png"
   },
   {
+    title: "Personalized Property Recommendations",
+    shortDescription: "AI algorithms analyze a user's preferences, search history, and interaction patterns to recommend highly relevant properties. Instead of browsing through dozens of listings, clients are shown a tailored selection that matches their budget, lifestyle, and location criteria.",
+    fullDescription: "AI algorithms analyze a user's preferences, search history, and interaction patterns to recommend highly relevant properties. Instead of browsing through dozens of listings, clients are shown a tailored selection that matches their budget, lifestyle, and location criteria. This shortens the property discovery phase, reducing the time it takes for a buyer or renter to find a suitable option and increasing the likelihood of a successful closing.",
+    date: "April 21, 2025",
+    readTime: "4 min read",
+    category: "AI Recommendations",
+    image: "/lovable-uploads/1aa8af60-84f1-4241-8781-e2936c2c1595.png"
+  },
+  {
     title: "Real Estate Market Trends 2025: AI's Growing Impact",
     description: "An in-depth analysis of how artificial intelligence is shaping the future of property transactions.",
     date: "April 18, 2025",

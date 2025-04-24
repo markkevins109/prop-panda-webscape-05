@@ -62,7 +62,27 @@ export default function QuestionList({ userId, onRefresh }: QuestionListProps) {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setQuestions(data || []);
+      
+      // Transform the data to match the Question interface
+      const transformedData = data?.map(item => ({
+        id: item.id,
+        question_text: item.question_text,
+        property_interest: item.property_interest,
+        created_at: item.created_at,
+        user: {
+          name: item.user?.[0]?.name || 'Unknown User'
+        },
+        answers: item.answers?.map((answer: any) => ({
+          id: answer.id,
+          answer_text: answer.answer_text,
+          created_at: answer.created_at,
+          user: {
+            name: answer.user?.[0]?.name || 'Unknown User'
+          }
+        })) || []
+      })) || [];
+      
+      setQuestions(transformedData);
     } catch (error) {
       console.error('Error fetching questions:', error);
     } finally {

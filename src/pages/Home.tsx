@@ -1,4 +1,4 @@
-import { ArrowRight, Book } from "lucide-react";
+import { ArrowRight, Book, MessageSquare, Clock, Shield, BarChart, BadgeCheck } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";

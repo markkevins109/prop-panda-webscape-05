@@ -1,3 +1,4 @@
+
 import React from 'react';
 import TutorialHero from '@/components/tutorials/TutorialHero';
 import TutorialCard from '@/components/tutorials/TutorialCard';
@@ -7,25 +8,25 @@ const tutorials = [
     title: "Getting Started with Prop Panda",
     description: "Learn how to sign up, log in, and navigate the app's main features including property search and your personal dashboard.",
     videoUrl: "https://youtube.com/watch?v=example1",
-    thumbnailUrl: "/lovable-uploads/f84bf499-93af-49a6-88c8-61cb9b9c6f02.png"
+    thumbnailUrl: "/lovable-uploads/f4657a83-6b0e-450a-ab34-18502b3896e2.png"
   },
   {
     title: "Exploring Market Insights",
     description: "Access real-time property data and understand price trends for HDBs and condos across Singapore.",
     videoUrl: "https://youtube.com/watch?v=example2",
-    thumbnailUrl: "/lovable-uploads/f2547f6e-8155-4587-aab2-6c2dc46824ab.png"
+    thumbnailUrl: "/lovable-uploads/4e47f492-4503-48c4-a65a-f466f2262f02.png"
   },
   {
     title: "Scheduling Property Tours",
     description: "Learn how to book virtual or in-person property tours through our intuitive interface.",
     videoUrl: "https://youtube.com/watch?v=example3",
-    thumbnailUrl: "/lovable-uploads/9bf9927b-cb59-4ad9-9b3e-31ec9f11273b.png"
+    thumbnailUrl: "/lovable-uploads/53a9dbd1-92fb-4378-b5af-9e8d9e272e4a.png"
   },
   {
     title: "Using the Chatbot",
     description: "Master our AI chatbot for property queries, tour scheduling, and secure communication.",
     videoUrl: "https://youtube.com/watch?v=example4",
-    thumbnailUrl: "/lovable-uploads/1aa8af60-84f1-4241-8781-e2936c2c1595.png"
+    thumbnailUrl: "/lovable-uploads/dd2be9f3-db6f-4ce7-91e3-51204245dde6.png"
   }
 ];
 

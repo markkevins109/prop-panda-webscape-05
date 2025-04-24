@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isProfileComplete, setIsProfileComplete] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -30,24 +30,29 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         
         setIsAuthenticated(true);
         
-        // Check if profile is complete
+        // Check if this is a new user that needs to complete their profile
         const { data: profile, error } = await supabase
           .from("profiles")
-          .select("is_profile_complete")
+          .select("created_at, is_profile_complete")
           .eq("id", session.user.id)
           .single();
         
         if (error) {
           console.error("Error fetching profile:", error);
           toast.error("Failed to verify profile status");
-          setIsProfileComplete(false);
+          setIsNewUser(false);
         } else {
-          setIsProfileComplete(profile?.is_profile_complete || false);
+          // Check if user was created in the last minute (new signup)
+          const isJustCreated = profile?.created_at && 
+            (new Date().getTime() - new Date(profile.created_at).getTime()) < 60000;
+          
+          // Only redirect to profile setup if user just signed up and hasn't completed profile
+          setIsNewUser(isJustCreated && !profile?.is_profile_complete);
         }
       } catch (error) {
         console.error("Auth check error:", error);
         setIsAuthenticated(false);
-        setIsProfileComplete(false);
+        setIsNewUser(false);
       } finally {
         setIsLoading(false);
       }
@@ -59,16 +64,21 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       setIsAuthenticated(!!session);
       
-      if (session) {
+      if (session && event === 'SIGNED_IN') {
         const { data: profile } = await supabase
           .from("profiles")
-          .select("is_profile_complete")
+          .select("created_at, is_profile_complete")
           .eq("id", session.user.id)
           .single();
           
-        setIsProfileComplete(profile?.is_profile_complete || false);
+        // Check if user was created in the last minute (new signup)
+        const isJustCreated = profile?.created_at && 
+          (new Date().getTime() - new Date(profile.created_at).getTime()) < 60000;
+        
+        // Only set as new user if just created and profile not complete
+        setIsNewUser(isJustCreated && !profile?.is_profile_complete);
       } else {
-        setIsProfileComplete(false);
+        setIsNewUser(false);
       }
     });
 
@@ -78,7 +88,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }, []);
 
   if (isLoading) {
-    // You might want to add a loading spinner here
     return <div className="h-screen flex items-center justify-center">Loading...</div>;
   }
 
@@ -86,7 +95,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
-  if (!isProfileComplete && location.pathname !== "/profile/setup") {
+  // Only redirect to profile setup if user just signed up
+  if (isNewUser && location.pathname !== "/profile/setup") {
     return <Navigate to="/profile/setup" state={{ from: location }} replace />;
   }
 

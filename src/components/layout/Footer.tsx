@@ -1,4 +1,3 @@
-
 import { NavLink } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
 
@@ -40,6 +39,21 @@ export default function Footer() {
                 </NavLink>
               </li>
               <li>
+                <NavLink to="/blog" className="hover:text-primary/80 transition-colors">
+                  Blog
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/community" className="hover:text-primary/80 transition-colors">
+                  Community
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/case-studies" className="hover:text-primary/80 transition-colors">
+                  Case Studies
+                </NavLink>
+              </li>
+              <li>
                 <NavLink to="/live-chat" className="hover:text-primary/80 transition-colors">
                   Live Chat Demo
                 </NavLink>
@@ -50,8 +64,8 @@ export default function Footer() {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/case-studies" className="hover:text-primary/80 transition-colors">
-                  Case Studies
+                <NavLink to="/integrations" className="hover:text-primary/80 transition-colors">
+                  Integrations
                 </NavLink>
               </li>
             </ul>

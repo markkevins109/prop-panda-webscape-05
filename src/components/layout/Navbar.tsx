@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X, CalendarPlus } from "lucide-react";
@@ -9,11 +8,8 @@ import { Button } from "@/components/ui/button";
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "Capabilities", path: "/capabilities" },
-  { name: "Blog", path: "/blog" },
-  { name: "Community", path: "/community" },
   { name: "Integrations", path: "/integrations" },
   { name: "Pricing", path: "/pricing" },
-  { name: "Case Studies", path: "/case-studies" },
   { name: "Live Chat", path: "/live-chat" }
 ];
 

@@ -107,6 +107,45 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          id: string
+          is_profile_complete: boolean | null
+          location: string | null
+          organization: string | null
+          phone: string | null
+          preferred_property_type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          id: string
+          is_profile_complete?: boolean | null
+          location?: string | null
+          organization?: string | null
+          phone?: string | null
+          preferred_property_type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          id?: string
+          is_profile_complete?: boolean | null
+          location?: string | null
+          organization?: string | null
+          phone?: string | null
+          preferred_property_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

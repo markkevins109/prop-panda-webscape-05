@@ -9,6 +9,7 @@ import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import ProfileSetup from "./pages/ProfileSetup"; // New import
 import Capabilities from "./pages/Capabilities";
 import Pricing from "./pages/Pricing";
 import CaseStudies from "./pages/CaseStudies";
@@ -33,6 +34,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/auth" element={<Auth />} />
+            <Route path="/profile/setup" element={<Layout><ProfileSetup /></Layout>} /> {/* New route */}
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/capabilities" element={<Layout><Capabilities /></Layout>} />
             <Route path="/blog" element={<Layout><Blog /></Layout>} />

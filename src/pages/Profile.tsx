@@ -1,6 +1,7 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { CircleUser, Upload } from "lucide-react";
 export default function Profile() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isProfileComplete, setIsProfileComplete] = useState(false);
   const navigate = useNavigate();
 
   // Demo user data - would come from your database in a real app
@@ -21,13 +23,39 @@ export default function Profile() {
   });
 
   useEffect(() => {
-    // Check if user is authenticated - replace with real auth check
-    const demoAuth = localStorage.getItem("prop-panda-demo-auth");
-    if (demoAuth !== "authenticated") {
-      navigate("/auth");
-    } else {
+    const checkAuthAndProfile = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        navigate("/auth");
+        return;
+      }
+
       setIsAuthenticated(true);
-    }
+
+      // Fetch profile to check completion status
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('is_profile_complete')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching profile:", error);
+        toast.error("Failed to load profile");
+        return;
+      }
+
+      // If profile is not complete, redirect to setup
+      if (!profile?.is_profile_complete) {
+        navigate("/profile/setup");
+        return;
+      }
+
+      setIsProfileComplete(true);
+    };
+    
+    checkAuthAndProfile();
   }, [navigate]);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,9 +82,23 @@ export default function Profile() {
     }
   };
 
-  const handleSaveChanges = () => {
-    setIsEditing(false);
-    // In a real app, save changes to the database
+  const handleSaveChanges = async () => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ 
+          is_profile_complete: true 
+        })
+        .eq('id', supabase.auth.getUser().id);
+
+      if (error) throw error;
+
+      setIsEditing(false);
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      toast.error("Failed to save profile");
+    }
   };
 
   const handleCancel = () => {
@@ -64,8 +106,8 @@ export default function Profile() {
     // Reset any unsaved changes
   };
 
-  if (!isAuthenticated) {
-    return null; // Will redirect to auth page via useEffect
+  if (!isAuthenticated || !isProfileComplete) {
+    return null;
   }
 
   return (

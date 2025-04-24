@@ -1,4 +1,3 @@
-
 import { Book, Calendar, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -22,7 +21,7 @@ const blogPosts = [
     date: "April 23, 2025",
     readTime: "4 min read",
     category: "AI Innovation",
-    image: "/lovable-uploads/1487058792275-0ad4aaf24ca7.jpg"
+    image: "/lovable-uploads/9bf9927b-cb59-4ad9-9b3e-31ec9f11273b.png"
   },
   {
     title: "Real Estate Market Trends 2025: AI's Growing Impact",

@@ -1,3 +1,4 @@
+
 import { Book, Calendar, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -122,11 +123,11 @@ export default function Blog() {
                   </CardTitle>
                   <Collapsible open={openArticles.includes(index)}>
                     <CardDescription className="line-clamp-2">
-                      {post.shortDescription || post.description}
+                      {post.shortDescription}
                     </CardDescription>
                     <CollapsibleContent>
                       <CardDescription className="mt-2">
-                        {post.fullDescription || post.description}
+                        {post.fullDescription}
                       </CardDescription>
                     </CollapsibleContent>
                     <div className="mt-4">

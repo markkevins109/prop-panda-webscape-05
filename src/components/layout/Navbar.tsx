@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Menu, X, CalendarPlus } from "lucide-react";
+import { Menu, X, CalendarPlus, LogIn } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -16,9 +17,18 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [session, setSession] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
     const handleScroll = () => {
       if (window.scrollY > 20) {
         setScrolled(true);
@@ -34,6 +44,10 @@ export default function Navbar() {
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <header 
@@ -70,6 +84,22 @@ export default function Navbar() {
               </NavLink>
             ))}
           </nav>
+          {session ? (
+            <Button 
+              variant="outline" 
+              onClick={handleSignOut}
+              className="text-accent-blue hover:bg-accent-blue/10"
+            >
+              Sign Out
+            </Button>
+          ) : (
+            <NavLink to="/auth">
+              <Button variant="default" className="bg-accent-blue hover:bg-accent-blue/90">
+                <LogIn className="mr-2" />
+                Sign In
+              </Button>
+            </NavLink>
+          )}
           <NavLink to="/book-demo">
             <Button variant="default" className="bg-accent-blue hover:bg-accent-blue/90">
               <CalendarPlus className="mr-2" />
@@ -105,10 +135,23 @@ export default function Navbar() {
                 {link.name}
               </NavLink>
             ))}
-            <NavLink 
-              to="/book-demo"
-              className="w-full"
-            >
+            {session ? (
+              <Button 
+                variant="outline" 
+                onClick={handleSignOut}
+                className="w-full text-accent-blue hover:bg-accent-blue/10"
+              >
+                Sign Out
+              </Button>
+            ) : (
+              <NavLink to="/auth" className="w-full">
+                <Button variant="default" className="w-full bg-accent-blue hover:bg-accent-blue/90">
+                  <LogIn className="mr-2" />
+                  Sign In
+                </Button>
+              </NavLink>
+            )}
+            <NavLink to="/book-demo" className="w-full">
               <Button variant="default" className="w-full bg-accent-blue hover:bg-accent-blue/90">
                 <CalendarPlus className="mr-2" />
                 Book a Demo

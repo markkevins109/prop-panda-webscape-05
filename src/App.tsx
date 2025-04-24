@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
+import Auth from "./pages/Auth";
 import Capabilities from "./pages/Capabilities";
 import Pricing from "./pages/Pricing";
 import CaseStudies from "./pages/CaseStudies";
@@ -28,6 +28,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            <Route path="/auth" element={<Auth />} />
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/capabilities" element={<Layout><Capabilities /></Layout>} />
             <Route path="/blog" element={<Layout><Blog /></Layout>} />

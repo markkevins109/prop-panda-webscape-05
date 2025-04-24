@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -77,7 +78,8 @@ export default function UserDropdown({ userName, onSignOut }: UserDropdownProps)
   
   const handleProfileClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    navigate("/profile");
+    // Use navigate to ensure we leave the /auth page and go to /profile
+    window.location.href = "/profile"; // Use direct URL change to force navigation away from auth
   };
   
   return (

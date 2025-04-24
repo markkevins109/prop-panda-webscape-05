@@ -10,8 +10,6 @@ import { supabase } from "@/integrations/supabase/client";
 type UserFormData = {
   name: string;
   email: string;
-  phone?: string;
-  property_interest?: string;
 };
 
 export default function UserRegistrationForm({ onSuccess }: { onSuccess: (userId: string) => void }) {
@@ -44,9 +42,7 @@ export default function UserRegistrationForm({ onSuccess }: { onSuccess: (userId
         .single();
 
       if (error) {
-        // Handle specific error codes
         if (error.code === '23505') {
-          // This is a race condition - the email was just taken
           toast.error("This email is already registered. Please try a different one.");
         } else {
           console.error('Error:', error);
@@ -99,38 +95,6 @@ export default function UserRegistrationForm({ onSuccess }: { onSuccess: (userId
           {errors.email && (
             <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
           )}
-        </div>
-
-        <div>
-          <Label htmlFor="phone">Phone Number (Optional)</Label>
-          <Input
-            id="phone"
-            {...register("phone", {
-              pattern: {
-                value: /^\+65\s?[689]\d{3}\s?\d{4}$/,
-                message: "Please enter a valid Singapore phone number (+65 XXXX XXXX)"
-              }
-            })}
-            className="mt-1"
-            placeholder="+65 9123 4567"
-          />
-          {errors.phone && (
-            <p className="text-sm text-red-500 mt-1">{errors.phone.message}</p>
-          )}
-        </div>
-
-        <div>
-          <Label htmlFor="property_interest">Property Interest (Optional)</Label>
-          <select
-            id="property_interest"
-            {...register("property_interest")}
-            className="w-full mt-1 rounded-md border border-input bg-background px-3 py-2"
-          >
-            <option value="">Select your interest</option>
-            <option value="HDB">HDB</option>
-            <option value="Condominium">Condominium</option>
-            <option value="Commercial">Commercial</option>
-          </select>
         </div>
       </div>
 

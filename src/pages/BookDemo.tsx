@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -52,21 +52,21 @@ const formSchema = z.object({
   preferredDate: z.date({
     required_error: "Please select a date for your demo.",
   }),
-  propertyTypeInterest: z.string().optional(),
+  preferredTime: z.string({
+    required_error: "Please select a preferred time.",
+  }),
   message: z.string().optional(),
   acceptTerms: z.boolean().refine((val) => val === true, {
     message: "You must accept the privacy policy to proceed.",
   }),
 });
 
-type FormValues = z.infer<typeof formSchema>;
-
-const propertyTypes = [
-  { value: "hdb", label: "HDB" },
-  { value: "condominium", label: "Condominium" },
-  { value: "landed", label: "Landed Property" },
-  { value: "commercial", label: "Commercial" },
+const timeSlots = [
+  "09:00 AM", "10:00 AM", "11:00 AM",
+  "02:00 PM", "03:00 PM", "04:00 PM"
 ];
+
+type FormValues = z.infer<typeof formSchema>;
 
 export default function BookDemo() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -97,7 +97,7 @@ export default function BookDemo() {
           name: data.name,
           email: data.email,
           preferredDate: format(data.preferredDate, 'PPP'),
-          // Removed preferredTime
+          preferredTime: data.preferredTime,
         },
       });
 
@@ -130,7 +130,7 @@ export default function BookDemo() {
       <section className="section-padding">
         <div className="container-custom">
           <div className="text-center mb-12 max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Book Your Free Demo</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Book a Demo</h1>
             <p className="text-lg text-muted-foreground">
               Experience how Prop Panda can transform your real estate business. Fill out the form below to schedule your personalized demo.
             </p>
@@ -223,7 +223,7 @@ export default function BookDemo() {
                       control={form.control}
                       name="preferredDate"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col col-span-full">
+                        <FormItem className="flex flex-col">
                           <FormLabel>Preferred Date*</FormLabel>
                           <Popover>
                             <PopoverTrigger asChild>
@@ -251,7 +251,6 @@ export default function BookDemo() {
                                 onSelect={field.onChange}
                                 disabled={(date) => date < new Date()}
                                 initialFocus
-                                className="p-3 pointer-events-auto"
                               />
                             </PopoverContent>
                           </Popover>
@@ -259,32 +258,32 @@ export default function BookDemo() {
                         </FormItem>
                       )}
                     />
-                  </div>
 
-                  <FormField
-                    control={form.control}
-                    name="propertyTypeInterest"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Property Type Interest</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select property type (optional)" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {propertyTypes.map((type) => (
-                              <SelectItem key={type.value} value={type.value}>
-                                {type.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>Optional</FormDescription>
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      control={form.control}
+                      name="preferredTime"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Preferred Time*</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select preferred time" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {timeSlots.map((time) => (
+                                <SelectItem key={time} value={time}>
+                                  {time}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <FormField
                     control={form.control}

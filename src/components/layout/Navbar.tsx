@@ -73,7 +73,7 @@ export default function Navbar() {
           <NavLink to="/book-demo">
             <Button variant="default" className="bg-accent-blue hover:bg-accent-blue/90">
               <CalendarPlus className="mr-2" />
-              Book My Free Demo
+              Book a Demo
             </Button>
           </NavLink>
         </div>
@@ -111,7 +111,7 @@ export default function Navbar() {
             >
               <Button variant="default" className="w-full bg-accent-blue hover:bg-accent-blue/90">
                 <CalendarPlus className="mr-2" />
-                Book My Free Demo
+                Book a Demo
               </Button>
             </NavLink>
           </nav>

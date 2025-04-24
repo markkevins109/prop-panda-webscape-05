@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,64 +40,90 @@ export default function Profile() {
 
   useEffect(() => {
     const checkAuthAndProfile = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        navigate("/auth");
-        return;
-      }
-
-      setIsAuthenticated(true);
-
-      // Fetch profile data
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
-
-      if (error) {
-        console.error("Error fetching profile:", error);
-        toast.error("Failed to load profile");
-        return;
-      }
-
-      // If profile is not complete, redirect to setup
-      if (!profile?.is_profile_complete) {
-        navigate("/profile/setup");
-        return;
-      }
-
-      setIsProfileComplete(true);
-
-      // Fetch and display avatar if available
-      let avatarUrl = null;
-      if (profile.avatar_url) {
-        try {
-          const { data: avatarData, error: avatarError } = await supabase.storage
-            .from('avatars')
-            .createSignedUrl(profile.avatar_url, 3600);
-
-          if (!avatarError && avatarData) {
-            avatarUrl = avatarData.signedUrl;
-          }
-        } catch (avatarError) {
-          console.error("Error fetching avatar:", avatarError);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+          navigate("/auth");
+          return;
         }
+
+        setIsAuthenticated(true);
+
+        // Fetch profile data
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .maybeSingle();
+
+        if (error) {
+          console.error("Error fetching profile:", error);
+          toast.error("Failed to load profile");
+          return;
+        }
+
+        // If profile doesn't exist, create it
+        if (!profile) {
+          // Create a new profile for the user
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: session.user.id,
+              is_profile_complete: false
+            });
+            
+          if (insertError) {
+            console.error("Error creating profile:", insertError);
+            toast.error("Failed to create profile");
+            return;
+          }
+          
+          // Redirect to profile setup
+          navigate("/profile/setup");
+          return;
+        }
+
+        // If profile is not complete, redirect to setup
+        if (!profile.is_profile_complete) {
+          navigate("/profile/setup");
+          return;
+        }
+
+        setIsProfileComplete(true);
+
+        // Fetch and display avatar if available
+        let avatarUrl = null;
+        if (profile.avatar_url) {
+          try {
+            const { data: avatarData, error: avatarError } = await supabase.storage
+              .from('avatars')
+              .createSignedUrl(profile.avatar_url, 3600);
+
+            if (!avatarError && avatarData) {
+              avatarUrl = avatarData.signedUrl;
+            }
+          } catch (avatarError) {
+            console.error("Error fetching avatar:", avatarError);
+          }
+        }
+
+        // Get user email from auth
+        const email = session.user.email || "";
+
+        setUserData({
+          name: session.user.user_metadata?.name || "User",
+          email: email,
+          avatar_url: avatarUrl,
+          phone: profile.phone || "",
+          organization: profile.organization || "",
+          bio: profile.bio || "",
+          location: profile.location || ""
+        });
+      } catch (err) {
+        console.error("Error in profile check:", err);
+        toast.error("An error occurred while loading your profile");
       }
-
-      // Get user email from auth
-      const email = session.user.email || "";
-
-      setUserData({
-        name: session.user.user_metadata?.name || "User",
-        email: email,
-        avatar_url: avatarUrl,
-        phone: profile.phone || "",
-        organization: profile.organization || "",
-        bio: profile.bio || "",
-        location: profile.location || ""
-      });
     };
     
     checkAuthAndProfile();
@@ -157,7 +182,7 @@ export default function Profile() {
           .from('profiles')
           .select('*')
           .eq('id', session.user.id)
-          .single();
+          .maybeSingle();
         
         if (profile) {
           let avatarUrl = null;

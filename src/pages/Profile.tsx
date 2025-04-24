@@ -24,7 +24,7 @@ export default function Profile() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isProfileComplete, setIsProfileComplete] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const navigate = useNavigate();
 
@@ -50,7 +50,6 @@ export default function Profile() {
 
         setIsAuthenticated(true);
 
-        // Fetch profile data
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('*')
@@ -60,12 +59,11 @@ export default function Profile() {
         if (error) {
           console.error("Error fetching profile:", error);
           toast.error("Failed to load profile");
+          setIsLoading(false);
           return;
         }
 
-        // If profile doesn't exist, create it
         if (!profile) {
-          // Create a new profile for the user
           const { error: insertError } = await supabase
             .from('profiles')
             .insert({
@@ -76,15 +74,14 @@ export default function Profile() {
           if (insertError) {
             console.error("Error creating profile:", insertError);
             toast.error("Failed to create profile");
+            setIsLoading(false);
             return;
           }
           
-          // Redirect to profile setup
           navigate("/profile/setup");
           return;
         }
 
-        // If profile is not complete, redirect to setup
         if (!profile.is_profile_complete) {
           navigate("/profile/setup");
           return;
@@ -92,7 +89,6 @@ export default function Profile() {
 
         setIsProfileComplete(true);
 
-        // Fetch and display avatar if available
         let avatarUrl = null;
         if (profile.avatar_url) {
           try {
@@ -108,11 +104,10 @@ export default function Profile() {
           }
         }
 
-        // Get user email from auth
         const email = session.user.email || "";
 
         setUserData({
-          name: session.user.user_metadata?.name || "User",
+          name: profile.full_name || session.user.user_metadata?.name || "User",
           email: email,
           avatar_url: avatarUrl,
           phone: profile.phone || "",
@@ -123,6 +118,8 @@ export default function Profile() {
       } catch (err) {
         console.error("Error in profile check:", err);
         toast.error("An error occurred while loading your profile");
+      } finally {
+        setIsLoading(false);
       }
     };
     
@@ -141,7 +138,6 @@ export default function Profile() {
 
       let avatarUrl = userData.avatar_url;
       if (avatarFile) {
-        // Upload new avatar if changed
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from("avatars")
           .upload(`${user.id}/${Date.now()}.png`, avatarFile);
@@ -150,7 +146,6 @@ export default function Profile() {
         avatarUrl = uploadData.path;
       }
 
-      // Update profile in database
       const { error } = await supabase
         .from('profiles')
         .update({ 
@@ -174,7 +169,6 @@ export default function Profile() {
 
   const handleCancel = () => {
     setIsEditing(false);
-    // Reset any unsaved changes by refetching profile data
     const checkAuthAndProfile = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -214,6 +208,16 @@ export default function Profile() {
     
     checkAuthAndProfile();
   };
+
+  if (isLoading) {
+    return (
+      <div className="container-custom py-20">
+        <div className="max-w-2xl mx-auto text-center">
+          <p>Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated || !isProfileComplete) {
     return null;

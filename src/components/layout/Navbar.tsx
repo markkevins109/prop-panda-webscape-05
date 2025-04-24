@@ -6,6 +6,7 @@ import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserDropdown from "../auth/UserDropdown";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -26,26 +27,55 @@ export default function Navbar() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const checkAuth = () => {
-      const demoAuth = localStorage.getItem("prop-panda-demo-auth");
-      const userStr = localStorage.getItem("prop-panda-demo-user");
-      setIsAuthenticated(demoAuth === "authenticated");
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
       
-      if (userStr) {
-        try {
-          const user = JSON.parse(userStr);
-          setUserData(user);
-        } catch (e) {
-          console.error("Failed to parse user data:", e);
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', session.user.id)
+          .maybeSingle();
+          
+        setUserData({
+          name: profile?.full_name || session.user.user_metadata?.name || "User",
+          email: session.user.email || ""
+        });
+      } else {
+        const demoAuth = localStorage.getItem("prop-panda-demo-auth");
+        const userStr = localStorage.getItem("prop-panda-demo-user");
+        
+        if (demoAuth === "authenticated" && !isAuthenticated) {
+          setIsAuthenticated(true);
+          
+          if (userStr) {
+            try {
+              const user = JSON.parse(userStr);
+              setUserData(user);
+            } catch (e) {
+              console.error("Failed to parse user data:", e);
+            }
+          }
         }
       }
     };
     
     checkAuth();
-    window.addEventListener("storage", checkAuth);
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      checkAuth();
+    });
+    
+    const handleStorageChange = () => {
+      checkAuth();
+    };
+    
+    window.addEventListener("storage", handleStorageChange);
     
     return () => {
-      window.removeEventListener("storage", checkAuth);
+      subscription.unsubscribe();
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
@@ -66,7 +96,9 @@ export default function Navbar() {
     setIsOpen(false);
   }, [location]);
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    
     localStorage.removeItem("prop-panda-demo-auth");
     localStorage.removeItem("prop-panda-demo-user");
     setIsAuthenticated(false);

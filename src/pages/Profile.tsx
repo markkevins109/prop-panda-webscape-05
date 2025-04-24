@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -84,12 +85,19 @@ export default function Profile() {
 
   const handleSaveChanges = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error("Not authenticated");
+        return;
+      }
+      
       const { error } = await supabase
         .from('profiles')
         .update({ 
           is_profile_complete: true 
         })
-        .eq('id', supabase.auth.getUser().id);
+        .eq('id', user.id);
 
       if (error) throw error;
 

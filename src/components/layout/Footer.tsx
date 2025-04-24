@@ -1,5 +1,7 @@
+
 import { NavLink } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 export default function Footer() {
   return (
@@ -49,6 +51,11 @@ export default function Footer() {
                 </NavLink>
               </li>
             </ul>
+          </div>
+
+          {/* Vertical Separator */}
+          <div className="hidden md:block">
+            <Separator orientation="vertical" className="h-full" />
           </div>
 
           {/* Quick Links - Second Column */}

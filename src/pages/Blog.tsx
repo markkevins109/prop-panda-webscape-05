@@ -51,14 +51,6 @@ const blogPosts = [
     image: "/lovable-uploads/2826e8bc-03dd-4866-b8f0-71261ab22d07.png"
   },
   {
-    title: "Real Estate Market Trends 2025: AI's Growing Impact",
-    description: "An in-depth analysis of how artificial intelligence is shaping the future of property transactions.",
-    date: "April 18, 2025",
-    readTime: "10 min read",
-    category: "Market Analysis",
-    image: "/lovable-uploads/1486312338219-ce68d2c6f44d.jpg"
-  },
-  {
     title: "Smart Scheduling and Virtual Property Tours",
     shortDescription: "With AI-based scheduling tools, agents can automatically coordinate property viewings by syncing calendars, sending reminders, and suggesting optimal time slots. This eliminates the manual work of coordinating between multiple parties.",
     fullDescription: "With AI-based scheduling tools, agents can automatically coordinate property viewings by syncing calendars, sending reminders, and suggesting optimal time slots. This eliminates the manual work of coordinating between multiple parties. In addition, virtual property tours powered by AI and augmented reality (AR) allow clients to explore properties from their homes. This is particularly valuable in a city like Singapore, where time is at a premium and international investors often buy remotely.",

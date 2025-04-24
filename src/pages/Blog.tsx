@@ -6,6 +6,15 @@ import { useState } from "react";
 
 const blogPosts = [
   {
+    title: "Automated Documentation and Compliance Checks",
+    shortDescription: "Closing a deal in real estate involves handling complex documents—from agreements and legal disclosures to loan approvals and identity verifications. AI is helping agencies in Singapore automate parts of this documentation process using natural language processing (NLP) and document scanning technologies.",
+    fullDescription: "Closing a deal in real estate involves handling complex documents—from agreements and legal disclosures to loan approvals and identity verifications. AI is helping agencies in Singapore automate parts of this documentation process using natural language processing (NLP) and document scanning technologies. Some platforms can even flag missing signatures or compliance issues, reducing back-and-forth delays and ensuring faster contract finalization.",
+    date: "April 24, 2025",
+    readTime: "3 min read",
+    category: "Documentation",
+    image: "/lovable-uploads/f2547f6e-8155-4587-aab2-6c2dc46824ab.png"
+  },
+  {
     title: "Predictive Analytics for Market Trends",
     shortDescription: "Singapore's real estate market is fast-moving and highly sensitive to economic and policy changes. AI tools provide agencies with predictive insights based on large datasets, including transaction history, neighborhood development plans, and economic indicators.",
     fullDescription: "Singapore's real estate market is fast-moving and highly sensitive to economic and policy changes. AI tools provide agencies with predictive insights based on large datasets, including transaction history, neighborhood development plans, and economic indicators. These insights help agents forecast property demand, anticipate price shifts, and make informed recommendations to clients. Faster, data-backed decision-making leads to quicker and more confident closings.",

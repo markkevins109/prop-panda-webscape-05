@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
+import Auth from "./pages/Auth";
+import Profile from "./pages/Profile";
 import Capabilities from "./pages/Capabilities";
 import Pricing from "./pages/Pricing";
 import CaseStudies from "./pages/CaseStudies";
@@ -30,6 +32,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            <Route path="/auth" element={<Auth />} />
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/capabilities" element={<Layout><Capabilities /></Layout>} />
             <Route path="/blog" element={<Layout><Blog /></Layout>} />
@@ -40,7 +43,8 @@ const App = () => (
             <Route path="/live-chat" element={<Layout><LiveChat /></Layout>} />
             <Route path="/demo" element={<Layout><Demo /></Layout>} />
             <Route path="/book-demo" element={<Layout><BookDemo /></Layout>} />
-            <Route path="/profile" element={<Layout><UserProfile /></Layout>} />
+            <Route path="/profile" element={<Layout><Profile /></Layout>} />
+            <Route path="/user-profile" element={<Layout><UserProfile /></Layout>} />
             <Route path="/tutorials" element={<Layout><Tutorials /></Layout>} />
             <Route path="*" element={<Layout><NotFound /></Layout>} />
           </Routes>

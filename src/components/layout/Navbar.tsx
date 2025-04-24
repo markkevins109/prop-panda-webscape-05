@@ -1,10 +1,12 @@
 
 import { useState, useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import { Menu, X, CalendarPlus } from "lucide-react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, CalendarPlus, LogIn } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import UserDropdown from "../auth/UserDropdown";
+import { useToast } from "@/hooks/use-toast";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -18,7 +20,27 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // In a real app, this would check with your auth provider
+  useEffect(() => {
+    // Demo authentication check - replace with your actual auth check
+    const checkAuth = () => {
+      // For demo purposes, we'll use localStorage to simulate auth state
+      const demoAuth = localStorage.getItem("prop-panda-demo-auth");
+      setIsAuthenticated(demoAuth === "authenticated");
+    };
+    
+    checkAuth();
+    window.addEventListener("storage", checkAuth);
+    
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,6 +58,13 @@ export default function Navbar() {
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
+
+  const handleSignOut = () => {
+    // For demo purposes - clear local storage auth state
+    localStorage.removeItem("prop-panda-demo-auth");
+    setIsAuthenticated(false);
+    navigate("/");
+  };
 
   return (
     <header 
@@ -72,6 +101,21 @@ export default function Navbar() {
               </NavLink>
             ))}
           </nav>
+          
+          {isAuthenticated ? (
+            <UserDropdown 
+              userName="Demo User"
+              onSignOut={handleSignOut}
+            />
+          ) : (
+            <NavLink to="/auth">
+              <Button variant="default" className="bg-accent-blue hover:bg-accent-blue/90">
+                <LogIn className="mr-2 h-4 w-4" />
+                Sign In
+              </Button>
+            </NavLink>
+          )}
+          
           <NavLink to="/book-demo">
             <Button variant="default" className="bg-accent-blue hover:bg-accent-blue/90">
               <CalendarPlus className="mr-2" />
@@ -107,6 +151,24 @@ export default function Navbar() {
                 {link.name}
               </NavLink>
             ))}
+            
+            {isAuthenticated ? (
+              <Button 
+                variant="outline" 
+                onClick={handleSignOut}
+                className="w-full text-red-500 hover:bg-red-50"
+              >
+                Sign Out
+              </Button>
+            ) : (
+              <NavLink to="/auth" className="w-full">
+                <Button variant="default" className="w-full bg-accent-blue hover:bg-accent-blue/90">
+                  <LogIn className="mr-2" />
+                  Sign In
+                </Button>
+              </NavLink>
+            )}
+            
             <NavLink to="/book-demo" className="w-full">
               <Button variant="default" className="w-full bg-accent-blue hover:bg-accent-blue/90">
                 <CalendarPlus className="mr-2" />

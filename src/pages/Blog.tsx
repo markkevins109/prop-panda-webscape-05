@@ -39,7 +39,7 @@ const blogPosts = [
     date: "April 21, 2025",
     readTime: "4 min read",
     category: "AI Recommendations",
-    image: "/lovable-uploads/1aa8af60-84f1-4241-8781-e2936c2c1595.png"
+    image: "/lovable-uploads/2826e8bc-03dd-4866-b8f0-71261ab22d07.png"
   },
   {
     title: "Real Estate Market Trends 2025: AI's Growing Impact",

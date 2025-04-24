@@ -1,4 +1,3 @@
-
 import React from 'react';
 import TutorialHero from '@/components/tutorials/TutorialHero';
 import TutorialCard from '@/components/tutorials/TutorialCard';
@@ -20,7 +19,7 @@ const tutorials = [
     title: "Scheduling Property Tours",
     description: "Learn how to book virtual or in-person property tours through our intuitive interface.",
     videoUrl: "https://youtube.com/watch?v=example3",
-    thumbnailUrl: "/lovable-uploads/f4657a83-6b0e-450a-ab34-18502b3896e2.png"
+    thumbnailUrl: "/lovable-uploads/7a66aa22-072b-4bf9-bf1e-ec32f5d99726.png"
   },
   {
     title: "Using the Chatbot",

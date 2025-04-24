@@ -43,9 +43,10 @@ export default function Profile() {
       const reader = new FileReader();
       reader.onload = () => {
         if (typeof reader.result === "string") {
+          // Fixed: Ensuring the avatar is always a string
           setUserData(prev => ({
             ...prev,
-            avatar: reader.result
+            avatar: reader.result as string
           }));
         }
       };

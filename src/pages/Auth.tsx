@@ -64,6 +64,15 @@ export default function Auth() {
   const onLoginSubmit = (values: any) => {
     console.log("Login values:", values);
     // For demo purposes, simulate successful login
+    localStorage.setItem("prop-panda-demo-auth", "authenticated");
+    localStorage.setItem("prop-panda-demo-user", JSON.stringify({
+      name: "Demo User",
+      email: values.email,
+    }));
+    
+    // Trigger a custom event to notify other components of auth change
+    window.dispatchEvent(new Event('storage'));
+    
     toast({
       title: "Login Successful",
       description: "Welcome back to Prop Panda!",
@@ -74,6 +83,15 @@ export default function Auth() {
   const onSignupSubmit = (values: any) => {
     console.log("Signup values:", values);
     // For demo purposes, simulate successful signup
+    localStorage.setItem("prop-panda-demo-auth", "authenticated");
+    localStorage.setItem("prop-panda-demo-user", JSON.stringify({
+      name: values.fullName,
+      email: values.email,
+    }));
+    
+    // Trigger a custom event to notify other components of auth change
+    window.dispatchEvent(new Event('storage'));
+    
     toast({
       title: "Account Created",
       description: "Welcome to Prop Panda!",

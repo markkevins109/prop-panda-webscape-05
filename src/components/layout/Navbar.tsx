@@ -21,6 +21,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userData, setUserData] = useState<{ name: string; email: string } | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -31,7 +32,17 @@ export default function Navbar() {
     const checkAuth = () => {
       // For demo purposes, we'll use localStorage to simulate auth state
       const demoAuth = localStorage.getItem("prop-panda-demo-auth");
+      const userStr = localStorage.getItem("prop-panda-demo-user");
       setIsAuthenticated(demoAuth === "authenticated");
+      
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          setUserData(user);
+        } catch (e) {
+          console.error("Failed to parse user data:", e);
+        }
+      }
     };
     
     checkAuth();
@@ -62,8 +73,18 @@ export default function Navbar() {
   const handleSignOut = () => {
     // For demo purposes - clear local storage auth state
     localStorage.removeItem("prop-panda-demo-auth");
+    localStorage.removeItem("prop-panda-demo-user");
     setIsAuthenticated(false);
+    setUserData(null);
     navigate("/");
+    
+    // Trigger a custom event to notify other components of auth change
+    window.dispatchEvent(new Event('storage'));
+    
+    toast({
+      title: "Signed out successfully",
+      description: "You have been logged out of your account"
+    });
   };
 
   return (
@@ -104,7 +125,7 @@ export default function Navbar() {
           
           {isAuthenticated ? (
             <UserDropdown 
-              userName="Demo User"
+              userName={userData?.name || "User"}
               onSignOut={handleSignOut}
             />
           ) : (

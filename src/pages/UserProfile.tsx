@@ -32,7 +32,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserRound, Building, Phone, Mail, Clock, Award } from "lucide-react";
+import {
+  UserRound,
+  Building,
+  Phone,
+  Mail,
+  Clock,
+  Award,
+} from "lucide-react";
 
 // Form schema with validation
 const formSchema = z.object({
@@ -48,11 +55,24 @@ const formSchema = z.object({
   }),
 });
 
+type AgentProfile = {
+  id: string;
+  user_id: string;
+  name: string;
+  email: string;
+  phone_number: string;
+  company_name: string;
+  experience: number;
+  specialization: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export default function UserProfile() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const [existingData, setExistingData] = useState<any>(null);
+  const [existingData, setExistingData] = useState<AgentProfile | null>(null);
 
   // Initialize form with empty values
   const form = useForm<z.infer<typeof formSchema>>({
@@ -96,7 +116,7 @@ export default function UserProfile() {
       }
 
       if (data) {
-        setExistingData(data);
+        setExistingData(data as AgentProfile);
         // Populate form with existing data
         form.reset({
           name: data.name || "",

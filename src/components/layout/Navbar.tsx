@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, CalendarPlus, LogIn } from "lucide-react";
@@ -26,11 +25,8 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // In a real app, this would check with your auth provider
   useEffect(() => {
-    // Demo authentication check - replace with your actual auth check
     const checkAuth = () => {
-      // For demo purposes, we'll use localStorage to simulate auth state
       const demoAuth = localStorage.getItem("prop-panda-demo-auth");
       const userStr = localStorage.getItem("prop-panda-demo-user");
       setIsAuthenticated(demoAuth === "authenticated");
@@ -71,14 +67,12 @@ export default function Navbar() {
   }, [location]);
 
   const handleSignOut = () => {
-    // For demo purposes - clear local storage auth state
     localStorage.removeItem("prop-panda-demo-auth");
     localStorage.removeItem("prop-panda-demo-user");
     setIsAuthenticated(false);
     setUserData(null);
     navigate("/");
     
-    // Trigger a custom event to notify other components of auth change
     window.dispatchEvent(new Event('storage'));
     
     toast({
@@ -123,6 +117,13 @@ export default function Navbar() {
             ))}
           </nav>
           
+          <NavLink to="/book-demo">
+            <Button variant="default" className="bg-accent-blue hover:bg-accent-blue/90">
+              <CalendarPlus className="mr-2" />
+              Book a Demo
+            </Button>
+          </NavLink>
+          
           {isAuthenticated ? (
             <UserDropdown 
               userName={userData?.name || "User"}
@@ -136,13 +137,6 @@ export default function Navbar() {
               </Button>
             </NavLink>
           )}
-          
-          <NavLink to="/book-demo">
-            <Button variant="default" className="bg-accent-blue hover:bg-accent-blue/90">
-              <CalendarPlus className="mr-2" />
-              Book a Demo
-            </Button>
-          </NavLink>
         </div>
 
         <button

@@ -1,15 +1,18 @@
 import { Book, Calendar, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useState } from "react";
 
 const blogPosts = [
   {
-    title: "The Future of Real Estate with AI-Powered Chatbots",
-    description: "Discover how AI chatbots are transforming property viewings, customer service, and lead generation in real estate.",
-    date: "April 23, 2025",
-    readTime: "8 min read",
+    title: "How AI is Helping Singapore Real Estate Agents Close Deals 2x Faster",
+    shortDescription: "Discover how cutting-edge AI tools are transforming property sales, streamlining client interactions, and boosting conversion rates in Singapore's competitive real estate market.",
+    fullDescription: "This blog explores how real estate firms across Singapore are using AI technologies to streamline workflows, improve decision-making, and close deals faster than ever before.",
+    date: "April 24, 2025",
+    readTime: "5 min read",
     category: "Technology",
-    image: "/lovable-uploads/1488590528505-98d2b5aba04b.jpg" // Computer/tech image for AI chatbots
+    image: "/lovable-uploads/1488590528505-98d2b5aba04b.jpg"
   },
   {
     title: "Maximizing ROI with Prop Panda AI Integration",
@@ -17,7 +20,7 @@ const blogPosts = [
     date: "April 20, 2025",
     readTime: "6 min read",
     category: "Case Study",
-    image: "/lovable-uploads/1487058792275-0ad4aaf24ca7.jpg" // Code/software image for AI integration
+    image: "/lovable-uploads/1487058792275-0ad4aaf24ca7.jpg"
   },
   {
     title: "Real Estate Market Trends 2025: AI's Growing Impact",
@@ -25,11 +28,21 @@ const blogPosts = [
     date: "April 18, 2025",
     readTime: "10 min read",
     category: "Market Analysis",
-    image: "/lovable-uploads/1486312338219-ce68d2c6f44d.jpg" // Person using laptop for market analysis
+    image: "/lovable-uploads/1486312338219-ce68d2c6f44d.jpg"
   }
 ];
 
 export default function Blog() {
+  const [openArticles, setOpenArticles] = useState<number[]>([]);
+
+  const toggleArticle = (index: number) => {
+    setOpenArticles(current => 
+      current.includes(index) 
+        ? current.filter(i => i !== index)
+        : [...current, index]
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Hero Section */}
@@ -78,14 +91,26 @@ export default function Blog() {
                   <CardTitle className="text-xl line-clamp-2 group-hover:text-accent-blue transition-colors">
                     {post.title}
                   </CardTitle>
-                  <CardDescription className="line-clamp-2">
-                    {post.description}
-                  </CardDescription>
+                  <Collapsible open={openArticles.includes(index)}>
+                    <CardDescription className="line-clamp-2">
+                      {post.shortDescription}
+                    </CardDescription>
+                    <CollapsibleContent>
+                      <CardDescription className="mt-2">
+                        {post.fullDescription}
+                      </CardDescription>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </CardHeader>
                 <CardContent>
-                  <button className="inline-flex items-center text-accent-blue hover:underline gap-1 font-medium">
-                    Read Article <ArrowRight className="h-4 w-4" />
-                  </button>
+                  <CollapsibleTrigger 
+                    asChild 
+                    onClick={() => toggleArticle(index)}
+                  >
+                    <button className="inline-flex items-center text-accent-blue hover:underline gap-1 font-medium">
+                      {openArticles.includes(index) ? 'Show Less' : 'Read More'} <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </CollapsibleTrigger>
                 </CardContent>
               </Card>
             ))}

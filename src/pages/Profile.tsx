@@ -1,14 +1,15 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CircleUser, Upload } from "lucide-react";
 import { ImageUpload } from "@/components/profile/ImageUpload";
+import { CircleUser } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ProfileData {
   name: string;
@@ -64,20 +65,6 @@ export default function Profile() {
         }
 
         if (!profile) {
-          const { error: insertError } = await supabase
-            .from('profiles')
-            .insert({
-              id: session.user.id,
-              is_profile_complete: false
-            });
-            
-          if (insertError) {
-            console.error("Error creating profile:", insertError);
-            toast.error("Failed to create profile");
-            setIsLoading(false);
-            return;
-          }
-          
           navigate("/profile/setup");
           return;
         }
@@ -92,11 +79,11 @@ export default function Profile() {
         let avatarUrl = null;
         if (profile.avatar_url) {
           try {
-            const { data: avatarData, error: avatarError } = await supabase.storage
+            const { data: avatarData } = await supabase.storage
               .from('avatars')
               .createSignedUrl(profile.avatar_url, 3600);
 
-            if (!avatarError && avatarData) {
+            if (avatarData) {
               avatarUrl = avatarData.signedUrl;
             }
           } catch (avatarError) {
@@ -104,11 +91,9 @@ export default function Profile() {
           }
         }
 
-        const email = session.user.email || "";
-
         setUserData({
           name: profile.full_name || session.user.user_metadata?.name || "User",
-          email: email,
+          email: session.user.email || "",
           avatar_url: avatarUrl,
           phone: profile.phone || "",
           organization: profile.organization || "",
@@ -123,7 +108,15 @@ export default function Profile() {
       }
     };
     
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      checkAuthAndProfile();
+    });
+    
     checkAuthAndProfile();
+    
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const handleSaveChanges = async () => {
@@ -151,7 +144,7 @@ export default function Profile() {
         .update({ 
           bio: userData.bio,
           location: userData.location,
-          avatar_url: avatarUrl
+          avatar_url: avatarUrl ? avatarUrl.split('?')[0] : null // Remove query params from URL
         })
         .eq('id', user.id);
 
@@ -159,6 +152,31 @@ export default function Profile() {
 
       setIsEditing(false);
       toast.success("Profile updated successfully");
+      
+      // Refresh the profile data after update
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (profile) {
+        let newAvatarUrl = null;
+        if (profile.avatar_url) {
+          const { data: avatarData } = await supabase.storage
+            .from('avatars')
+            .createSignedUrl(profile.avatar_url, 3600);
+
+          if (avatarData) {
+            newAvatarUrl = avatarData.signedUrl;
+          }
+        }
+
+        setUserData(prev => ({
+          ...prev,
+          avatar_url: newAvatarUrl
+        }));
+      }
     } catch (error) {
       console.error("Error saving profile:", error);
       toast.error("Failed to save profile");

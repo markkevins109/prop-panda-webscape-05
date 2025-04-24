@@ -6,13 +6,13 @@ import { useState } from "react";
 
 const blogPosts = [
   {
-    title: "How AI is Helping Singapore Real Estate Agents Close Deals 2x Faster",
-    shortDescription: "Discover how cutting-edge AI tools are transforming property sales, streamlining client interactions, and boosting conversion rates in Singapore's competitive real estate market.",
-    fullDescription: "This blog explores how real estate firms across Singapore are using AI technologies to streamline workflows, improve decision-making, and close deals faster than ever before.",
+    title: "Predictive Analytics for Market Trends",
+    shortDescription: "Singapore's real estate market is fast-moving and highly sensitive to economic and policy changes. AI tools provide agencies with predictive insights based on large datasets, including transaction history, neighborhood development plans, and economic indicators.",
+    fullDescription: "Singapore's real estate market is fast-moving and highly sensitive to economic and policy changes. AI tools provide agencies with predictive insights based on large datasets, including transaction history, neighborhood development plans, and economic indicators. These insights help agents forecast property demand, anticipate price shifts, and make informed recommendations to clients. Faster, data-backed decision-making leads to quicker and more confident closings.",
     date: "April 24, 2025",
-    readTime: "5 min read",
-    category: "Technology",
-    image: "/lovable-uploads/4e47f492-4503-48c4-a65a-f466f2262f02.png"
+    readTime: "4 min read",
+    category: "Market Analysis",
+    image: "/lovable-uploads/33280170-2f82-41bb-8715-1d39ac6b5a87.png"
   },
   {
     title: "AI-Powered Lead Generation and Qualification",

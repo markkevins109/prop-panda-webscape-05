@@ -42,14 +42,25 @@ export default function Profile() {
   useEffect(() => {
     const checkAuthAndProfile = async () => {
       try {
+        // Get current session
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session) {
-          navigate("/auth");
+          // Only redirect if we're on the actual profile page, not during setup
+          if (window.location.pathname === "/profile") {
+            navigate("/auth");
+          }
+          setIsLoading(false);
           return;
         }
 
         setIsAuthenticated(true);
+
+        // Check if we're on the setup page
+        if (window.location.pathname === "/profile/setup") {
+          setIsLoading(false);
+          return; // Don't continue with profile loading if we're on setup
+        }
 
         const { data: profile, error } = await supabase
           .from('profiles')
@@ -108,6 +119,7 @@ export default function Profile() {
       }
     };
     
+    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
       checkAuthAndProfile();
     });
@@ -237,7 +249,8 @@ export default function Profile() {
     );
   }
 
-  if (!isAuthenticated || !isProfileComplete) {
+  // Only show message if we're on profile page (not setup)
+  if (window.location.pathname === "/profile" && (!isAuthenticated || !isProfileComplete)) {
     return null;
   }
 

@@ -1,95 +1,120 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { CircleUser } from "lucide-react";
-import { 
-  DropdownMenu, 
-  DropdownMenuTrigger, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuSeparator
-} from "@/components/ui/dropdown-menu";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { CircleUser, LogOut, Settings, UserRound } from "lucide-react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface UserDropdownProps {
-  userName?: string;
+  userName: string;
   onSignOut: () => void;
 }
 
 export default function UserDropdown({ userName, onSignOut }: UserDropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
+  
   useEffect(() => {
-    const fetchUserAvatar = async () => {
+    const fetchAvatar = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
+        
         if (!session) return;
-
+        
         const { data: profile } = await supabase
           .from('profiles')
           .select('avatar_url')
           .eq('id', session.user.id)
           .maybeSingle();
-
+          
         if (profile?.avatar_url) {
-          const { data: avatarData } = await supabase.storage
+          const { data } = await supabase.storage
             .from('avatars')
             .createSignedUrl(profile.avatar_url, 3600);
-
-          if (avatarData) {
-            setAvatarUrl(avatarData.signedUrl);
+            
+          if (data) {
+            setAvatarUrl(data.signedUrl);
           }
         }
       } catch (error) {
         console.error("Error fetching avatar:", error);
       }
     };
-
-    fetchUserAvatar();
-  }, []);
-
-  const handleSignOut = () => {
-    onSignOut();
-    setIsOpen(false);
-    toast({
-      title: "Signed out successfully",
-      description: "You have been logged out of your account"
+    
+    fetchAvatar();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      fetchAvatar();
     });
+    
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+  
+  const checkSession = async () => {
+    const { data } = await supabase.auth.getSession();
+    return !!data.session;
   };
-
-  const goToProfile = () => {
-    navigate("/profile");
-    setIsOpen(false);
+  
+  const handleProfileClick = async (e: React.MouseEvent) => {
+    const isAuthenticated = await checkSession();
+    
+    if (!isAuthenticated) {
+      e.preventDefault();
+      window.location.href = "/auth";
+    }
   };
-
+  
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuTrigger className="focus:outline-none">
-        <Avatar className="h-9 w-9 border-2 border-[#28A745] transition-transform hover:scale-105">
-          {avatarUrl ? (
-            <AvatarImage src={avatarUrl} alt="User profile" />
-          ) : (
-            <AvatarFallback>
-              <CircleUser className="h-5 w-5" />
-            </AvatarFallback>
-          )}
-        </Avatar>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+          <Avatar className="h-10 w-10 border border-primary/10">
+            {avatarUrl ? (
+              <AvatarImage src={avatarUrl} alt={userName} />
+            ) : (
+              <AvatarFallback>
+                <CircleUser className="h-6 w-6" />
+              </AvatarFallback>
+            )}
+          </Avatar>
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <div className="flex flex-col space-y-1 p-2">
-          <p className="text-sm font-medium leading-none">{userName || "User"}</p>
-        </div>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel>
+          <div className="flex flex-col space-y-1">
+            <p className="text-base font-medium">{userName}</p>
+          </div>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={goToProfile} className="cursor-pointer">
-          View Profile
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-500 focus:text-red-500">
-          Sign Out
+        <DropdownMenuGroup>
+          <DropdownMenuItem asChild>
+            <Link to="/profile" onClick={handleProfileClick}>
+              <UserRound className="mr-2 h-4 w-4" />
+              <span>View Profile</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/settings">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={onSignOut}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

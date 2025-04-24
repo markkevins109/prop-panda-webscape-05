@@ -1,4 +1,3 @@
-
 import React from 'react';
 import TutorialHero from '@/components/tutorials/TutorialHero';
 import TutorialCard from '@/components/tutorials/TutorialCard';
@@ -8,7 +7,7 @@ const tutorials = [
     title: "Getting Started with Prop Panda",
     description: "Learn how to sign up, log in, and navigate the app's main features including property search and your personal dashboard.",
     videoUrl: "https://youtube.com/watch?v=example1",
-    thumbnailUrl: "/lovable-uploads/f4657a83-6b0e-450a-ab34-18502b3896e2.png"
+    thumbnailUrl: "/lovable-uploads/f84bf499-93af-49a6-88c8-61cb9b9c6f02.png"
   },
   {
     title: "Exploring Market Insights",

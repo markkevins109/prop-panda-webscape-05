@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer className="bg-secondary py-12 border-t">
       <div className="container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
             <h3 className="text-xl font-bold mb-4">Prop Panda</h3>
@@ -24,7 +24,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links - First Column */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
@@ -48,6 +48,13 @@ export default function Footer() {
                   Community
                 </NavLink>
               </li>
+            </ul>
+          </div>
+
+          {/* Quick Links - Second Column */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">&nbsp;</h3>
+            <ul className="space-y-2">
               <li>
                 <NavLink to="/case-studies" className="hover:text-primary/80 transition-colors">
                   Case Studies

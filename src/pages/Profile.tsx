@@ -9,18 +9,34 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CircleUser, Upload } from "lucide-react";
+import { ImageUpload } from "@/components/profile/ImageUpload";
+
+interface ProfileData {
+  name: string;
+  email: string;
+  avatar_url: string | null;
+  phone: string | null;
+  organization: string | null;
+  bio: string | null;
+  location: string | null;
+}
 
 export default function Profile() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isProfileComplete, setIsProfileComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const navigate = useNavigate();
 
-  // Demo user data - would come from your database in a real app
-  const [userData, setUserData] = useState({
-    name: "Demo User",
-    email: "user@example.com",
-    avatar: "",
+  const [userData, setUserData] = useState<ProfileData>({
+    name: "",
+    email: "",
+    avatar_url: null,
+    phone: null,
+    organization: null,
+    bio: null,
+    location: null
   });
 
   useEffect(() => {
@@ -34,10 +50,10 @@ export default function Profile() {
 
       setIsAuthenticated(true);
 
-      // Fetch profile to check completion status
+      // Fetch profile data
       const { data: profile, error } = await supabase
         .from('profiles')
-        .select('is_profile_complete')
+        .select('*')
         .eq('id', session.user.id)
         .single();
 
@@ -54,48 +70,68 @@ export default function Profile() {
       }
 
       setIsProfileComplete(true);
+
+      // Fetch and display avatar if available
+      let avatarUrl = null;
+      if (profile.avatar_url) {
+        try {
+          const { data: avatarData, error: avatarError } = await supabase.storage
+            .from('avatars')
+            .createSignedUrl(profile.avatar_url, 3600);
+
+          if (!avatarError && avatarData) {
+            avatarUrl = avatarData.signedUrl;
+          }
+        } catch (avatarError) {
+          console.error("Error fetching avatar:", avatarError);
+        }
+      }
+
+      // Get user email from auth
+      const email = session.user.email || "";
+
+      setUserData({
+        name: session.user.user_metadata?.name || "User",
+        email: email,
+        avatar_url: avatarUrl,
+        phone: profile.phone || "",
+        organization: profile.organization || "",
+        bio: profile.bio || "",
+        location: profile.location || ""
+      });
     };
     
     checkAuthAndProfile();
   }, [navigate]);
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // File size validation (max 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        alert("Please select an image under 2MB");
-        return;
-      }
-      
-      // Create a URL for the image to display it
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (typeof reader.result === "string") {
-          // Fixed: Ensuring the avatar is always a string
-          setUserData(prev => ({
-            ...prev,
-            avatar: reader.result as string
-          }));
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSaveChanges = async () => {
     try {
+      setIsLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
         toast.error("Not authenticated");
         return;
       }
-      
+
+      let avatarUrl = userData.avatar_url;
+      if (avatarFile) {
+        // Upload new avatar if changed
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("avatars")
+          .upload(`${user.id}/${Date.now()}.png`, avatarFile);
+
+        if (uploadError) throw uploadError;
+        avatarUrl = uploadData.path;
+      }
+
+      // Update profile in database
       const { error } = await supabase
         .from('profiles')
         .update({ 
-          is_profile_complete: true 
+          bio: userData.bio,
+          location: userData.location,
+          avatar_url: avatarUrl
         })
         .eq('id', user.id);
 
@@ -106,12 +142,52 @@ export default function Profile() {
     } catch (error) {
       console.error("Error saving profile:", error);
       toast.error("Failed to save profile");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    // Reset any unsaved changes
+    // Reset any unsaved changes by refetching profile data
+    const checkAuthAndProfile = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (profile) {
+          let avatarUrl = null;
+          if (profile.avatar_url) {
+            try {
+              const { data: avatarData } = await supabase.storage
+                .from('avatars')
+                .createSignedUrl(profile.avatar_url, 3600);
+
+              if (avatarData) {
+                avatarUrl = avatarData.signedUrl;
+              }
+            } catch (err) {
+              console.error("Error fetching avatar:", err);
+            }
+          }
+
+          setUserData({
+            ...userData,
+            avatar_url: avatarUrl,
+            phone: profile.phone || "",
+            organization: profile.organization || "",
+            bio: profile.bio || "",
+            location: profile.location || ""
+          });
+        }
+      }
+    };
+    
+    checkAuthAndProfile();
   };
 
   if (!isAuthenticated || !isProfileComplete) {
@@ -133,32 +209,23 @@ export default function Profile() {
           
           <CardContent className="space-y-6">
             <div className="flex flex-col items-center space-y-4">
-              <div className="relative">
-                <Avatar className="h-24 w-24 border-2 border-[#28A745]">
-                  {userData.avatar ? (
-                    <AvatarImage src={userData.avatar} alt="User profile" />
-                  ) : null}
-                  <AvatarFallback>
-                    <CircleUser className="h-12 w-12" />
-                  </AvatarFallback>
-                </Avatar>
-                
-                {isEditing && (
-                  <label 
-                    htmlFor="avatar-upload" 
-                    className="absolute bottom-0 right-0 bg-accent-blue text-white p-1 rounded-full cursor-pointer hover:bg-accent-blue/90"
-                  >
-                    <Upload className="h-4 w-4" />
-                    <input 
-                      id="avatar-upload" 
-                      type="file" 
-                      className="hidden" 
-                      accept="image/png,image/jpeg" 
-                      onChange={handleAvatarChange}
-                    />
-                  </label>
-                )}
-              </div>
+              {isEditing ? (
+                <ImageUpload 
+                  onChange={(file) => setAvatarFile(file)}
+                  imageUrl={userData.avatar_url || undefined}
+                />
+              ) : (
+                <div className="relative">
+                  <Avatar className="h-24 w-24 border-2 border-[#28A745]">
+                    {userData.avatar_url ? (
+                      <AvatarImage src={userData.avatar_url} alt="User profile" />
+                    ) : null}
+                    <AvatarFallback>
+                      <CircleUser className="h-12 w-12" />
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              )}
               
               {!isEditing && (
                 <Button 
@@ -191,16 +258,63 @@ export default function Profile() {
                   disabled 
                 />
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input 
+                  id="phone" 
+                  value={userData.phone || ""} 
+                  disabled={true}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="organization">Organization</Label>
+                <Input 
+                  id="organization" 
+                  value={userData.organization || ""} 
+                  disabled={true}
+                />
+              </div>
+
+              {isEditing && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="bio">Bio</Label>
+                    <Input 
+                      id="bio" 
+                      value={userData.bio || ""} 
+                      onChange={(e) => setUserData({...userData, bio: e.target.value})} 
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="location">Preferred Location</Label>
+                    <Input 
+                      id="location" 
+                      value={userData.location || ""}
+                      onChange={(e) => setUserData({...userData, location: e.target.value})} 
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </CardContent>
           
           {isEditing && (
             <CardFooter className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={handleCancel}>
+              <Button 
+                variant="outline" 
+                onClick={handleCancel}
+                disabled={isLoading}
+              >
                 Cancel
               </Button>
-              <Button onClick={handleSaveChanges}>
-                Save Changes
+              <Button 
+                onClick={handleSaveChanges}
+                disabled={isLoading}
+              >
+                {isLoading ? "Saving..." : "Save Changes"}
               </Button>
             </CardFooter>
           )}

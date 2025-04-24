@@ -13,6 +13,7 @@ import { RegionSelect } from "@/components/profile/RegionSelect";
 import { PropertyTypeSelect } from "@/components/profile/PropertyTypeSelect";
 import { toast } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { Label } from "@/components/ui/label";
 
 const profileSchema = z.object({
   phone: z.string()

@@ -24,6 +24,15 @@ const blogPosts = [
     image: "/lovable-uploads/9bf9927b-cb59-4ad9-9b3e-31ec9f11273b.png"
   },
   {
+    title: "Virtual Assistants for Client Communication",
+    shortDescription: "AI-powered chatbots and virtual assistants are transforming how agencies interact with clients. These tools handle routine inquiries—like property availability, viewing schedules, or location info—24/7 without human intervention.",
+    fullDescription: "AI-powered chatbots and virtual assistants are transforming how agencies interact with clients. These tools handle routine inquiries—like property availability, viewing schedules, or location info—24/7 without human intervention. This ensures that no opportunity is missed, even after office hours. In Singapore, where quick responses often determine whether a client chooses your agency or another, AI communication tools can make a measurable difference in conversion rates.",
+    date: "April 22, 2025",
+    readTime: "3 min read",
+    category: "AI Communication",
+    image: "/lovable-uploads/f4657a83-6b0e-450a-ab34-18502b3896e2.png"
+  },
+  {
     title: "Real Estate Market Trends 2025: AI's Growing Impact",
     description: "An in-depth analysis of how artificial intelligence is shaping the future of property transactions.",
     date: "April 18, 2025",

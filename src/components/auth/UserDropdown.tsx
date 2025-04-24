@@ -1,5 +1,5 @@
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +22,7 @@ interface UserDropdownProps {
 
 export default function UserDropdown({ userName, onSignOut }: UserDropdownProps) {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const navigate = useNavigate();
   
   useEffect(() => {
     const fetchAvatar = async () => {
@@ -75,18 +76,17 @@ export default function UserDropdown({ userName, onSignOut }: UserDropdownProps)
     };
   }, []);
   
-  const checkSession = async () => {
-    const { data } = await supabase.auth.getSession();
-    const demoAuth = localStorage.getItem("prop-panda-demo-auth");
-    return !!data.session || demoAuth === "authenticated";
-  };
-  
   const handleProfileClick = async (e: React.MouseEvent) => {
-    const isAuthenticated = await checkSession();
+    e.preventDefault();
     
-    if (!isAuthenticated) {
-      e.preventDefault();
-      window.location.href = "/auth";
+    const { data: { session } } = await supabase.auth.getSession();
+    const demoAuth = localStorage.getItem("prop-panda-demo-auth");
+    const isAuthenticated = !!session || demoAuth === "authenticated";
+    
+    if (isAuthenticated) {
+      navigate("/profile");
+    } else {
+      navigate("/auth");
     }
   };
   
@@ -114,10 +114,10 @@ export default function UserDropdown({ userName, onSignOut }: UserDropdownProps)
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link to="/profile" onClick={handleProfileClick}>
+            <a href="#" onClick={handleProfileClick}>
               <UserRound className="mr-2 h-4 w-4" />
               <span>View Profile</span>
-            </Link>
+            </a>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link to="/settings">

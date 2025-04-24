@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +22,7 @@ import BookDemo from "./pages/BookDemo";
 import UserProfile from "./pages/UserProfile";
 import Tutorials from "./pages/Tutorials";
 import ProfileSetup from "./pages/ProfileSetup";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -45,9 +47,21 @@ const App = () => {
               <Route path="/live-chat" element={<Layout><LiveChat /></Layout>} />
               <Route path="/demo" element={<Layout><Demo /></Layout>} />
               <Route path="/book-demo" element={<Layout><BookDemo /></Layout>} />
-              <Route path="/profile" element={<Layout><Profile /></Layout>} />
-              <Route path="/user-profile" element={<Layout><UserProfile /></Layout>} />
-              <Route path="/tutorials" element={<Layout><Tutorials /></Layout>} />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Layout><Profile /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/user-profile" element={
+                <ProtectedRoute>
+                  <Layout><UserProfile /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/tutorials" element={
+                <ProtectedRoute>
+                  <Layout><Tutorials /></Layout>
+                </ProtectedRoute>
+              } />
               <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>
           </BrowserRouter>

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, CalendarPlus, LogIn } from "lucide-react";
@@ -6,6 +7,7 @@ import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserDropdown from "../auth/UserDropdown";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -20,32 +22,62 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userData, setUserData] = useState<{ name: string; email: string } | null>(null);
+  const [userData, setUserData] = useState<{ name: string; email: string; avatar?: string } | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    const checkAuth = () => {
-      const demoAuth = localStorage.getItem("prop-panda-demo-auth");
-      const userStr = localStorage.getItem("prop-panda-demo-user");
-      setIsAuthenticated(demoAuth === "authenticated");
-      
-      if (userStr) {
-        try {
-          const user = JSON.parse(userStr);
-          setUserData(user);
-        } catch (e) {
-          console.error("Failed to parse user data:", e);
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        setIsAuthenticated(!!session);
+        
+        if (session) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("avatar_url")
+            .eq("id", session.user.id)
+            .single();
+            
+          setUserData({
+            name: session.user.user_metadata.full_name || session.user.email?.split('@')[0] || 'User',
+            email: session.user.email || '',
+            avatar: profile?.avatar_url || undefined
+          });
+        } else {
+          setUserData(null);
         }
+      } catch (error) {
+        console.error("Auth check error:", error);
       }
     };
     
     checkAuth();
-    window.addEventListener("storage", checkAuth);
     
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setIsAuthenticated(!!session);
+      
+      if (session) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("avatar_url")
+          .eq("id", session.user.id)
+          .single();
+          
+        setUserData({
+          name: session.user.user_metadata.full_name || session.user.email?.split('@')[0] || 'User',
+          email: session.user.email || '',
+          avatar: profile?.avatar_url || undefined
+        });
+      } else {
+        setUserData(null);
+      }
+    });
+
     return () => {
-      window.removeEventListener("storage", checkAuth);
+      authListener.subscription.unsubscribe();
     };
   }, []);
 
@@ -66,19 +98,25 @@ export default function Navbar() {
     setIsOpen(false);
   }, [location]);
 
-  const handleSignOut = () => {
-    localStorage.removeItem("prop-panda-demo-auth");
-    localStorage.removeItem("prop-panda-demo-user");
-    setIsAuthenticated(false);
-    setUserData(null);
-    navigate("/");
-    
-    window.dispatchEvent(new Event('storage'));
-    
-    toast({
-      title: "Signed out successfully",
-      description: "You have been logged out of your account"
-    });
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      setIsAuthenticated(false);
+      setUserData(null);
+      navigate("/");
+      
+      toast({
+        title: "Signed out successfully",
+        description: "You have been logged out of your account"
+      });
+    } catch (error) {
+      console.error("Sign out error:", error);
+      toast({
+        title: "Error signing out",
+        description: "Please try again",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -127,6 +165,7 @@ export default function Navbar() {
           {isAuthenticated ? (
             <UserDropdown 
               userName={userData?.name || "User"}
+              userImage={userData?.avatar}
               onSignOut={handleSignOut}
             />
           ) : (

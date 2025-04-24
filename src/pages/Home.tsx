@@ -1,4 +1,4 @@
-import { ArrowRight, MessageSquare, Clock, Shield, BarChart, UserRound, BadgeCheck } from "lucide-react";
+import { ArrowRight, Book } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -72,8 +72,12 @@ export default function Home() {
                 >
                   Book a free Demo <ArrowRight className="ml-2 h-5 w-5" />
                 </NavLink>
-                <NavLink to="/capabilities" className="btn-secondary flex items-center justify-center sm:justify-start">
-                  Explore Features
+                <NavLink 
+                  to="/tutorials" 
+                  className="btn-secondary flex items-center justify-center sm:justify-start"
+                >
+                  <Book className="mr-2 h-5 w-5" />
+                  Explore Tutorials
                 </NavLink>
               </div>
             </div>

@@ -1,5 +1,6 @@
-
 import React from "react";
+import { Link } from "react-router-dom";
+import { Book } from "lucide-react";
 
 const demoSections = [
   {
@@ -36,7 +37,14 @@ export default function Demo() {
           <div className="text-center mb-12 max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-2">Prop Panda Demo</h1>
             <p className="text-lg text-muted-foreground">
-              Experience how Prop Panda transforms real estate communication! Watch our demo videos below.
+              Experience how Prop Panda transforms real estate communication! 
+              <Link 
+                to="/tutorials" 
+                className="text-accent-blue underline ml-2 inline-flex items-center"
+              >
+                <Book className="mr-2 h-4 w-4" />
+                More Tutorials
+              </Link>
             </p>
           </div>
           <div className="grid gap-10 md:grid-cols-2">

@@ -1,5 +1,7 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Book } from "lucide-react";
 import UserRegistrationForm from "@/components/community/UserRegistrationForm";
 import QuestionForm from "@/components/community/QuestionForm";
 import QuestionList from "@/components/community/QuestionList";
@@ -29,6 +31,13 @@ export default function Community() {
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Join Our Property Community</h1>
             <p className="text-lg md:text-xl opacity-90">
               Connect with fellow property enthusiasts, share insights, and get your questions answered
+              <Link 
+                to="/tutorials" 
+                className="text-white underline ml-2 inline-flex items-center"
+              >
+                <Book className="mr-2 h-4 w-4" />
+                New to Prop Panda? Watch Tutorials
+              </Link>
             </p>
           </div>
         </div>

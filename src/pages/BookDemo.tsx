@@ -1,5 +1,6 @@
-
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { Book } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -132,7 +133,14 @@ export default function BookDemo() {
           <div className="text-center mb-12 max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Book a Demo</h1>
             <p className="text-lg text-muted-foreground">
-              Experience how Prop Panda can transform your real estate business. Fill out the form below to schedule your personalized demo.
+              Experience how Prop Panda can transform your real estate business. 
+              <Link 
+                to="/tutorials" 
+                className="text-accent-blue underline ml-2 inline-flex items-center"
+              >
+                <Book className="mr-2 h-4 w-4" />
+                Watch Tutorials First
+              </Link>
             </p>
           </div>
 

@@ -1,4 +1,3 @@
-
 import { Book, Calendar, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -13,7 +12,7 @@ const blogPosts = [
     date: "April 24, 2025",
     readTime: "5 min read",
     category: "Technology",
-    image: "/lovable-uploads/1488590528505-98d2b5aba04b.jpg"
+    image: "/lovable-uploads/4e47f492-4503-48c4-a65a-f466f2262f02.png"
   },
   {
     title: "Maximizing ROI with Prop Panda AI Integration",

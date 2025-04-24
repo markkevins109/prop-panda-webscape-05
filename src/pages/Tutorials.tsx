@@ -19,7 +19,7 @@ const tutorials = [
     title: "Scheduling Property Tours",
     description: "Learn how to book virtual or in-person property tours through our intuitive interface.",
     videoUrl: "https://youtube.com/watch?v=example3",
-    thumbnailUrl: "/lovable-uploads/53a9dbd1-92fb-4378-b5af-9e8d9e272e4a.png"
+    thumbnailUrl: "/lovable-uploads/e5e3fd4d-75ad-4c2f-a2d2-a37743ee1940.png"
   },
   {
     title: "Using the Chatbot",

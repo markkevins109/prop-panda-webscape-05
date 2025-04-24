@@ -1,4 +1,3 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -76,18 +75,9 @@ export default function UserDropdown({ userName, onSignOut }: UserDropdownProps)
     };
   }, []);
   
-  const handleProfileClick = async (e: React.MouseEvent) => {
+  const handleProfileClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    
-    const { data: { session } } = await supabase.auth.getSession();
-    const demoAuth = localStorage.getItem("prop-panda-demo-auth");
-    const isAuthenticated = !!session || demoAuth === "authenticated";
-    
-    if (isAuthenticated) {
-      navigate("/profile");
-    } else {
-      navigate("/auth");
-    }
+    navigate("/profile");
   };
   
   return (

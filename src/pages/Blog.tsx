@@ -1,3 +1,4 @@
+
 import { Book, Calendar, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -15,11 +16,12 @@ const blogPosts = [
     image: "/lovable-uploads/4e47f492-4503-48c4-a65a-f466f2262f02.png"
   },
   {
-    title: "Maximizing ROI with Prop Panda AI Integration",
-    description: "Learn how real estate agencies increased their conversion rates by 300% using our AI solutions.",
-    date: "April 20, 2025",
-    readTime: "6 min read",
-    category: "Case Study",
+    title: "AI-Powered Lead Generation and Qualification",
+    shortDescription: "The traditional method of sourcing and qualifying leads through cold calls, emails, and networking is time-consuming and often inefficient.",
+    fullDescription: "The traditional method of sourcing and qualifying leads through cold calls, emails, and networking is time-consuming and often inefficient. AI changes the game by automating lead generation through data-driven platforms. Algorithms analyze online behavior, property searches, and demographic data to identify high-intent buyers or tenants. Some AI platforms score leads based on their readiness to buy, allowing agents to prioritize their time more effectively. For example, a prospective buyer who regularly visits high-value condo listings and requests multiple brochures is flagged as a high-potential lead.",
+    date: "April 23, 2025",
+    readTime: "4 min read",
+    category: "AI Innovation",
     image: "/lovable-uploads/1487058792275-0ad4aaf24ca7.jpg"
   },
   {

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,24 +23,88 @@ export default function ProfileSetup() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
 
   const { register, handleSubmit, formState: { errors } } = useForm<ProfileFormData>();
+  
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        setAuthChecking(true);
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+          // For demo purposes, check if there's a demo auth in localStorage
+          const demoAuth = localStorage.getItem("prop-panda-demo-auth");
+          if (demoAuth === "authenticated") {
+            setIsAuthenticated(true);
+          } else {
+            navigate("/auth");
+          }
+        } else {
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error("Authentication check failed:", error);
+        toast.error("Failed to verify authentication");
+      } finally {
+        setAuthChecking(false);
+      }
+    };
+    
+    checkAuth();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+      if (!session) {
+        // Check for demo auth
+        const demoAuth = localStorage.getItem("prop-panda-demo-auth");
+        setIsAuthenticated(demoAuth === "authenticated");
+      }
+    });
+    
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const onSubmit = async (data: ProfileFormData) => {
     try {
       setIsLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { session } } = await supabase.auth.getSession();
       
-      if (!user) {
-        toast.error("Not authenticated");
-        return;
+      let userId = null;
+      
+      if (session) {
+        userId = session.user.id;
+      } else {
+        // For demo purposes
+        const demoAuth = localStorage.getItem("prop-panda-demo-auth");
+        if (demoAuth === "authenticated") {
+          // Generate a demo user ID for local storage only
+          userId = "demo-user-" + Date.now();
+          // Store profile data in localStorage for demo purposes
+          localStorage.setItem("prop-panda-demo-profile", JSON.stringify({
+            ...data,
+            id: userId
+          }));
+          
+          toast.success("Profile updated successfully (Demo Mode)");
+          navigate("/profile");
+          return;
+        } else {
+          toast.error("Not authenticated");
+          navigate("/auth");
+          return;
+        }
       }
 
       let avatarUrl = null;
       if (avatarFile) {
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from("avatars")
-          .upload(`${user.id}/${Date.now()}.png`, avatarFile);
+          .upload(`${userId}/${Date.now()}.png`, avatarFile);
 
         if (uploadError) throw uploadError;
         avatarUrl = uploadData.path;
@@ -56,12 +120,12 @@ export default function ProfileSetup() {
           avatar_url: avatarUrl,
           is_profile_complete: true,
         })
-        .eq("id", user.id);
+        .eq("id", userId);
 
       if (updateError) throw updateError;
 
       toast.success("Profile updated successfully");
-      navigate("/");
+      navigate("/profile");
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error("Failed to update profile");
@@ -74,6 +138,14 @@ export default function ProfileSetup() {
     const phoneRegex = /^\+65[6-9]\d{7}$/;
     return phoneRegex.test(value) || "Please enter a valid Singapore phone number (+658XXXXXXX)";
   };
+
+  if (authChecking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Checking authentication status...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[url('/placeholder.svg')] bg-cover bg-center bg-no-repeat py-20">

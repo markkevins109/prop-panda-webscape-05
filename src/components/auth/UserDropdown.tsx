@@ -28,7 +28,21 @@ export default function UserDropdown({ userName, onSignOut }: UserDropdownProps)
       try {
         const { data: { session } } = await supabase.auth.getSession();
         
-        if (!session) return;
+        if (!session) {
+          // Check for demo profile in localStorage
+          const demoProfileStr = localStorage.getItem("prop-panda-demo-profile");
+          if (demoProfileStr) {
+            try {
+              const demoProfile = JSON.parse(demoProfileStr);
+              if (demoProfile.avatarUrl) {
+                setAvatarUrl(demoProfile.avatarUrl);
+              }
+            } catch (e) {
+              console.error("Failed to parse demo profile:", e);
+            }
+          }
+          return;
+        }
         
         const { data: profile } = await supabase
           .from('profiles')
@@ -63,7 +77,8 @@ export default function UserDropdown({ userName, onSignOut }: UserDropdownProps)
   
   const checkSession = async () => {
     const { data } = await supabase.auth.getSession();
-    return !!data.session;
+    const demoAuth = localStorage.getItem("prop-panda-demo-auth");
+    return !!data.session || demoAuth === "authenticated";
   };
   
   const handleProfileClick = async (e: React.MouseEvent) => {

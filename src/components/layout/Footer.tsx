@@ -1,4 +1,3 @@
-
 import { NavLink } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -41,21 +40,16 @@ export default function Footer() {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/blog" className="hover:text-primary/80 transition-colors">
-                  Blog
+                <NavLink to="/pricing" className="hover:text-primary/80 transition-colors">
+                  Pricing
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/community" className="hover:text-primary/80 transition-colors">
-                  Community
+                <NavLink to="/integrations" className="hover:text-primary/80 transition-colors">
+                  Integrations
                 </NavLink>
               </li>
             </ul>
-          </div>
-
-          {/* Vertical Separator */}
-          <div className="hidden md:block">
-            <Separator orientation="vertical" className="h-full" />
           </div>
 
           {/* Quick Links - Second Column */}
@@ -73,13 +67,13 @@ export default function Footer() {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/pricing" className="hover:text-primary/80 transition-colors">
-                  Pricing
+                <NavLink to="/blog" className="hover:text-primary/80 transition-colors">
+                  Blog
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/integrations" className="hover:text-primary/80 transition-colors">
-                  Integrations
+                <NavLink to="/community" className="hover:text-primary/80 transition-colors">
+                  Community
                 </NavLink>
               </li>
             </ul>

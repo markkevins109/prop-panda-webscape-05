@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { z } from "zod";
@@ -14,6 +13,7 @@ import { LogIn, UserPlus, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Bot } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 // Login form schema
 const loginSchema = z.object({
@@ -61,42 +61,70 @@ export default function Auth() {
     },
   });
 
-  const onLoginSubmit = (values: any) => {
-    console.log("Login values:", values);
-    // For demo purposes, simulate successful login
-    localStorage.setItem("prop-panda-demo-auth", "authenticated");
-    localStorage.setItem("prop-panda-demo-user", JSON.stringify({
-      name: "Demo User",
-      email: values.email,
-    }));
-    
-    // Trigger a custom event to notify other components of auth change
-    window.dispatchEvent(new Event('storage'));
-    
-    toast({
-      title: "Login Successful",
-      description: "Welcome back to Prop Panda!",
-    });
-    navigate("/");
+  const onLoginSubmit = async (values: any) => {
+    try {
+      const { data: { session }, error: authError } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+
+      if (authError) throw authError;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_profile_complete')
+        .eq('id', session?.user.id)
+        .single();
+
+      if (!profile?.is_profile_complete) {
+        navigate('/profile/setup');
+        return;
+      }
+
+      toast({
+        title: "Login Successful",
+        description: "Welcome back to Prop Panda!",
+      });
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   };
 
-  const onSignupSubmit = (values: any) => {
-    console.log("Signup values:", values);
-    // For demo purposes, simulate successful signup
-    localStorage.setItem("prop-panda-demo-auth", "authenticated");
-    localStorage.setItem("prop-panda-demo-user", JSON.stringify({
-      name: values.fullName,
-      email: values.email,
-    }));
-    
-    // Trigger a custom event to notify other components of auth change
-    window.dispatchEvent(new Event('storage'));
-    
-    toast({
-      title: "Account Created",
-      description: "Welcome to Prop Panda!",
-    });
-    navigate("/");
+  const onSignupSubmit = async (values: any) => {
+    try {
+      const { data: { session }, error: authError } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+        options: {
+          data: {
+            full_name: values.fullName,
+          }
+        }
+      });
+
+      if (authError) throw authError;
+
+      if (session?.user) {
+        navigate('/profile/setup');
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Please check your email to verify your account.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   };
 
   return (

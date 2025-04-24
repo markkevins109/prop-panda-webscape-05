@@ -1,3 +1,4 @@
+
 import { Book, Calendar, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -93,24 +94,27 @@ export default function Blog() {
                   </CardTitle>
                   <Collapsible open={openArticles.includes(index)}>
                     <CardDescription className="line-clamp-2">
-                      {post.shortDescription}
+                      {post.shortDescription || post.description}
                     </CardDescription>
                     <CollapsibleContent>
                       <CardDescription className="mt-2">
-                        {post.fullDescription}
+                        {post.fullDescription || post.description}
                       </CardDescription>
                     </CollapsibleContent>
+                    <div className="mt-4">
+                      <CollapsibleTrigger 
+                        asChild 
+                        onClick={() => toggleArticle(index)}
+                      >
+                        <button className="inline-flex items-center text-accent-blue hover:underline gap-1 font-medium">
+                          {openArticles.includes(index) ? 'Show Less' : 'Read More'} <ArrowRight className="h-4 w-4" />
+                        </button>
+                      </CollapsibleTrigger>
+                    </div>
                   </Collapsible>
                 </CardHeader>
                 <CardContent>
-                  <CollapsibleTrigger 
-                    asChild 
-                    onClick={() => toggleArticle(index)}
-                  >
-                    <button className="inline-flex items-center text-accent-blue hover:underline gap-1 font-medium">
-                      {openArticles.includes(index) ? 'Show Less' : 'Read More'} <ArrowRight className="h-4 w-4" />
-                    </button>
-                  </CollapsibleTrigger>
+                  {/* Content moved to inside the Collapsible component */}
                 </CardContent>
               </Card>
             ))}

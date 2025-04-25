@@ -1,4 +1,3 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CircleUser, LogOut, Settings, UserRound } from "lucide-react";
+import { LogOut, Settings, CircleUser } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -76,12 +75,6 @@ export default function UserDropdown({ userName, onSignOut }: UserDropdownProps)
     };
   }, []);
   
-  const handleProfileClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    // Navigate to profile/setup instead of profile
-    window.location.href = "/profile/setup";
-  };
-  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -105,12 +98,6 @@ export default function UserDropdown({ userName, onSignOut }: UserDropdownProps)
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
-            <a href="#" onClick={handleProfileClick}>
-              <UserRound className="mr-2 h-4 w-4" />
-              <span>View Profile</span>
-            </a>
-          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link to="/settings">
               <Settings className="mr-2 h-4 w-4" />

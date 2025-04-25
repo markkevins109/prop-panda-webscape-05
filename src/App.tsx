@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,7 +8,7 @@ import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
-import ProfileSetup from "./pages/ProfileSetup"; // New import
+import ProfileSetup from "./pages/ProfileSetup";
 import Capabilities from "./pages/Capabilities";
 import Pricing from "./pages/Pricing";
 import CaseStudies from "./pages/CaseStudies";
@@ -22,6 +21,7 @@ import Demo from "./pages/Demo";
 import BookDemo from "./pages/BookDemo";
 import UserProfile from "./pages/UserProfile";
 import Tutorials from "./pages/Tutorials";
+import AgentDataForm from "./pages/AgentDataForm";
 
 const queryClient = new QueryClient();
 
@@ -34,7 +34,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/auth" element={<Auth />} />
-            <Route path="/profile/setup" element={<Layout><ProfileSetup /></Layout>} /> {/* New route */}
+            <Route path="/profile/setup" element={<Layout><ProfileSetup /></Layout>} />
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/capabilities" element={<Layout><Capabilities /></Layout>} />
             <Route path="/blog" element={<Layout><Blog /></Layout>} />
@@ -48,6 +48,7 @@ const App = () => (
             <Route path="/profile" element={<Layout><Profile /></Layout>} />
             <Route path="/user-profile" element={<Layout><UserProfile /></Layout>} />
             <Route path="/tutorials" element={<Layout><Tutorials /></Layout>} />
+            <Route path="/agent-data" element={<Layout><AgentDataForm /></Layout>} />
             <Route path="*" element={<Layout><NotFound /></Layout>} />
           </Routes>
         </BrowserRouter>

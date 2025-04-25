@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +7,24 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import Layout from "./components/layout/Layout";
 
+// Import all page components
+import Auth from "./pages/Auth";
+import ProfileSetup from "./pages/ProfileSetup";
+import Home from "./pages/Home";
+import Capabilities from "./pages/Capabilities";
+import Blog from "./pages/Blog";
+import Community from "./pages/Community";
+import Pricing from "./pages/Pricing";
+import CaseStudies from "./pages/CaseStudies";
+import Integrations from "./pages/Integrations";
+import LiveChat from "./pages/LiveChat";
+import Demo from "./pages/Demo";
+import BookDemo from "./pages/BookDemo";
+import Profile from "./pages/Profile";
+import UserProfile from "./pages/UserProfile";
+import Tutorials from "./pages/Tutorials";
+import AgentDataForm from "./pages/AgentDataForm";
+import NotFound from "./pages/NotFound";
 import PropertiesPage from "./pages/properties/PropertiesPage";
 import NewPropertyPage from "./pages/properties/NewPropertyPage";
 

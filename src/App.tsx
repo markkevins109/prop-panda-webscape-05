@@ -8,7 +8,6 @@ import { ThemeProvider } from "next-themes";
 import Layout from "./components/layout/Layout";
 
 // Import all page components
-import Auth from "./pages/Auth";
 import ProfileSetup from "./pages/ProfileSetup";
 import Home from "./pages/Home";
 import Capabilities from "./pages/Capabilities";
@@ -34,7 +33,6 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/auth" element={<Auth />} />
             <Route path="/profile/setup" element={<Layout><ProfileSetup /></Layout>} />
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/capabilities" element={<Layout><Capabilities /></Layout>} />

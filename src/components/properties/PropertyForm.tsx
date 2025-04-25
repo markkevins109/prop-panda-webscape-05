@@ -44,6 +44,9 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
         agent_id: userId,
       };
 
+      console.log("Submitting property with agent_id:", userId);
+      console.log("Formatted data:", formattedData);
+
       if (initialData?.id) {
         const { error } = await supabase
           .from('properties')
@@ -57,7 +60,10 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
           .from('properties')
           .insert([formattedData]);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
         toast.success("Property added successfully!");
       }
 

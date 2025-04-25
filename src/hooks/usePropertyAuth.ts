@@ -16,13 +16,21 @@ export function usePropertyAuth() {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session?.user) {
+          console.log("Authenticated user ID:", session.user.id);
           setUserId(session.user.id);
         } else {
           const demoAuth = localStorage.getItem("prop-panda-demo-auth");
           if (demoAuth === "authenticated") {
-            const demoUuid = generateUUID();
-            setUserId(demoUuid);
+            // For demo users, generate a UUID if one doesn't exist
+            let demoUserId = localStorage.getItem("prop-panda-demo-user-id");
+            if (!demoUserId) {
+              demoUserId = generateUUID();
+              localStorage.setItem("prop-panda-demo-user-id", demoUserId);
+            }
+            console.log("Demo user ID:", demoUserId);
+            setUserId(demoUserId);
           } else {
+            console.log("No authentication found, redirecting to login");
             toast.error("Please sign in to add properties");
             navigate("/auth");
           }

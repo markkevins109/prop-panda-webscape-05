@@ -185,51 +185,6 @@ export type Database = {
         }
         Relationships: []
       }
-      properties: {
-        Row: {
-          address: string
-          agent_id: string
-          available_date: string
-          created_at: string
-          id: string
-          nationality: string
-          pets_allowed: boolean
-          profession: string
-          property_type: string
-          race: string
-          rent_per_month: number
-          updated_at: string
-        }
-        Insert: {
-          address: string
-          agent_id: string
-          available_date: string
-          created_at?: string
-          id?: string
-          nationality?: string
-          pets_allowed?: boolean
-          profession?: string
-          property_type: string
-          race?: string
-          rent_per_month: number
-          updated_at?: string
-        }
-        Update: {
-          address?: string
-          agent_id?: string
-          available_date?: string
-          created_at?: string
-          id?: string
-          nationality?: string
-          pets_allowed?: boolean
-          profession?: string
-          property_type?: string
-          race?: string
-          rent_per_month?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never

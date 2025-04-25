@@ -25,8 +25,6 @@ import UserProfile from "./pages/UserProfile";
 import Tutorials from "./pages/Tutorials";
 import AgentDataForm from "./pages/AgentDataForm";
 import NotFound from "./pages/NotFound";
-// Removing import for PropertiesPage
-// Removing import for NewPropertyPage
 
 const queryClient = new QueryClient();
 
@@ -54,7 +52,6 @@ const App = () => (
             <Route path="/user-profile" element={<Layout><UserProfile /></Layout>} />
             <Route path="/tutorials" element={<Layout><Tutorials /></Layout>} />
             <Route path="/agent-data" element={<Layout><AgentDataForm /></Layout>} />
-            {/* Removed routes for /properties and /properties/new */}
             <Route path="*" element={<Layout><NotFound /></Layout>} />
           </Routes>
         </BrowserRouter>

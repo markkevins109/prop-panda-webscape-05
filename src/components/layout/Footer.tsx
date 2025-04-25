@@ -1,3 +1,4 @@
+
 import { NavLink } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -45,8 +46,8 @@ export default function Footer() {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/integrations" className="hover:text-primary/80 transition-colors">
-                  Integrations
+                <NavLink to="/community" className="hover:text-primary/80 transition-colors">
+                  Community
                 </NavLink>
               </li>
             </ul>
@@ -112,3 +113,4 @@ export default function Footer() {
     </footer>
   );
 }
+

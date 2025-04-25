@@ -164,6 +164,7 @@ export default function UserProfile() {
         
         if (error) throw error;
         toast.success("Profile updated successfully!");
+        navigate("/"); // Redirect to home page after successful update
       } else {
         // Insert new record
         const { error } = await supabase
@@ -172,6 +173,7 @@ export default function UserProfile() {
         
         if (error) throw error;
         toast.success("Profile created successfully!");
+        navigate("/"); // Redirect to home page after successful creation
       }
       
     } catch (error) {

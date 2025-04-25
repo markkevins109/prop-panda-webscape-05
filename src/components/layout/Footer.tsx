@@ -72,8 +72,8 @@ export default function Footer() {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/community" className="hover:text-primary/80 transition-colors">
-                  Community
+                <NavLink to="/agent-data" className="hover:text-primary/80 transition-colors">
+                  Agent Data
                 </NavLink>
               </li>
             </ul>

@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { format } from 'date-fns';
+import { Download } from 'lucide-react';
 
 interface PropertyListing {
   id: string;
@@ -39,13 +40,61 @@ const PropertyListings = () => {
     fetchListings();
   }, []);
 
+  const handleDownload = () => {
+    // Convert listings to CSV format
+    const headers = [
+      'Property Address',
+      'Rent per Month',
+      'Property Type',
+      'Available Date',
+      'Preferred Nationality',
+      'Preferred Profession',
+      'Preferred Race',
+      'Pets Allowed'
+    ].join(',');
+
+    const rows = listings.map(listing => [
+      `"${listing.property_address}"`,
+      listing.rent_per_month,
+      listing.property_type,
+      format(new Date(listing.available_date), 'PP'),
+      listing.preferred_nationality,
+      listing.preferred_profession,
+      listing.preferred_race,
+      listing.pets_allowed ? 'Yes' : 'No'
+    ].join(','));
+
+    const csvContent = [headers, ...rows].join('\n');
+    
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `property-listings-${format(new Date(), 'yyyy-MM-dd')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Property Listings</h1>
-        <Link to="/property-listing">
-          <Button>Create New Listing</Button>
-        </Link>
+        <div className="flex gap-4">
+          <Button
+            onClick={handleDownload}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Download CSV
+          </Button>
+          <Link to="/property-listing">
+            <Button>Create New Listing</Button>
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

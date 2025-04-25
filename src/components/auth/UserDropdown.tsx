@@ -78,8 +78,8 @@ export default function UserDropdown({ userName, onSignOut }: UserDropdownProps)
   
   const handleProfileClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    // Use navigate to ensure we leave the /auth page and go to /profile
-    window.location.href = "/profile"; // Use direct URL change to force navigation away from auth
+    // Navigate to profile/setup instead of profile
+    window.location.href = "/profile/setup";
   };
   
   return (

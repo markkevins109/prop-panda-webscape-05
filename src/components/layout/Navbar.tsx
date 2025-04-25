@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, CalendarPlus, LogIn, FileText } from "lucide-react";
@@ -15,8 +14,7 @@ const navLinks = [
   { name: "Integrations", path: "/integrations" },
   { name: "Pricing", path: "/pricing" },
   { name: "Live Chat", path: "/live-chat" },
-  { name: "Tutorials", path: "/tutorials" },
-  { name: "Agent Data", path: "/agent-data" } // New link added
+  { name: "Tutorials", path: "/tutorials" }
 ];
 
 export default function Navbar() {

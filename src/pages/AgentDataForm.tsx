@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,7 +33,7 @@ const formSchema = z.object({
   experience: z.string().refine((val) => !isNaN(parseInt(val)), {
     message: "Experience must be a valid number.",
   }),
-  specialization: z.enum(["residence_agent", "rental_agent", "purchasing_agent"], {
+  specialization: z.enum(["residential", "commercial", "industrial", "land"], {
     required_error: "Please select a specialization.",
   }),
 });
@@ -208,9 +207,10 @@ export default function AgentDataForm() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="residence_agent">Residence Agent</SelectItem>
-                            <SelectItem value="rental_agent">Rental Agent</SelectItem>
-                            <SelectItem value="purchasing_agent">Purchasing Agent</SelectItem>
+                            <SelectItem value="residential">Residential</SelectItem>
+                            <SelectItem value="commercial">Commercial</SelectItem>
+                            <SelectItem value="industrial">Industrial</SelectItem>
+                            <SelectItem value="land">Land</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />

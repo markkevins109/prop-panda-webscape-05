@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -53,6 +53,19 @@ interface PropertyFormProps {
 
 export default function PropertyForm({ onSuccess, initialData }: PropertyFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Get current authenticated user
+  useEffect(() => {
+    async function getUserId() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUserId(session.user.id);
+      }
+    }
+    
+    getUserId();
+  }, []);
 
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
@@ -72,10 +85,20 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
     try {
       setIsSubmitting(true);
       
+      // Check if user is authenticated
+      if (!userId) {
+        toast.error("You must be logged in to add properties");
+        setIsSubmitting(false);
+        return;
+      }
+      
       const formattedData = {
         ...data,
         rent_per_month: Number(data.rent_per_month),
+        agent_id: userId, // Add the agent_id field with the current user's ID
       };
+
+      console.log("Submitting property with data:", formattedData);
 
       if (initialData?.id) {
         const { error } = await supabase
@@ -103,6 +126,11 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
       setIsSubmitting(false);
     }
   };
+
+  // Show a message if user isn't logged in
+  if (userId === null) {
+    return <div className="p-4 text-center">Loading user information...</div>;
+  }
 
   return (
     <Form {...form}>

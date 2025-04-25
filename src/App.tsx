@@ -21,6 +21,8 @@ import BookDemo from "./pages/BookDemo";
 import Tutorials from "./pages/Tutorials";
 import AgentDataForm from "./pages/AgentDataForm";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +46,8 @@ const App = () => (
             <Route path="/book-demo" element={<Layout><BookDemo /></Layout>} />
             <Route path="/tutorials" element={<Layout><Tutorials /></Layout>} />
             <Route path="/agent-data" element={<Layout><AgentDataForm /></Layout>} />
+            <Route path="/login" element={<Layout><Login /></Layout>} />
+            <Route path="/signup" element={<Layout><Signup /></Layout>} />
             <Route path="*" element={<Layout><NotFound /></Layout>} />
           </Routes>
         </BrowserRouter>

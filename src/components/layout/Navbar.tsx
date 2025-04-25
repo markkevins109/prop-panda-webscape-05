@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Menu, X, CalendarPlus } from "lucide-react";
+import { Menu, X, CalendarPlus, LogIn } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -58,7 +58,7 @@ export default function Navbar() {
           <span className="text-lg font-bold">Prop Panda</span>
         </NavLink>
 
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden md:flex items-center space-x-4">
           <nav className="flex items-center space-x-8">
             {navLinks.map((link) => (
               <NavLink
@@ -73,12 +73,21 @@ export default function Navbar() {
             ))}
           </nav>
           
-          <NavLink to="/book-demo">
-            <Button variant="default" className="bg-accent-blue hover:bg-accent-blue/90">
-              <CalendarPlus className="mr-2" />
-              Book a Demo
-            </Button>
-          </NavLink>
+          <div className="flex items-center space-x-3">
+            <NavLink to="/login">
+              <Button variant="outline" className="border-accent-blue text-accent-blue hover:bg-accent-blue/10">
+                <LogIn className="mr-2 h-4 w-4" />
+                Sign in
+              </Button>
+            </NavLink>
+            
+            <NavLink to="/book-demo">
+              <Button variant="default" className="bg-accent-blue hover:bg-accent-blue/90">
+                <CalendarPlus className="mr-2" />
+                Book a Demo
+              </Button>
+            </NavLink>
+          </div>
         </div>
 
         <button
@@ -108,6 +117,13 @@ export default function Navbar() {
                 {link.name}
               </NavLink>
             ))}
+            
+            <NavLink to="/login" className="w-full">
+              <Button variant="outline" className="w-full border-accent-blue text-accent-blue hover:bg-accent-blue/10">
+                <LogIn className="mr-2 h-4 w-4" />
+                Sign in
+              </Button>
+            </NavLink>
             
             <NavLink to="/book-demo" className="w-full">
               <Button variant="default" className="w-full bg-accent-blue hover:bg-accent-blue/90">

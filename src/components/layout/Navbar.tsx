@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, CalendarPlus, LogIn, FileText } from "lucide-react";
@@ -11,7 +10,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 const navLinks = [
   { name: "Home", path: "/" },
-  { name: "Properties", path: "/properties" },
   { name: "Capabilities", path: "/capabilities" },
   { name: "Integrations", path: "/integrations" },
   { name: "Pricing", path: "/pricing" },

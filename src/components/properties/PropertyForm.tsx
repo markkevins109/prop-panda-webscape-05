@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,6 +31,7 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const propertySchema = z.object({
   address: z.string().min(1, "Address is required"),
@@ -54,18 +54,39 @@ interface PropertyFormProps {
 export default function PropertyForm({ onSuccess, initialData }: PropertyFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Get current authenticated user
   useEffect(() => {
     async function getUserId() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        setUserId(session.user.id);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user) {
+          setUserId(session.user.id);
+        } else {
+          // Check for demo authentication
+          const demoAuth = localStorage.getItem("prop-panda-demo-auth");
+          if (demoAuth === "authenticated") {
+            // Generate a mock user ID for demo purposes
+            setUserId("demo-user-id");
+          } else {
+            // Redirect to auth page if not authenticated
+            toast.error("Please sign in to add properties");
+            navigate("/auth");
+          }
+        }
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        toast.error("Authentication error occurred");
+      } finally {
+        setIsLoading(false);
       }
     }
     
     getUserId();
-  }, []);
+  }, [navigate]);
 
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
@@ -127,8 +148,8 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
     }
   };
 
-  // Show a message if user isn't logged in
-  if (userId === null) {
+  // Show a loading message while checking authentication
+  if (isLoading) {
     return <div className="p-4 text-center">Loading user information...</div>;
   }
 

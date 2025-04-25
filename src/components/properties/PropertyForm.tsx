@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PropertyFormFields } from "./PropertyFormFields";
 import { usePropertyAuth } from "@/hooks/usePropertyAuth";
 import { PropertyFormProps, PropertyFormData, propertySchema } from "@/types/property";
+import { format } from "date-fns";
 
 export default function PropertyForm({ onSuccess, initialData }: PropertyFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,10 +39,12 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
         return;
       }
       
+      // Format the date to string for Supabase
       const formattedData = {
         ...data,
         rent_per_month: Number(data.rent_per_month),
         agent_id: userId,
+        available_date: format(data.available_date, 'yyyy-MM-dd'),
       };
 
       console.log("Submitting property with agent_id:", userId);

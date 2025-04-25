@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, CalendarPlus, LogIn, FileText } from "lucide-react";
@@ -33,14 +34,15 @@ export default function Navbar() {
       setIsAuthenticated(!!session);
       
       if (session?.user) {
+        // Get agent profile instead of regular profile
         const { data: profile } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', session.user.id)
+          .from('agent_profiles')
+          .select('name')
+          .eq('user_id', session.user.id)
           .maybeSingle();
           
         setUserData({
-          name: profile?.full_name || session.user.user_metadata?.name || "User",
+          name: profile?.name || session.user.user_metadata?.name || "User",
           email: session.user.email || ""
         });
       } else {

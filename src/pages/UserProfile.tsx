@@ -9,6 +9,7 @@ import { PandaAvatar } from "@/components/PandaAvatar";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { generateUUID } from "@/utils/uuid";
 import {
   Form,
   FormControl,
@@ -145,7 +146,10 @@ export default function UserProfile() {
     setLoading(true);
     
     try {
+      const profileId = existingData?.id || generateUUID();
+      
       const formattedData = {
+        id: profileId,
         user_id: userId,
         name: values.name,
         email: values.email,

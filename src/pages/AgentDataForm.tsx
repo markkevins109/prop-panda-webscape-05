@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { UserRound, Building, Phone, Mail, Clock, Award } from "lucide-react";
+import { generateUUID } from "@/utils/uuid";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -67,9 +69,12 @@ export default function AgentDataForm() {
         return;
       }
 
+      const profileId = generateUUID(); // Generate an ID for the agent profile
+
       const { error } = await supabase
         .from('agent_profiles')
         .upsert({
+          id: profileId,
           user_id: session.user.id,
           name: values.name,
           email: values.email,

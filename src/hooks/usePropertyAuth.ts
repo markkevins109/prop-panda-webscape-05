@@ -28,6 +28,36 @@ export function usePropertyAuth() {
               localStorage.setItem("prop-panda-demo-user-id", demoUserId);
             }
             console.log("Demo user ID:", demoUserId);
+            
+            // Check if an agent profile exists for this demo user
+            const { data: existingAgent } = await supabase
+              .from('agent_profiles')
+              .select('id')
+              .eq('user_id', demoUserId)
+              .single();
+            
+            if (!existingAgent) {
+              // Create an agent profile for the demo user
+              const { error: createError } = await supabase
+                .from('agent_profiles')
+                .insert({
+                  id: demoUserId,
+                  user_id: demoUserId,
+                  name: 'Demo User',
+                  email: 'demo@example.com',
+                  phone_number: '1234567890',
+                  company_name: 'Demo Company',
+                  experience: 1,
+                  specialization: 'Residential'
+                });
+              
+              if (createError) {
+                console.error("Error creating demo agent profile:", createError);
+                toast.error("Unable to set up demo profile");
+                return;
+              }
+            }
+            
             setUserId(demoUserId);
           } else {
             console.log("No authentication found, redirecting to login");

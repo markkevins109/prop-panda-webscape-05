@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -25,8 +24,9 @@ export default function ProfileSetup() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
+  const [initialData, setInitialData] = useState<ProfileFormData | null>(null);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<ProfileFormData>();
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<ProfileFormData>();
   
   useEffect(() => {
     const checkAuth = async () => {
@@ -39,11 +39,39 @@ export default function ProfileSetup() {
           const demoAuth = localStorage.getItem("prop-panda-demo-auth");
           if (demoAuth === "authenticated") {
             setIsAuthenticated(true);
+            // Load demo profile data if it exists
+            const demoProfileStr = localStorage.getItem("prop-panda-demo-profile");
+            if (demoProfileStr) {
+              const demoProfile = JSON.parse(demoProfileStr);
+              setInitialData(demoProfile);
+              Object.entries(demoProfile).forEach(([key, value]) => {
+                setValue(key as keyof ProfileFormData, value as string);
+              });
+            }
           } else {
             navigate("/auth");
           }
         } else {
           setIsAuthenticated(true);
+          // Fetch existing profile data
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .maybeSingle();
+            
+          if (profile) {
+            const formData = {
+              phone: profile.phone || '',
+              organization: profile.organization || '',
+              bio: profile.bio || '',
+              location: profile.location || ''
+            };
+            setInitialData(formData);
+            Object.entries(formData).forEach(([key, value]) => {
+              setValue(key as keyof ProfileFormData, value as string);
+            });
+          }
         }
       } catch (error) {
         console.error("Authentication check failed:", error);
@@ -67,7 +95,7 @@ export default function ProfileSetup() {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, setValue]);
 
   const onSubmit = async (data: ProfileFormData) => {
     try {
@@ -117,7 +145,7 @@ export default function ProfileSetup() {
           organization: data.organization,
           bio: data.bio,
           location: data.location,
-          avatar_url: avatarUrl,
+          avatar_url: avatarUrl || undefined,
           is_profile_complete: true,
         })
         .eq("id", userId);

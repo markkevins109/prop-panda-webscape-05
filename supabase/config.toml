@@ -3,3 +3,6 @@ project_id = "hbfkcsaarlupwiusinit"
 
 [functions.send-demo-confirmation]
 verify_jwt = false
+
+[storage.avatars]
+public = true

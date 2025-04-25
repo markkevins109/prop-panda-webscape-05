@@ -1,71 +1,90 @@
-
-import React from "react";
-import { Video } from "lucide-react";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
-
-const videoSections = [
-  {
-    title: "Getting Started with Live Chat",
-    description: "Learn how to set up and start using our live chat feature",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
-  },
-  {
-    title: "AI-Powered Responses",
-    description: "See how our AI helps you respond to queries instantly",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
-  },
-  {
-    title: "Customizing Your Chat Interface",
-    description: "Customize the chat widget to match your brand",
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
-  },
-  {
-    title: "Advanced Features & Analytics",
-    description: "Explore advanced features and track performance",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
-  },
-  {
-    title: "Real Estate Chat Automation",
-    description: "Automate common real estate queries and responses",
-    image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7",
-  }
-];
+import { useState } from "react";
 
 export default function LiveChat() {
+  const [message, setMessage] = useState("");
+
   return (
     <div>
-      <section className="section-padding">
+      <section className="py-12">
         <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center space-y-4 mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold">Live Chat Demo</h1>
+          <div className="max-w-5xl mx-auto text-center mb-10">
+            <h1 className="text-4xl md:text-5xl font-bold mb-3">Experience Prop Panda</h1>
             <p className="text-lg text-muted-foreground">
-              Learn how to leverage our AI-powered live chat to enhance your real estate business
+              Try our interactive demo and see how Prop Panda transforms real estate communication.
             </p>
           </div>
 
-          <div className="grid gap-8">
-            {videoSections.map((section, index) => (
-              <Card key={index} className="overflow-hidden">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="relative aspect-video">
-                    <img
-                      src={section.image}
-                      alt={section.title}
-                      className="object-cover w-full h-full"
-                    />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <Video className="w-16 h-16 text-white opacity-80" />
-                    </div>
+          {/* Main Chat/Avatar Card - Increased max-width and adjusted layout */}
+          <div className="max-w-6xl mx-auto bg-white rounded-xl shadow border overflow-hidden flex flex-col md:flex-row">
+            {/* Chat Section (Left) - Increased padding and minimum height */}
+            <div className="flex-1 flex flex-col justify-between px-8 py-8 min-h-[480px]">
+              {/* Chat Header */}
+              <div className="bg-black text-white px-0 py-3 mb-6 rounded-t-xl rounded-b-md md:rounded-tl-xl md:rounded-tr-none">
+                <span className="font-semibold text-lg px-6 block text-left">
+                  Prop Panda Chat
+                </span>
+              </div>
+              {/* Chat Body - Increased space */}
+              <div className="flex flex-col flex-1">
+                <div className="mb-4 flex items-start">
+                  <img
+                    src="/lovable-uploads/7a66aa22-072b-4bf9-bf1e-ec32f5d99726.png"
+                    alt="Prop Panda Logo"
+                    className="w-12 h-12 rounded-full mr-3 border-2 border-accent-blue shadow"
+                    style={{
+                      background: "#fff",
+                    }}
+                  />
+                  <div className="bg-muted px-4 py-3 rounded-md text-base max-w-xl flex-1">
+                    Hello! I'm Prop Panda, your AI real estate assistant. How can I help you today?
                   </div>
-                  <CardContent className="flex items-center p-6">
-                    <div>
-                      <CardTitle className="text-2xl mb-4">{section.title}</CardTitle>
-                      <p className="text-muted-foreground">{section.description}</p>
-                    </div>
-                  </CardContent>
                 </div>
-              </Card>
-            ))}
+                <div className="flex-1"></div>
+              </div>
+              {/* Chat Input - Slightly wider input */}
+              <div className="border-t flex flex-col gap-2 pt-4 mt-8 bg-transparent">
+                <div className="flex">
+                  <input
+                    type="text"
+                    className="flex-1 rounded-l-md border border-input bg-background px-3 py-3 text-base placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-accent-blue focus:outline-none"
+                    placeholder="Type your question here..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    disabled
+                  />
+                  <button
+                    className="bg-black text-white px-4 rounded-r-md flex items-center justify-center ml-2 disabled:opacity-60"
+                    disabled
+                    tabIndex={-1}
+                  >
+                    <span className="font-semibold">Send</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            {/* Avatar Section (Right) - Increased width and padding */}
+            <div className="hidden md:flex flex-col items-center justify-center w-[400px] bg-[#f6faff] border-l px-10 py-12 relative">
+              <img
+                src="/lovable-uploads/199d658f-bb57-47b7-958a-6f541715c4e5.png"
+                alt="Prop Panda AI Avatar"
+                className="w-48 h-48 rounded-full mx-auto border-4 border-accent-blue object-cover bg-white shadow-lg"
+                style={{
+                  background: "radial-gradient(ellipse at center, #e6f0fa 0%, #fafcfd 100%)"
+                }}
+              />
+              <p className="mt-6 text-center text-accent-blue font-semibold text-xl">I'm your assistant<br />Prop Panda</p>
+            </div>
+            {/* Responsive avatar for mobile */}
+            <div className="md:hidden flex items-center justify-center w-full bg-[#f6faff] border-t px-8 py-8">
+              <img
+                src="/lovable-uploads/199d658f-bb57-47b7-958a-6f541715c4e5.png"
+                alt="Prop Panda AI Avatar"
+                className="w-24 h-24 rounded-full border-2 border-accent-blue object-cover bg-white shadow"
+              />
+              <span className="ml-4 text-base text-accent-blue font-semibold">
+                I'm your assistant<br />Prop Panda
+              </span>
+            </div>
           </div>
         </div>
       </section>

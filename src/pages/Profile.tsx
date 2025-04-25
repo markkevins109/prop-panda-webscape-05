@@ -103,7 +103,8 @@ export default function Profile() {
         }
 
         // Using optional chaining for user_metadata to prevent errors
-        const displayName = profile.name || session.user.user_metadata?.name || "User";
+        // The name comes from user metadata, not from the profile table
+        const displayName = session.user.user_metadata?.name || "User";
 
         setUserData({
           name: displayName,

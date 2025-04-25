@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -103,7 +102,7 @@ export default function Profile() {
         }
 
         setUserData({
-          name: profile.full_name || session.user.user_metadata?.name || "User",
+          name: profile.name || session.user.user_metadata?.name || "User",
           email: session.user.email || "",
           avatar_url: avatarUrl,
           phone: profile.phone || "",

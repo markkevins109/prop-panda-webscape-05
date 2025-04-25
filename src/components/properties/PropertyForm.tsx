@@ -64,7 +64,7 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
       } else {
         const { error } = await supabase
           .from('properties')
-          .insert([formattedData]);
+          .insert(formattedData);
 
         if (error) {
           console.error('Supabase error:', error);

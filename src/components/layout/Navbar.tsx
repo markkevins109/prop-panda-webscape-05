@@ -1,10 +1,19 @@
 
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Menu, X, CalendarPlus, LogIn } from "lucide-react";
+import { Menu, X, CalendarPlus, LogIn, LogOut, User } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -19,6 +28,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,6 +46,10 @@ export default function Navbar() {
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <header 
@@ -74,12 +88,33 @@ export default function Navbar() {
           </nav>
           
           <div className="flex items-center space-x-3">
-            <NavLink to="/login">
-              <Button variant="outline" className="border-accent-blue text-accent-blue hover:bg-accent-blue/10">
-                <LogIn className="mr-2 h-4 w-4" />
-                Sign in
-              </Button>
-            </NavLink>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="border-accent-blue text-accent-blue hover:bg-accent-blue/10">
+                    <User className="mr-2 h-4 w-4" />
+                    My Account
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>
+                    {user.email}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <NavLink to="/login">
+                <Button variant="outline" className="border-accent-blue text-accent-blue hover:bg-accent-blue/10">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Sign in
+                </Button>
+              </NavLink>
+            )}
             
             <NavLink to="/book-demo">
               <Button variant="default" className="bg-accent-blue hover:bg-accent-blue/90">
@@ -118,12 +153,19 @@ export default function Navbar() {
               </NavLink>
             ))}
             
-            <NavLink to="/login" className="w-full">
-              <Button variant="outline" className="w-full border-accent-blue text-accent-blue hover:bg-accent-blue/10">
-                <LogIn className="mr-2 h-4 w-4" />
-                Sign in
+            {user ? (
+              <Button variant="outline" className="w-full border-accent-blue text-accent-blue hover:bg-accent-blue/10" onClick={handleSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign out
               </Button>
-            </NavLink>
+            ) : (
+              <NavLink to="/login" className="w-full">
+                <Button variant="outline" className="w-full border-accent-blue text-accent-blue hover:bg-accent-blue/10">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Sign in
+                </Button>
+              </NavLink>
+            )}
             
             <NavLink to="/book-demo" className="w-full">
               <Button variant="default" className="w-full bg-accent-blue hover:bg-accent-blue/90">

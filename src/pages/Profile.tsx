@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -101,8 +102,11 @@ export default function Profile() {
           }
         }
 
+        // Using optional chaining for user_metadata to prevent errors
+        const displayName = profile.name || session.user.user_metadata?.name || "User";
+
         setUserData({
-          name: profile.name || session.user.user_metadata?.name || "User",
+          name: displayName,
           email: session.user.email || "",
           avatar_url: avatarUrl,
           phone: profile.phone || "",

@@ -41,10 +41,15 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
       
       // Format the date to string for Supabase
       const formattedData = {
-        ...data,
+        address: data.address,
         rent_per_month: Number(data.rent_per_month),
         agent_id: userId,
         available_date: format(data.available_date, 'yyyy-MM-dd'),
+        property_type: data.property_type,
+        nationality: data.nationality,
+        profession: data.profession,
+        race: data.race,
+        pets_allowed: data.pets_allowed,
       };
 
       console.log("Submitting property with agent_id:", userId);

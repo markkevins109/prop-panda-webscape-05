@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -79,11 +78,9 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
           // Check for demo authentication
           const demoAuth = localStorage.getItem("prop-panda-demo-auth");
           if (demoAuth === "authenticated") {
-            // Generate a valid UUID for demo purposes
             const demoUuid = generateUUID();
             setUserId(demoUuid);
           } else {
-            // Redirect to auth page if not authenticated
             toast.error("Please sign in to add properties");
             navigate("/auth");
           }
@@ -127,7 +124,7 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
       const formattedData = {
         ...data,
         rent_per_month: Number(data.rent_per_month),
-        agent_id: userId, // Add the agent_id field with the current user's ID
+        agent_id: userId, // Use the userId as agent_id
       };
 
       console.log("Submitting property with data:", formattedData);

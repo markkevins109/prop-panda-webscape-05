@@ -1,12 +1,12 @@
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThemeProvider } from "next-themes";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { ThemeProvider } from "next-themes";
 import Layout from "./components/layout/Layout";
-import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
 // Import all page components
 import Home from "./pages/Home";
@@ -24,6 +24,8 @@ import AgentDataForm from "./pages/AgentDataForm";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import PropertyListing from "./pages/PropertyListing";
+import PropertyListings from "./pages/PropertyListings";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +52,24 @@ const App = () => (
               <Route path="/agent-data" element={<Layout><AgentDataForm /></Layout>} />
               <Route path="/login" element={<Layout><Login /></Layout>} />
               <Route path="/signup" element={<Layout><Signup /></Layout>} />
+              <Route
+                path="/property-listing"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <PropertyListing />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/property-listings"
+                element={
+                  <Layout>
+                    <PropertyListings />
+                  </Layout>
+                }
+              />
               <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>
           </BrowserRouter>

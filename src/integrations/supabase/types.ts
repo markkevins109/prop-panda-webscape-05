@@ -185,6 +185,51 @@ export type Database = {
         }
         Relationships: []
       }
+      property_listings: {
+        Row: {
+          available_date: string
+          created_at: string
+          id: string
+          pets_allowed: boolean
+          preferred_nationality: string
+          preferred_profession: Database["public"]["Enums"]["profession_type"]
+          preferred_race: Database["public"]["Enums"]["race_type"]
+          property_address: string
+          property_type: Database["public"]["Enums"]["property_type"]
+          rent_per_month: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          available_date: string
+          created_at?: string
+          id?: string
+          pets_allowed?: boolean
+          preferred_nationality?: string
+          preferred_profession?: Database["public"]["Enums"]["profession_type"]
+          preferred_race?: Database["public"]["Enums"]["race_type"]
+          property_address: string
+          property_type: Database["public"]["Enums"]["property_type"]
+          rent_per_month: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          available_date?: string
+          created_at?: string
+          id?: string
+          pets_allowed?: boolean
+          preferred_nationality?: string
+          preferred_profession?: Database["public"]["Enums"]["profession_type"]
+          preferred_race?: Database["public"]["Enums"]["race_type"]
+          property_address?: string
+          property_type?: Database["public"]["Enums"]["property_type"]
+          rent_per_month?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -193,7 +238,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      profession_type: "RETIRED" | "STUDENT" | "PROFESSIONAL" | "ANY"
+      property_type: "HDB" | "LANDED" | "CONDOMINIUM" | "SHOP"
+      race_type: "INDIAN" | "CHINESE" | "MALAY" | "ANY"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -308,6 +355,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      profession_type: ["RETIRED", "STUDENT", "PROFESSIONAL", "ANY"],
+      property_type: ["HDB", "LANDED", "CONDOMINIUM", "SHOP"],
+      race_type: ["INDIAN", "CHINESE", "MALAY", "ANY"],
+    },
   },
 } as const

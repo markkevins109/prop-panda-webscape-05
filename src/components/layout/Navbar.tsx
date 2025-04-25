@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+
+import React, { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, CalendarPlus, LogIn } from "lucide-react";
+import { Menu, X, CalendarPlus, LogIn, FileText } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,8 @@ const navLinks = [
   { name: "Integrations", path: "/integrations" },
   { name: "Pricing", path: "/pricing" },
   { name: "Live Chat", path: "/live-chat" },
-  { name: "Tutorials", path: "/tutorials" }
+  { name: "Tutorials", path: "/tutorials" },
+  { name: "Agent Data", path: "/agent-data" } // New link added
 ];
 
 export default function Navbar() {

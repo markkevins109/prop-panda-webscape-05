@@ -53,7 +53,10 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
           .update(formattedData)
           .eq('id', initialData.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
         toast.success("Property updated successfully!");
       } else {
         const { error } = await supabase
@@ -79,6 +82,15 @@ export default function PropertyForm({ onSuccess, initialData }: PropertyFormPro
 
   if (isLoading) {
     return <div className="p-4 text-center">Loading user information...</div>;
+  }
+
+  if (!userId) {
+    return (
+      <div className="p-4 text-center">
+        <p className="mb-4 text-muted-foreground">You must be logged in to add or edit properties.</p>
+        <Button onClick={() => window.location.href = '/auth'}>Sign In</Button>
+      </div>
+    );
   }
 
   return (

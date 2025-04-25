@@ -9,6 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      agent_profiles: {
+        Row: {
+          company_name: string
+          created_at: string
+          email: string
+          experience: number
+          id: string
+          name: string
+          phone_number: string
+          specialization: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company_name: string
+          created_at?: string
+          email: string
+          experience: number
+          id: string
+          name: string
+          phone_number: string
+          specialization: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          email?: string
+          experience?: number
+          id?: string
+          name?: string
+          phone_number?: string
+          specialization?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       community_answers: {
         Row: {
           answer_text: string

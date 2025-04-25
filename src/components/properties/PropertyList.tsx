@@ -14,6 +14,7 @@ import { toast } from "@/components/ui/sonner";
 import { format } from "date-fns";
 import { Pencil, Trash } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { usePropertyAuth } from "@/hooks/usePropertyAuth";
 
 interface Property {
   id: string;
@@ -25,29 +26,37 @@ interface Property {
   profession: string;
   race: string;
   pets_allowed: boolean;
+  agent_id: string;
 }
 
 export default function PropertyList() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { userId, isLoading } = usePropertyAuth();
 
   useEffect(() => {
-    fetchProperties();
-  }, []);
+    if (userId) {
+      fetchProperties();
+    }
+  }, [userId]);
 
   const fetchProperties = async () => {
     try {
       setLoading(true);
+      console.log("Fetching properties for agent ID:", userId);
+      
       const { data, error } = await supabase
         .from('properties')
         .select('*')
+        .eq('agent_id', userId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+      console.log("Properties fetched:", data);
       setProperties(data || []);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching properties:', error);
       toast.error("Failed to fetch properties");
     } finally {
       setLoading(false);
@@ -66,13 +75,22 @@ export default function PropertyList() {
       setProperties(properties.filter(property => property.id !== id));
       toast.success("Property deleted successfully");
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error deleting property:', error);
       toast.error("Failed to delete property");
     }
   };
 
-  if (loading) {
+  if (isLoading || loading) {
     return <div className="text-center py-4">Loading properties...</div>;
+  }
+
+  if (!userId) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-muted-foreground mb-4">You need to be logged in to view properties.</p>
+        <Button onClick={() => navigate('/auth')}>Sign In</Button>
+      </div>
+    );
   }
 
   return (

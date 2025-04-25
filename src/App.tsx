@@ -20,7 +20,6 @@ import Integrations from "./pages/Integrations";
 import LiveChat from "./pages/LiveChat";
 import Demo from "./pages/Demo";
 import BookDemo from "./pages/BookDemo";
-import UserProfile from "./pages/UserProfile";
 import Tutorials from "./pages/Tutorials";
 import AgentDataForm from "./pages/AgentDataForm";
 import NotFound from "./pages/NotFound";
@@ -47,7 +46,6 @@ const App = () => (
             <Route path="/live-chat" element={<Layout><LiveChat /></Layout>} />
             <Route path="/demo" element={<Layout><Demo /></Layout>} />
             <Route path="/book-demo" element={<Layout><BookDemo /></Layout>} />
-            <Route path="/user-profile" element={<Layout><UserProfile /></Layout>} />
             <Route path="/tutorials" element={<Layout><Tutorials /></Layout>} />
             <Route path="/agent-data" element={<Layout><AgentDataForm /></Layout>} />
             <Route path="*" element={<Layout><NotFound /></Layout>} />

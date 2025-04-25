@@ -28,7 +28,9 @@ import { UserRound, Building, Phone, Mail, Clock, Award } from "lucide-react";
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
-  phone_number: z.string().min(10, { message: "Please enter a valid phone number." }),
+  phone_number: z.string()
+    .regex(/^\+65\d{8}$/, { message: "Phone number must be +65 followed by 8 digits" })
+    .length(11, { message: "Phone number must be exactly 11 characters (+65 and 8 digits)" }),
   company_name: z.string().min(2, { message: "Company name is required." }),
   experience: z.string().refine((val) => !isNaN(parseInt(val)), {
     message: "Experience must be a valid number.",
@@ -47,7 +49,7 @@ export default function AgentDataForm() {
     defaultValues: {
       name: "",
       email: "",
-      phone_number: "",
+      phone_number: "+65",
       company_name: "",
       experience: "",
       specialization: undefined,
@@ -146,7 +148,17 @@ export default function AgentDataForm() {
                           <Phone className="h-4 w-4" /> Phone Number
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder="Your phone number" {...field} />
+                          <Input 
+                            placeholder="+65 XXXXXXXX" 
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              const sanitizedValue = value.startsWith('+65') 
+                                ? '+65' + value.slice(3).replace(/\D/g, '').slice(0, 8)
+                                : value;
+                              field.onChange({ target: { value: sanitizedValue } });
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

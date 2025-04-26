@@ -1,3 +1,4 @@
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -8,6 +9,25 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import Layout from "./components/layout/Layout";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import Selection from "./pages/Selection";
+
+// Import all page components
+import Home from "./pages/Home";
+import Capabilities from "./pages/Capabilities";
+import Blog from "./pages/Blog";
+import Community from "./pages/Community";
+import Pricing from "./pages/Pricing";
+import CaseStudies from "./pages/CaseStudies";
+import Integrations from "./pages/Integrations";
+import LiveChat from "./pages/LiveChat";
+import Demo from "./pages/Demo";
+import BookDemo from "./pages/BookDemo";
+import Tutorials from "./pages/Tutorials";
+import AgentDataForm from "./pages/AgentDataForm";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import PropertyListing from "./pages/PropertyListing";
+import PropertyListings from "./pages/PropertyListings";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 

@@ -230,6 +230,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_account_types: {
+        Row: {
+          account_type: Database["public"]["Enums"]["account_type"]
+          created_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          account_type: Database["public"]["Enums"]["account_type"]
+          created_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          account_type?: Database["public"]["Enums"]["account_type"]
+          created_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -238,6 +259,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      account_type: "individual" | "company"
       profession_type: "RETIRED" | "STUDENT" | "PROFESSIONAL" | "ANY"
       property_type: "HDB" | "LANDED" | "CONDOMINIUM" | "SHOP"
       race_type: "INDIAN" | "CHINESE" | "MALAY" | "ANY"
@@ -356,6 +378,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_type: ["individual", "company"],
       profession_type: ["RETIRED", "STUDENT", "PROFESSIONAL", "ANY"],
       property_type: ["HDB", "LANDED", "CONDOMINIUM", "SHOP"],
       race_type: ["INDIAN", "CHINESE", "MALAY", "ANY"],

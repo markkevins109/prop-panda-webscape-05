@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -29,21 +30,21 @@ interface PropertyListing {
 const PropertyListings = () => {
   const [listings, setListings] = useState<PropertyListing[]>([]);
 
+  const fetchListings = async () => {
+    const { data, error } = await supabase
+      .from('property_listings')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching listings:', error);
+      return;
+    }
+
+    setListings(data || []);
+  };
+
   useEffect(() => {
-    const fetchListings = async () => {
-      const { data, error } = await supabase
-        .from('property_listings')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching listings:', error);
-        return;
-      }
-
-      setListings(data || []);
-    };
-
     fetchListings();
   }, []);
 

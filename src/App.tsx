@@ -7,25 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import Layout from "./components/layout/Layout";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
-
-// Import all page components
-import Home from "./pages/Home";
-import Capabilities from "./pages/Capabilities";
-import Blog from "./pages/Blog";
-import Community from "./pages/Community";
-import Pricing from "./pages/Pricing";
-import CaseStudies from "./pages/CaseStudies";
-import Integrations from "./pages/Integrations";
-import LiveChat from "./pages/LiveChat";
-import Demo from "./pages/Demo";
-import BookDemo from "./pages/BookDemo";
-import Tutorials from "./pages/Tutorials";
-import AgentDataForm from "./pages/AgentDataForm";
-import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import PropertyListing from "./pages/PropertyListing";
-import PropertyListings from "./pages/PropertyListings";
+import Selection from "./pages/Selection";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +52,13 @@ const App = () => (
                   </Layout>
                 }
               />
+              <Route path="/selection" element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Selection />
+                  </Layout>
+                </ProtectedRoute>
+              } />
               <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>
           </BrowserRouter>

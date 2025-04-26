@@ -1,8 +1,8 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   session: Session | null;
@@ -20,11 +20,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const checkUserAccountType = async (userId: string) => {
+    const { data } = await supabase
+      .from('user_account_types')
+      .select('account_type')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    return data;
+  };
 
   useEffect(() => {
-    // Set up the auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, newSession) => {
+      async (event, newSession) => {
         console.log('Auth state changed:', event);
         setSession(newSession);
         setUser(newSession?.user ?? null);
@@ -34,6 +44,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             title: 'Sign in successful',
             description: 'You are now logged in.',
           });
+
+          // Check if user has selected account type
+          if (newSession?.user) {
+            const accountType = await checkUserAccountType(newSession.user.id);
+            if (!accountType) {
+              navigate('/selection');
+            } else {
+              navigate('/');
+            }
+          }
         }
         
         if (event === 'SIGNED_OUT') {
@@ -41,6 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             title: 'Signed out',
             description: 'You have been logged out.',
           });
+          navigate('/login');
         }
       }
     );
@@ -55,7 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       subscription.unsubscribe();
     };
-  }, [toast]);
+  }, [toast, navigate]);
 
   const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
     try {

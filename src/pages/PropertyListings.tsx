@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { Download, FileText } from 'lucide-react';
+import CsvUpload from '@/components/CsvUpload';
 import {
   Table,
   TableBody,
@@ -123,6 +124,7 @@ const PropertyListings = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Property Listings</h1>
         <div className="flex gap-4">
+          <CsvUpload onUploadSuccess={() => fetchListings()} />
           <Button
             onClick={handleDownloadTemplate}
             variant="outline"

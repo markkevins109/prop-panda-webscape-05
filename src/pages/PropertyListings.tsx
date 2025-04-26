@@ -1,11 +1,17 @@
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { format } from 'date-fns';
 import { Download } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 interface PropertyListing {
   id: string;
@@ -41,7 +47,6 @@ const PropertyListings = () => {
   }, []);
 
   const handleDownload = () => {
-    // Convert listings to CSV format
     const headers = [
       'Property Address',
       'Rent per Month',
@@ -66,7 +71,6 @@ const PropertyListings = () => {
 
     const csvContent = [headers, ...rows].join('\n');
     
-    // Create blob and download
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
@@ -97,23 +101,35 @@ const PropertyListings = () => {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {listings.map((listing) => (
-          <Card key={listing.id}>
-            <CardHeader>
-              <CardTitle className="text-lg">{listing.property_type}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <p><strong>Address:</strong> {listing.property_address}</p>
-              <p><strong>Rent:</strong> ${listing.rent_per_month.toFixed(2)}/month</p>
-              <p><strong>Available From:</strong> {format(new Date(listing.available_date), 'PP')}</p>
-              <p><strong>Preferred Nationality:</strong> {listing.preferred_nationality}</p>
-              <p><strong>Preferred Profession:</strong> {listing.preferred_profession}</p>
-              <p><strong>Preferred Race:</strong> {listing.preferred_race}</p>
-              <p><strong>Pets Allowed:</strong> {listing.pets_allowed ? 'Yes' : 'No'}</p>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Property Type</TableHead>
+              <TableHead>Address</TableHead>
+              <TableHead>Rent/Month</TableHead>
+              <TableHead>Available From</TableHead>
+              <TableHead>Preferred Nationality</TableHead>
+              <TableHead>Preferred Profession</TableHead>
+              <TableHead>Preferred Race</TableHead>
+              <TableHead>Pets Allowed</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {listings.map((listing) => (
+              <TableRow key={listing.id}>
+                <TableCell>{listing.property_type}</TableCell>
+                <TableCell>{listing.property_address}</TableCell>
+                <TableCell>${listing.rent_per_month.toFixed(2)}</TableCell>
+                <TableCell>{format(new Date(listing.available_date), 'PP')}</TableCell>
+                <TableCell>{listing.preferred_nationality}</TableCell>
+                <TableCell>{listing.preferred_profession}</TableCell>
+                <TableCell>{listing.preferred_race}</TableCell>
+                <TableCell>{listing.pets_allowed ? 'Yes' : 'No'}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

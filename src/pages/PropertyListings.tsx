@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { Download } from 'lucide-react';
+import { Download, FileText } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -46,6 +46,42 @@ const PropertyListings = () => {
     fetchListings();
   }, []);
 
+  const handleDownloadTemplate = () => {
+    const headers = [
+      'Property Address',
+      'Rent per Month',
+      'Property Type (HDB/LANDED/CONDOMINIUM/SHOP)',
+      'Available Date (YYYY-MM-DD)',
+      'Preferred Nationality',
+      'Preferred Profession (RETIRED/STUDENT/PROFESSIONAL/ANY)',
+      'Preferred Race (INDIAN/CHINESE/MALAY/ANY)',
+      'Pets Allowed (true/false)'
+    ].join(',');
+
+    const sampleData = [
+      '"123 Sample Street, #12-34"',
+      '2500',
+      'HDB',
+      '2025-12-31',
+      'Any',
+      'PROFESSIONAL',
+      'ANY',
+      'true'
+    ].join(',');
+
+    const csvContent = [headers, sampleData].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'property-listing-template.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleDownload = () => {
     const headers = [
       'Property Address',
@@ -87,6 +123,14 @@ const PropertyListings = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Property Listings</h1>
         <div className="flex gap-4">
+          <Button
+            onClick={handleDownloadTemplate}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <FileText className="w-4 h-4" />
+            Download Template
+          </Button>
           <Button
             onClick={handleDownload}
             variant="outline"

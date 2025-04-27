@@ -50,6 +50,38 @@ export type CustomDatabase = Database & {
           created_at?: string;
           updated_at?: string;
         };
+      },
+      individual_profiles: {
+        Row: {
+          id: string;
+          user_id: string;
+          full_name: string;
+          phone_number: string;
+          email: string;
+          address: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          full_name: string;
+          phone_number: string;
+          email: string;
+          address?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          full_name?: string;
+          phone_number?: string;
+          email?: string;
+          address?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
       }
     }
   }

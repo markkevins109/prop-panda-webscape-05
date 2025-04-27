@@ -77,11 +77,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(currentSession?.user ?? null);
         
         if (currentSession?.user) {
-          setTimeout(() => {
-            if (isMounted && currentSession?.user) {
-              checkUserProfile(currentSession.user.id, navigate, location.pathname);
-            }
-          }, 100);
+          // Don't redirect if the user is on the account-type page
+          if (location.pathname !== '/account-type') {
+            setTimeout(() => {
+              if (isMounted && currentSession?.user) {
+                checkUserProfile(currentSession.user.id, navigate, location.pathname);
+              }
+            }, 100);
+          }
         }
         
         setLoading(false);

@@ -178,24 +178,27 @@ const IndividualProfileForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Specializations (Optional)</FormLabel>
-                <Select 
-                  multiple 
-                  onValueChange={(values) => field.onChange(values)}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select specializations" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {SPECIALIZATIONS.map((spec) => (
-                      <SelectItem key={spec} value={spec}>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {SPECIALIZATIONS.map((spec) => (
+                    <div key={spec} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`spec-${spec}`}
+                        checked={field.value?.includes(spec)}
+                        onChange={(e) => {
+                          const updatedSpecializations = e.target.checked
+                            ? [...(field.value || []), spec]
+                            : (field.value || []).filter((s) => s !== spec);
+                          field.onChange(updatedSpecializations);
+                        }}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <label htmlFor={`spec-${spec}`} className="text-sm font-medium leading-none">
                         {spec}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                      </label>
+                    </div>
+                  ))}
+                </div>
                 <FormMessage />
               </FormItem>
             )}

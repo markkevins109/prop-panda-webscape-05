@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -36,16 +35,18 @@ const validateCsvHeaders = (headers: string[]): string | null => {
     'pets_allowed'
   ];
 
+  const optionalHeaders = ['propertyid'];
+  
   // Convert headers to lowercase for case-insensitive comparison
   const normalizedHeaders = headers.map(h => h.toLowerCase().trim());
   
-  // Find missing headers
+  // Find missing required headers
   const missingHeaders = requiredHeaders.filter(
     header => !normalizedHeaders.includes(header)
   );
 
   if (missingHeaders.length > 0) {
-    return `Missing required columns: ${missingHeaders.join(', ')}`;
+    return `Missing required columns: ${missingHeaders.join(', ')}\n\nExpected headers: ${requiredHeaders.join(', ')}`;
   }
 
   return null;
@@ -123,8 +124,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
           // Validate headers
           const headerError = validateCsvHeaders(headers);
           if (headerError) {
-            const errorMsg = `${headerError}\n\nExpected headers: property_address, rent_per_month, property_type, available_date, preferred_nationality, preferred_profession, preferred_race, pets_allowed`;
-            reject(new Error(errorMsg));
+            reject(new Error(headerError));
             return;
           }
           
@@ -139,22 +139,8 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
                 const obj: Record<string, any> = {};
                 
                 headers.forEach((header, i) => {
-                  // Normalize header to lowercase for consistent mapping
-                  const normalizedHeader = header.toLowerCase();
-                  const value = values[i];
-                  
-                  if (normalizedHeader === 'pets_allowed') {
-                    const lowerValue = String(value).toLowerCase();
-                    obj[normalizedHeader] = ['true', 'yes', '1'].includes(lowerValue);
-                  } else if (normalizedHeader === 'rent_per_month') {
-                    obj[normalizedHeader] = Number(value);
-                  } else if (normalizedHeader === 'property_type') {
-                    obj[normalizedHeader] = value.toUpperCase();
-                  } else if (normalizedHeader === 'preferred_profession' || normalizedHeader === 'preferred_race') {
-                    obj[normalizedHeader] = value.toUpperCase();
-                  } else {
-                    obj[normalizedHeader] = value.replace(/^"(.*)"$/, '$1');
-                  }
+                  // Keep any additional columns in the data
+                  obj[header.toLowerCase()] = values[i];
                 });
                 
                 return obj;

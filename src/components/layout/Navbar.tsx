@@ -21,7 +21,8 @@ const navLinks = [
   { name: "Integrations", path: "/integrations" },
   { name: "Pricing", path: "/pricing" },
   { name: "Live Chat", path: "/live-chat" },
-  { name: "Tutorials", path: "/tutorials" }
+  { name: "Tutorials", path: "/tutorials" },
+  { name: "Account Type", path: "/selection" }  // Added Selection page link
 ];
 
 export default function Navbar() {

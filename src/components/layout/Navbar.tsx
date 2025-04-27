@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, CalendarPlus, LogIn, LogOut, User } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Bot } from "lucide-react";
@@ -21,14 +21,14 @@ const navLinks = [
   { name: "Integrations", path: "/integrations" },
   { name: "Pricing", path: "/pricing" },
   { name: "Live Chat", path: "/live-chat" },
-  { name: "Tutorials", path: "/tutorials" },
-  { name: "Account Type", path: "/selection" }  // Added Selection page link
+  { name: "Tutorials", path: "/tutorials" }
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
 
   useEffect(() => {
@@ -50,6 +50,15 @@ export default function Navbar() {
 
   const handleSignOut = async () => {
     await signOut();
+  };
+
+  const handleAccountTypeClick = (e: React.MouseEvent) => {
+    if (!user) {
+      e.preventDefault();
+      navigate("/login");
+    } else {
+      navigate("/selection");
+    }
   };
 
   return (
@@ -86,6 +95,13 @@ export default function Navbar() {
                 {link.name}
               </NavLink>
             ))}
+            {/* Add Account Type as a button instead of a NavLink for better control */}
+            <button
+              onClick={handleAccountTypeClick}
+              className={`nav-link ${location.pathname === "/selection" ? "font-medium after:scale-x-100" : ""}`}
+            >
+              Account Type
+            </button>
           </nav>
           
           <div className="flex items-center space-x-3">
@@ -102,6 +118,9 @@ export default function Navbar() {
                     {user.email}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleAccountTypeClick}>
+                    Account Type
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign out
@@ -154,6 +173,13 @@ export default function Navbar() {
               </NavLink>
             ))}
             
+            <button
+              onClick={handleAccountTypeClick}
+              className={`text-lg text-left ${location.pathname === "/selection" ? "font-medium" : ""}`}
+            >
+              Account Type
+            </button>
+            
             {user ? (
               <Button variant="outline" className="w-full border-accent-blue text-accent-blue hover:bg-accent-blue/10" onClick={handleSignOut}>
                 <LogOut className="mr-2 h-4 w-4" />
@@ -180,3 +206,4 @@ export default function Navbar() {
     </header>
   );
 }
+

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { Building, FileText, Plus, Upload } from 'lucide-react';
+import { Building, FileText, Plus } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -12,9 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Link } from 'react-router-dom';
-import CsvUpload from '@/components/csv/CsvUpload';
 
 interface PropertyListing {
   id: string;
@@ -30,7 +28,6 @@ interface PropertyListing {
 
 const PropertyListings = () => {
   const [listings, setListings] = useState<PropertyListing[]>([]);
-  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
   const fetchListings = async () => {
     const { data, error } = await supabase
@@ -46,11 +43,6 @@ const PropertyListings = () => {
     setListings(data || []);
   };
 
-  const handleUploadSuccess = () => {
-    setIsUploadDialogOpen(false);
-    fetchListings();
-  };
-
   useEffect(() => {
     fetchListings();
   }, []);
@@ -62,14 +54,6 @@ const PropertyListings = () => {
           Property Listings
         </h1>
         <div className="flex flex-wrap gap-3">
-          <Button
-            onClick={() => setIsUploadDialogOpen(true)}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <Upload className="w-4 h-4" />
-            Upload CSV
-          </Button>
           <Link to="/property-listing">
             <Button className="flex items-center gap-2">
               <Plus className="w-4 h-4" />
@@ -120,20 +104,9 @@ const PropertyListings = () => {
           <p className="text-muted-foreground">No property listings found. Create your first listing!</p>
         </div>
       )}
-
-      <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Upload Property Listings</DialogTitle>
-            <DialogDescription>
-              Upload a CSV file with property listings data. The file should include columns for property_address, rent_per_month, property_type, etc.
-            </DialogDescription>
-          </DialogHeader>
-          <CsvUpload onUploadSuccess={handleUploadSuccess} />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
 
 export default PropertyListings;
+

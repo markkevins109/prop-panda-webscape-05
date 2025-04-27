@@ -48,7 +48,7 @@ const CompanyProfileForm = () => {
       contact_person_name: '',
       phone_number: '',
       email: user?.email || '',
-      years_experience: 0,
+      years_experience: undefined,
       specializations: [],
       operating_areas: '',
       office_address: '',
@@ -103,6 +103,32 @@ const CompanyProfileForm = () => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="profile_purpose"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>What is your company's primary purpose?</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  value={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your purpose" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="buying">Buying Property</SelectItem>
+                    <SelectItem value="selling">Selling Property</SelectItem>
+                    <SelectItem value="both">Both Buying and Selling</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="agency_name"
@@ -274,32 +300,6 @@ const CompanyProfileForm = () => {
                 <FormControl>
                   <Input placeholder="Enter website URL" {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="profile_purpose"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>What is your company's primary purpose?</FormLabel>
-                <Select 
-                  onValueChange={field.onChange} 
-                  value={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your purpose" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="buying">Buying Property</SelectItem>
-                    <SelectItem value="selling">Selling Property</SelectItem>
-                    <SelectItem value="both">Both Buying and Selling</SelectItem>
-                  </SelectContent>
-                </Select>
                 <FormMessage />
               </FormItem>
             )}

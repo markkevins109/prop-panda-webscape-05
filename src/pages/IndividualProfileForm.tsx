@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -10,22 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
-
-const SPECIALIZATIONS = [
-  'Residential',
-  'Commercial', 
-  'Rentals', 
-  'Luxury', 
-  'Industrial',
-  'Land',
-] as const;
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const individualProfileSchema = z.object({
   full_name: z.string().min(2, "Full name is required"),
@@ -111,6 +96,31 @@ const IndividualProfileForm = () => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="profile_purpose"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>What is your primary purpose?</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  value={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your purpose" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="buying">Buying Property</SelectItem>
+                    <SelectItem value="selling">Selling Property</SelectItem>
+                    <SelectItem value="both">Both Buying and Selling</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="full_name"
@@ -260,31 +270,6 @@ const IndividualProfileForm = () => {
                 <FormControl>
                   <Input placeholder="Enter website URL" {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="profile_purpose"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>What is your primary purpose?</FormLabel>
-                <Select 
-                  onValueChange={field.onChange} 
-                  value={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your purpose" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="buying">Buying Property</SelectItem>
-                    <SelectItem value="selling">Selling Property</SelectItem>
-                    <SelectItem value="both">Both Buying and Selling</SelectItem>
-                  </SelectContent>
-                </Select>
                 <FormMessage />
               </FormItem>
             )}

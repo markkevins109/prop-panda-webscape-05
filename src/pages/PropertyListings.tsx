@@ -127,7 +127,6 @@ const PropertyListings = () => {
           Property Listings
         </h1>
         <div className="flex flex-wrap gap-3">
-          <CsvUpload onUploadSuccess={() => fetchListings()} />
           <Button
             onClick={handleDownloadTemplate}
             variant="outline"
@@ -151,6 +150,10 @@ const PropertyListings = () => {
             </Button>
           </Link>
         </div>
+      </div>
+
+      <div className="mb-8">
+        <CsvUpload onUploadSuccess={() => fetchListings()} />
       </div>
 
       {listings.length > 0 ? (

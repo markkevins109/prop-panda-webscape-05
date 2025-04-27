@@ -4,6 +4,7 @@ import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import CsvFileInfo from './CsvFileInfo';
 
 interface PropertyData {
   property_address: string;
@@ -22,6 +23,9 @@ interface CsvUploadProps {
 
 const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
   const [isUploading, setIsUploading] = useState(false);
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
+  const [rowCount, setRowCount] = useState(0);
+  const [columnNames, setColumnNames] = useState<string[]>([]);
 
   const validatePropertyData = (data: any): data is PropertyData => {
     if (!data.property_address || typeof data.property_address !== 'string') return false;
@@ -43,6 +47,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
           const text = e.target?.result as string;
           const lines = text.split('\n');
           const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+          setColumnNames(headers);
           
           const data = lines.slice(1)
             .filter(line => line.trim())
@@ -61,6 +66,8 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
               return obj;
             });
 
+          setRowCount(data.length);
+          
           const validData = data.filter(validatePropertyData);
           if (validData.length !== data.length) {
             throw new Error('Some rows contain invalid data');
@@ -84,7 +91,9 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
       return;
     }
 
+    setCurrentFile(file);
     setIsUploading(true);
+    
     try {
       const propertyData = await parseCsvFile(file);
       
@@ -111,28 +120,38 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <input
-        type="file"
-        accept=".csv"
-        onChange={handleFileUpload}
-        className="hidden"
-        id="csv-upload"
-        disabled={isUploading}
-      />
-      <label htmlFor="csv-upload">
-        <Button 
-          variant="outline" 
-          className="flex items-center gap-2 cursor-pointer"
+    <div className="w-full">
+      <div className="flex items-center gap-2">
+        <input
+          type="file"
+          accept=".csv"
+          onChange={handleFileUpload}
+          className="hidden"
+          id="csv-upload"
           disabled={isUploading}
-          asChild
-        >
-          <span>
-            <Upload className="w-4 h-4" />
-            {isUploading ? 'Uploading...' : 'Upload CSV'}
-          </span>
-        </Button>
-      </label>
+        />
+        <label htmlFor="csv-upload">
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2 cursor-pointer"
+            disabled={isUploading}
+            asChild
+          >
+            <span>
+              <Upload className="w-4 h-4" />
+              {isUploading ? 'Uploading...' : 'Upload CSV'}
+            </span>
+          </Button>
+        </label>
+      </div>
+      
+      {currentFile && (
+        <CsvFileInfo
+          file={currentFile}
+          rowCount={rowCount}
+          columnNames={columnNames}
+        />
+      )}
     </div>
   );
 };

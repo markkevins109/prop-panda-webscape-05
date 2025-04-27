@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { Building, FileText, Plus, Download, Upload } from 'lucide-react';
+import { Building, FileText, Plus, Download } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -12,7 +12,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Link } from 'react-router-dom';
-import CsvUploadDialog from '@/components/property/CsvUploadDialog';
 
 interface PropertyListing {
   id: string;
@@ -28,7 +27,6 @@ interface PropertyListing {
 
 const PropertyListings = () => {
   const [listings, setListings] = useState<PropertyListing[]>([]);
-  const [isCsvDialogOpen, setIsCsvDialogOpen] = useState(false);
 
   const fetchListings = async () => {
     const { data, error } = await supabase
@@ -91,14 +89,6 @@ const PropertyListings = () => {
             <Download className="w-4 h-4" />
             Download Template
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => setIsCsvDialogOpen(true)}
-            className="flex items-center gap-2"
-          >
-            <Upload className="w-4 h-4" />
-            Upload CSV
-          </Button>
           <Link to="/property-listing">
             <Button className="flex items-center gap-2">
               <Plus className="w-4 h-4" />
@@ -149,11 +139,6 @@ const PropertyListings = () => {
           <p className="text-muted-foreground">No property listings found. Create your first listing!</p>
         </div>
       )}
-
-      <CsvUploadDialog
-        isOpen={isCsvDialogOpen}
-        onClose={() => setIsCsvDialogOpen(false)}
-      />
     </div>
   );
 };

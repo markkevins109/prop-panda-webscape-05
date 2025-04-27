@@ -101,7 +101,8 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
             return;
           }
           
-          setColumnNames(headers);
+          // Store original header names for display
+          setColumnNames(nonEmptyLines[0].split(',').map(h => h.trim()));
           
           const data = nonEmptyLines.slice(1)
             .filter(line => line.trim())
@@ -115,7 +116,6 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
                   } else if (header === 'rent_per_month') {
                     obj[header] = Number(values[i]);
                   } else {
-                    // Remove surrounding quotes if present
                     obj[header] = values[i].replace(/^"(.*)"$/, '$1');
                   }
                 });
@@ -252,6 +252,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
           />
           <CsvDataPreview 
             data={extractedData}
+            headers={columnNames}
             onConfirm={handleConfirmUpload}
             onCancel={handleCancelUpload}
           />

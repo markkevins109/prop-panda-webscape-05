@@ -4,16 +4,13 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { Download, FileText } from 'lucide-react';
+import { Download, FileText, Plus, Building, DollarSign, Calendar, Users, PawPrint } from 'lucide-react';
 import CsvUpload from '@/components/CsvUpload';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+  Card,
+  CardHeader,
+  CardContent,
+} from "@/components/ui/card";
 
 interface PropertyListing {
   id: string;
@@ -121,10 +118,12 @@ const PropertyListings = () => {
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Property Listings</h1>
-        <div className="flex gap-4">
+    <div className="container mx-auto py-8 px-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+          Property Listings
+        </h1>
+        <div className="flex flex-wrap gap-3">
           <CsvUpload onUploadSuccess={() => fetchListings()} />
           <Button
             onClick={handleDownloadTemplate}
@@ -143,41 +142,57 @@ const PropertyListings = () => {
             Download CSV
           </Button>
           <Link to="/property-listing">
-            <Button>Create New Listing</Button>
+            <Button className="flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              Create New Listing
+            </Button>
           </Link>
         </div>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Property Type</TableHead>
-              <TableHead>Address</TableHead>
-              <TableHead>Rent/Month</TableHead>
-              <TableHead>Available From</TableHead>
-              <TableHead>Preferred Nationality</TableHead>
-              <TableHead>Preferred Profession</TableHead>
-              <TableHead>Preferred Race</TableHead>
-              <TableHead>Pets Allowed</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {listings.map((listing) => (
-              <TableRow key={listing.id}>
-                <TableCell>{listing.property_type}</TableCell>
-                <TableCell>{listing.property_address}</TableCell>
-                <TableCell>${listing.rent_per_month.toFixed(2)}</TableCell>
-                <TableCell>{format(new Date(listing.available_date), 'PP')}</TableCell>
-                <TableCell>{listing.preferred_nationality}</TableCell>
-                <TableCell>{listing.preferred_profession}</TableCell>
-                <TableCell>{listing.preferred_race}</TableCell>
-                <TableCell>{listing.pets_allowed ? 'Yes' : 'No'}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {listings.map((listing) => (
+          <Card key={listing.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <CardHeader className="bg-gradient-to-r from-primary/10 to-primary/5">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm mb-2">
+                    <Building className="w-4 h-4" />
+                    {listing.property_type}
+                  </div>
+                  <h3 className="text-lg font-semibold line-clamp-2">{listing.property_address}</h3>
+                </div>
+                <div className="flex items-center gap-1 text-lg font-bold text-primary">
+                  <DollarSign className="w-5 h-5" />
+                  {listing.rent_per_month.toFixed(2)}
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-4">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Calendar className="w-4 h-4" />
+                  <span>Available from {format(new Date(listing.available_date), 'PP')}</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Users className="w-4 h-4" />
+                  <span>Preferred: {listing.preferred_nationality}, {listing.preferred_profession}, {listing.preferred_race}</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <PawPrint className="w-4 h-4" />
+                  <span>Pets {listing.pets_allowed ? 'Allowed' : 'Not Allowed'}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
+
+      {listings.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">No property listings found. Create your first listing!</p>
+        </div>
+      )}
     </div>
   );
 };

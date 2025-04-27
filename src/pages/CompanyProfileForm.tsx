@@ -12,12 +12,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const specializations = [
-  "Residential", 
+const SPECIALIZATIONS = [
+  "Residential",
   "Commercial", 
-  "Rentals", 
-  "Luxury", 
-  "Industrial"
+  "Rentals",
+  "Luxury",
+  "Industrial",
+  "Property Management",
+  "Investment Properties",
+  "New Construction"
 ];
 
 const companyProfileSchema = z.object({
@@ -200,7 +203,7 @@ const CompanyProfileForm = () => {
               <FormItem>
                 <FormLabel>Specializations</FormLabel>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {specializations.map((spec) => (
+                  {SPECIALIZATIONS.map((spec) => (
                     <div key={spec} className="flex items-center space-x-2">
                       <input
                         type="checkbox"

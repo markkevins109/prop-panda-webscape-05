@@ -25,6 +25,8 @@ import PropertyListing from "./pages/PropertyListing";
 import PropertyListings from "./pages/PropertyListings";
 import NotFound from "./pages/NotFound";
 import AccountTypeSelection from "./pages/AccountTypeSelection";
+import IndividualProfileForm from "./pages/IndividualProfileForm";
+import CompanyProfileForm from "./pages/CompanyProfileForm";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +70,26 @@ const App = () => (
                   <ProtectedRoute>
                     <Layout>
                       <AccountTypeSelection />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/individual"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <IndividualProfileForm />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/company"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <CompanyProfileForm />
                     </Layout>
                   </ProtectedRoute>
                 }

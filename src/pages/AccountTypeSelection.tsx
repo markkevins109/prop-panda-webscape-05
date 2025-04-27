@@ -28,7 +28,8 @@ const AccountTypeSelection = () => {
         description: "Your account type has been set successfully.",
       });
 
-      navigate('/');
+      // Navigate to the corresponding profile form
+      navigate(accountType === 'individual' ? '/profile/individual' : '/profile/company');
     } catch (error) {
       toast({
         title: "Error",
@@ -46,7 +47,10 @@ const AccountTypeSelection = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="p-6 cursor-pointer hover:border-primary transition-colors" onClick={() => handleAccountTypeSelection('individual')}>
+        <Card 
+          className="p-6 cursor-pointer hover:border-primary transition-colors" 
+          onClick={() => handleAccountTypeSelection('individual')}
+        >
           <div className="flex flex-col items-center text-center">
             <div className="bg-primary/10 p-4 rounded-full mb-4">
               <UserRound className="h-8 w-8 text-primary" />
@@ -57,7 +61,10 @@ const AccountTypeSelection = () => {
           </div>
         </Card>
 
-        <Card className="p-6 cursor-pointer hover:border-primary transition-colors" onClick={() => handleAccountTypeSelection('company')}>
+        <Card 
+          className="p-6 cursor-pointer hover:border-primary transition-colors" 
+          onClick={() => handleAccountTypeSelection('company')}
+        >
           <div className="flex flex-col items-center text-center">
             <div className="bg-primary/10 p-4 rounded-full mb-4">
               <Building2 className="h-8 w-8 text-primary" />

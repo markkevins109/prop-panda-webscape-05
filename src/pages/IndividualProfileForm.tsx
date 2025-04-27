@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-// Define the SPECIALIZATIONS array that was missing
 const SPECIALIZATIONS = [
   "Residential",
   "Commercial", 
@@ -28,13 +27,13 @@ const individualProfileSchema = z.object({
   full_name: z.string().min(2, "Full name is required"),
   phone_number: z.string().min(10, "Phone number is required"),
   email: z.string().email("Invalid email address"),
-  agency_name: z.string().optional(),
-  years_experience: z.coerce.number().min(0, "Years of experience must be a positive number").optional(),
-  specializations: z.array(z.enum(SPECIALIZATIONS as [string, ...string[]])).optional(),
-  operating_areas: z.string().optional(),
-  office_address: z.string().optional(),
-  working_hours: z.string().optional(),
-  website: z.string().url("Invalid URL").optional(),
+  agency_name: z.string().min(2, "Agency name is required"),
+  years_experience: z.coerce.number().min(0, "Years of experience is required"),
+  specializations: z.array(z.enum(SPECIALIZATIONS as [string, ...string[]])).min(1, "Select at least one specialization"),
+  operating_areas: z.string().min(2, "Operating areas are required"),
+  office_address: z.string().min(2, "Office address is required"),
+  working_hours: z.string().min(2, "Working hours are required"),
+  website: z.string().url("Valid website URL is required"),
   profile_purpose: z.enum(['buying', 'selling', 'both'], { 
     required_error: "Please select your profile purpose" 
   })
@@ -171,7 +170,7 @@ const IndividualProfileForm = () => {
             name="agency_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Agency Name (Optional)</FormLabel>
+                <FormLabel>Agency Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter agency name" {...field} />
                 </FormControl>
@@ -184,7 +183,7 @@ const IndividualProfileForm = () => {
             name="years_experience"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Years of Experience (Optional)</FormLabel>
+                <FormLabel>Years of Experience</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -202,7 +201,7 @@ const IndividualProfileForm = () => {
             name="specializations"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Specializations (Optional)</FormLabel>
+                <FormLabel>Specializations</FormLabel>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {SPECIALIZATIONS.map((spec) => (
                     <div key={spec} className="flex items-center space-x-2">
@@ -233,7 +232,7 @@ const IndividualProfileForm = () => {
             name="operating_areas"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Operating Areas (Optional)</FormLabel>
+                <FormLabel>Operating Areas</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter cities or neighborhoods" {...field} />
                 </FormControl>
@@ -246,7 +245,7 @@ const IndividualProfileForm = () => {
             name="office_address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Office Address (Optional)</FormLabel>
+                <FormLabel>Office Address</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter office address" {...field} />
                 </FormControl>
@@ -259,7 +258,7 @@ const IndividualProfileForm = () => {
             name="working_hours"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Working Hours (Optional)</FormLabel>
+                <FormLabel>Working Hours</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter working hours" {...field} />
                 </FormControl>
@@ -272,7 +271,7 @@ const IndividualProfileForm = () => {
             name="website"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Website or Portfolio Link (Optional)</FormLabel>
+                <FormLabel>Website or Portfolio Link</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter website URL" {...field} />
                 </FormControl>

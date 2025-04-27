@@ -1,7 +1,10 @@
-import { FileSpreadsheet, BarChart3, MessageSquare, Share2, FileText, DatabaseZap } from "lucide-react";
+import { FileSpreadsheet, BarChart3, MessageSquare, Share2, FileText, DatabaseZap, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export default function Integrations() {
+  const navigate = useNavigate();
+
   const integrations = [
     {
       title: "Custom CRM Integration",
@@ -45,6 +48,14 @@ export default function Integrations() {
       color: "text-green-600",
       bgColor: "bg-green-50",
     },
+    {
+      title: "CSV Upload",
+      description: "Import property data quickly and easily using CSV files",
+      icon: Upload,
+      color: "text-emerald-600",
+      bgColor: "bg-emerald-50",
+      action: () => navigate('/csv-upload')
+    }
   ];
 
   return (
@@ -76,8 +87,12 @@ export default function Integrations() {
                   </div>
                   <h3 className="text-xl font-semibold">{integration.title}</h3>
                   <p className="text-muted-foreground">{integration.description}</p>
-                  <Button variant="outline" className="mt-4">
-                    Learn More
+                  <Button 
+                    variant="outline" 
+                    className="mt-4"
+                    onClick={integration.action}
+                  >
+                    Get Started
                   </Button>
                 </div>
               </div>

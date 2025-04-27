@@ -27,6 +27,7 @@ import NotFound from "./pages/NotFound";
 import AccountTypeSelection from "./pages/AccountTypeSelection";
 import IndividualProfileForm from "./pages/IndividualProfileForm";
 import CompanyProfileForm from "./pages/CompanyProfileForm";
+import CsvUploadPage from "./pages/CsvUploadPage";
 
 const queryClient = new QueryClient();
 
@@ -94,6 +95,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              <Route path="/csv-upload" element={<Layout><CsvUploadPage /></Layout>} />
               <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>
           </TooltipProvider>

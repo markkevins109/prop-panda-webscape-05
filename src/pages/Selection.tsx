@@ -1,5 +1,5 @@
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -10,26 +10,43 @@ import { toast } from 'sonner';
 const Selection = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasCheckedSelection, setHasCheckedSelection] = useState(false);
 
   useEffect(() => {
     const checkExistingSelection = async () => {
       if (!user) {
-        navigate('/login');
         return;
       }
       
-      const { data } = await supabase
-        .from('user_account_types')
-        .select('account_type')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('user_account_types')
+          .select('account_type')
+          .eq('user_id', user.id)
+          .maybeSingle();
 
-      if (data) {
-        navigate('/');
+        if (error) {
+          console.error('Error checking account type:', error);
+          toast.error('Failed to check your account status');
+        } else if (data) {
+          // User already has a selection, redirect to home
+          navigate('/');
+        }
+      } catch (error) {
+        console.error('Error in checkExistingSelection:', error);
+      } finally {
+        setIsLoading(false);
+        setHasCheckedSelection(true);
       }
     };
 
-    checkExistingSelection();
+    if (user) {
+      checkExistingSelection();
+    } else {
+      setHasCheckedSelection(true);
+    }
   }, [user, navigate]);
 
   const handleSelection = async (accountType: 'individual' | 'company') => {
@@ -39,24 +56,44 @@ const Selection = () => {
       return;
     }
 
-    const { error } = await supabase
-      .from('user_account_types')
-      .insert({
-        user_id: user.id,
-        account_type: accountType
-      });
+    setIsLoading(true);
+    try {
+      const { error } = await supabase
+        .from('user_account_types')
+        .insert({
+          user_id: user.id,
+          account_type: accountType
+        });
 
-    if (error) {
-      toast.error('Failed to save your selection. Please try again.');
-      return;
+      if (error) {
+        console.error('Error saving selection:', error);
+        toast.error('Failed to save your selection. Please try again.');
+        return;
+      }
+
+      toast.success('Account type saved successfully!');
+      navigate('/');
+    } catch (error) {
+      console.error('Error in handleSelection:', error);
+      toast.error('An unexpected error occurred');
+    } finally {
+      setIsLoading(false);
     }
-
-    toast.success('Account type saved successfully!');
-    navigate('/');
   };
 
+  // Show loading state while checking or if not authenticated
+  if (isLoading || !hasCheckedSelection) {
+    return (
+      <div className="container mx-auto py-16 px-4 flex items-center justify-center min-h-[60vh]">
+        <p className="text-lg">Loading...</p>
+      </div>
+    );
+  }
+
+  // If not authenticated, redirect to login
   if (!user) {
-    return null; // The useEffect will handle redirecting to login
+    navigate('/login');
+    return null;
   }
 
   return (
@@ -68,22 +105,30 @@ const Selection = () => {
         </p>
         
         <div className="grid md:grid-cols-2 gap-8">
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" 
-                onClick={() => handleSelection('individual')}>
+          <Card 
+            className={`p-6 hover:shadow-lg transition-shadow cursor-pointer ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
+            onClick={() => !isLoading && handleSelection('individual')}
+          >
             <h2 className="text-xl font-semibold mb-4">Individual</h2>
             <p className="text-muted-foreground mb-6">
               Perfect for personal property listings and individual property seekers
             </p>
-            <Button className="w-full">Select Individual</Button>
+            <Button className="w-full" disabled={isLoading}>
+              {isLoading ? 'Processing...' : 'Select Individual'}
+            </Button>
           </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => handleSelection('company')}>
+          <Card 
+            className={`p-6 hover:shadow-lg transition-shadow cursor-pointer ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
+            onClick={() => !isLoading && handleSelection('company')}
+          >
             <h2 className="text-xl font-semibold mb-4">Company</h2>
             <p className="text-muted-foreground mb-6">
               Ideal for real estate agencies and property management companies
             </p>
-            <Button className="w-full">Select Company</Button>
+            <Button className="w-full" disabled={isLoading}>
+              {isLoading ? 'Processing...' : 'Select Company'}
+            </Button>
           </Card>
         </div>
 

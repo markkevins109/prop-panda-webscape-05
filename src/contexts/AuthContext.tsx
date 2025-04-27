@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface AuthContextType {
   session: Session | null;
@@ -20,8 +20,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const checkUserAccountType = async (userId: string) => {
     try {
@@ -38,64 +40,97 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, newSession) => {
-        console.log('Auth state changed:', event);
-        setSession(newSession);
-        setUser(newSession?.user ?? null);
-        
-        if (event === 'SIGNED_IN') {
-          toast({
-            title: 'Sign in successful',
-            description: 'You are now logged in.',
-          });
-
-          // Use setTimeout to avoid potential Supabase auth deadlocks
-          if (newSession?.user) {
-            setTimeout(async () => {
-              const accountType = await checkUserAccountType(newSession.user.id);
-              if (!accountType) {
-                navigate('/selection');
-              } else {
-                navigate('/');
-              }
-            }, 0);
-          }
-        }
-        
-        if (event === 'SIGNED_OUT') {
-          toast({
-            title: 'Signed out',
-            description: 'You have been logged out.',
-          });
-          navigate('/login');
-        }
+  // Handle redirects based on authentication and account type
+  const handleAuthRedirect = async (userId: string, skipIfCurrentPath = false) => {
+    try {
+      if (skipIfCurrentPath && location.pathname === '/selection') {
+        return;
       }
-    );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-      setLoading(false);
+      const accountType = await checkUserAccountType(userId);
       
-      // If we have an existing session, check account type
-      if (currentSession?.user) {
-        setTimeout(async () => {
-          const accountType = await checkUserAccountType(currentSession.user.id);
-          if (!accountType && window.location.pathname !== '/selection') {
-            navigate('/selection');
+      if (!accountType && location.pathname !== '/selection') {
+        navigate('/selection');
+      } else if (accountType && location.pathname === '/login') {
+        navigate('/');
+      }
+    } catch (error) {
+      console.error("Error during auth redirect:", error);
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    
+    // Set up auth state listener first
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, newSession) => {
+      console.log('Auth state changed:', event);
+      
+      if (!isMounted) return;
+      
+      setSession(newSession);
+      setUser(newSession?.user ?? null);
+      
+      if (event === 'SIGNED_IN' && newSession?.user) {
+        toast({
+          title: 'Sign in successful',
+          description: 'You are now logged in.',
+        });
+
+        // Use setTimeout to avoid potential Supabase auth deadlocks
+        setTimeout(() => {
+          if (isMounted && newSession?.user) {
+            handleAuthRedirect(newSession.user.id);
           }
-        }, 0);
+        }, 100);
+      }
+      
+      if (event === 'SIGNED_OUT') {
+        toast({
+          title: 'Signed out',
+          description: 'You have been logged out.',
+        });
+        navigate('/login');
       }
     });
 
+    // Then check for existing session
+    const checkSession = async () => {
+      try {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        
+        if (!isMounted) return;
+        
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+        
+        if (currentSession?.user) {
+          // Delay this check slightly to ensure the router is fully initialized
+          setTimeout(() => {
+            if (isMounted && currentSession?.user) {
+              handleAuthRedirect(currentSession.user.id, true);
+            }
+          }, 100);
+        }
+        
+        setLoading(false);
+        setInitialLoadComplete(true);
+      } catch (error) {
+        console.error("Error getting session:", error);
+        if (isMounted) {
+          setLoading(false);
+          setInitialLoadComplete(true);
+        }
+      }
+    };
+
+    checkSession();
+
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
-  }, [toast, navigate]);
+  }, [toast, navigate, location.pathname]);
 
   const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
     try {
@@ -175,6 +210,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await supabase.auth.signOut();
   };
 
+  // Only provide the context when initial load is complete
   const value = {
     session,
     user,
@@ -183,6 +219,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signUp,
     signOut,
   };
+
+  if (!initialLoadComplete) {
+    return <div className="flex h-screen w-full items-center justify-center">Loading...</div>;
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

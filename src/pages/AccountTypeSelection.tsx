@@ -49,7 +49,6 @@ const AccountTypeSelection = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card 
           className="p-6 cursor-pointer hover:border-primary transition-colors" 
-          onClick={() => handleAccountTypeSelection('individual')}
         >
           <div className="flex flex-col items-center text-center">
             <div className="bg-primary/10 p-4 rounded-full mb-4">
@@ -57,13 +56,17 @@ const AccountTypeSelection = () => {
             </div>
             <h2 className="text-xl font-semibold mb-2">Individual</h2>
             <p className="text-muted-foreground text-sm mb-4">Create a personal account to browse and rent properties</p>
-            <Button className="w-full">Individual</Button>
+            <Button 
+              className="w-full"
+              onClick={() => handleAccountTypeSelection('individual')}
+            >
+              Individual
+            </Button>
           </div>
         </Card>
 
         <Card 
           className="p-6 cursor-pointer hover:border-primary transition-colors" 
-          onClick={() => handleAccountTypeSelection('company')}
         >
           <div className="flex flex-col items-center text-center">
             <div className="bg-primary/10 p-4 rounded-full mb-4">
@@ -71,7 +74,12 @@ const AccountTypeSelection = () => {
             </div>
             <h2 className="text-xl font-semibold mb-2">Company</h2>
             <p className="text-muted-foreground text-sm mb-4">List and manage properties as a business entity</p>
-            <Button className="w-full">Company</Button>
+            <Button 
+              className="w-full"
+              onClick={() => handleAccountTypeSelection('company')}
+            >
+              Company
+            </Button>
           </div>
         </Card>
       </div>

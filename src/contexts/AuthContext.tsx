@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -40,19 +39,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Handle redirects based on authentication and account type
-  const handleAuthRedirect = async (userId: string, skipIfCurrentPath = false) => {
+  const handleAuthRedirect = async (userId: string) => {
     try {
-      if (skipIfCurrentPath && location.pathname === '/selection') {
-        return;
-      }
-
-      const accountType = await checkUserAccountType(userId);
+      const { data: accountType } = await supabase
+        .from('user_account_types')
+        .select('account_type')
+        .eq('user_id', userId)
+        .maybeSingle();
       
-      if (!accountType && location.pathname !== '/selection') {
-        navigate('/selection');
-      } else if (accountType && location.pathname === '/login') {
-        navigate('/');
+      if (!accountType && location.pathname !== '/account-type') {
+        navigate('/account-type');
+      } else if (accountType?.account_type === 'individual') {
+        const { data: profile } = await supabase
+          .from('individual_profiles')
+          .select('*')
+          .eq('user_id', userId)
+          .maybeSingle();
+        
+        if (!profile && location.pathname !== '/individual-profile') {
+          navigate('/individual-profile');
+        } else if (location.pathname === '/login') {
+          navigate('/');
+        }
       }
     } catch (error) {
       console.error("Error during auth redirect:", error);
@@ -62,10 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     let isMounted = true;
     
-    // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, newSession) => {
-      console.log('Auth state changed:', event);
-      
       if (!isMounted) return;
       
       setSession(newSession);
@@ -77,7 +82,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           description: 'You are now logged in.',
         });
 
-        // Use setTimeout to avoid potential Supabase auth deadlocks
         setTimeout(() => {
           if (isMounted && newSession?.user) {
             handleAuthRedirect(newSession.user.id);
@@ -94,7 +98,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    // Then check for existing session
     const checkSession = async () => {
       try {
         const { data: { session: currentSession } } = await supabase.auth.getSession();
@@ -108,7 +111,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           // Delay this check slightly to ensure the router is fully initialized
           setTimeout(() => {
             if (isMounted && currentSession?.user) {
-              handleAuthRedirect(currentSession.user.id, true);
+              handleAuthRedirect(currentSession.user.id);
             }
           }, 100);
         }

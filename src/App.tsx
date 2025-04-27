@@ -7,7 +7,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import Layout from "./components/layout/Layout";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
-// Import all page components
 import Home from "./pages/Home";
 import Capabilities from "./pages/Capabilities";
 import Blog from "./pages/Blog";
@@ -25,6 +24,8 @@ import Signup from "./pages/Signup";
 import PropertyListing from "./pages/PropertyListing";
 import PropertyListings from "./pages/PropertyListings";
 import NotFound from "./pages/NotFound";
+import AccountTypeSelection from "./pages/AccountTypeSelection";
+import IndividualProfile from "./pages/IndividualProfile";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,26 @@ const App = () => (
                   <Layout>
                     <PropertyListings />
                   </Layout>
+                }
+              />
+              <Route
+                path="/account-type"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <AccountTypeSelection />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/individual-profile"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <IndividualProfile />
+                    </Layout>
+                  </ProtectedRoute>
                 }
               />
               <Route path="*" element={<Layout><NotFound /></Layout>} />

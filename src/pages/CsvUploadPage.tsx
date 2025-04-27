@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { CsvUpload } from '@/components/csv/CsvUpload';
+import CsvUpload from '@/components/csv/CsvUpload';
 import { toast } from 'sonner';
 
 const CsvUploadPage = () => {

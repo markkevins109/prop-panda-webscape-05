@@ -12,6 +12,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+const specializations = [
+  "Residential", 
+  "Commercial", 
+  "Rentals", 
+  "Luxury", 
+  "Industrial"
+];
+
 const companyProfileSchema = z.object({
   agency_name: z.string().min(2, "Agency name is required"),
   contact_person_name: z.string().min(2, "Contact person name is required"),
@@ -27,14 +35,6 @@ const companyProfileSchema = z.object({
     required_error: "Please select your company's profile purpose" 
   })
 });
-
-const specializations = [
-  "Residential", 
-  "Commercial", 
-  "Rentals", 
-  "Luxury", 
-  "Industrial"
-];
 
 const CompanyProfileForm = () => {
   const { user } = useAuth();
@@ -95,12 +95,6 @@ const CompanyProfileForm = () => {
     <div className="container max-w-xl mx-auto py-12 px-4">
       <h1 className="text-3xl font-bold mb-6 text-center">Company Profile</h1>
       
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-center">
-        <p className="text-blue-800 font-semibold">
-          Are you here to buy or sell properties? Let us help you connect with the right opportunities!
-        </p>
-      </div>
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField

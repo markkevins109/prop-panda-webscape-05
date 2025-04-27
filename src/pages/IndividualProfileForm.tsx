@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 // Define the SPECIALIZATIONS array that was missing
 const SPECIALIZATIONS = [
   "Residential",
-  "Commercial",
+  "Commercial", 
   "Rentals",
   "Luxury",
   "Industrial",
@@ -31,7 +30,7 @@ const individualProfileSchema = z.object({
   email: z.string().email("Invalid email address"),
   agency_name: z.string().optional(),
   years_experience: z.coerce.number().min(0, "Years of experience must be a positive number").optional(),
-  specializations: z.array(z.enum(SPECIALIZATIONS)).optional(),
+  specializations: z.array(z.enum(SPECIALIZATIONS as [string, ...string[]])).optional(),
   operating_areas: z.string().optional(),
   office_address: z.string().optional(),
   working_hours: z.string().optional(),
@@ -101,12 +100,6 @@ const IndividualProfileForm = () => {
     <div className="container max-w-xl mx-auto py-12 px-4">
       <h1 className="text-3xl font-bold mb-6 text-center">Individual Profile</h1>
       
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-center">
-        <p className="text-blue-800 font-semibold">
-          Are you here to buy or sell properties? Let us help you connect with the right opportunities!
-        </p>
-      </div>
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField

@@ -28,7 +28,7 @@ const AccountTypeSelection = () => {
         description: "Your account type has been set successfully.",
       });
 
-      // Navigate to the corresponding profile form
+      // Directly navigate to the corresponding profile form
       navigate(accountType === 'individual' ? '/profile/individual' : '/profile/company');
     } catch (error) {
       toast({

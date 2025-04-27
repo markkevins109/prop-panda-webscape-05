@@ -14,22 +14,7 @@ export const checkUserProfile = async (userId: string, navigate: NavigateFunctio
     return;
   }
 
-  if (accountType.account_type === 'individual') {
-    const { data: profile } = await supabase
-      .from('individual_profiles')
-      .select('id')
-      .eq('user_id', userId)
-      .single();
-
-    if (!profile) {
-      navigate('/individual-profile');
-      return;
-    }
-  }
-
-  if (currentPath === '/login' || 
-      currentPath === '/account-type' || 
-      currentPath === '/individual-profile') {
+  if (currentPath === '/login' || currentPath === '/account-type') {
     navigate('/');
   }
 };

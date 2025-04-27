@@ -25,7 +25,6 @@ import PropertyListing from "./pages/PropertyListing";
 import PropertyListings from "./pages/PropertyListings";
 import NotFound from "./pages/NotFound";
 import AccountTypeSelection from "./pages/AccountTypeSelection";
-import IndividualProfile from "./pages/IndividualProfile";
 
 const queryClient = new QueryClient();
 
@@ -62,30 +61,13 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/property-listings"
-                element={
-                  <Layout>
-                    <PropertyListings />
-                  </Layout>
-                }
-              />
+              <Route path="/property-listings" element={<Layout><PropertyListings /></Layout>} />
               <Route
                 path="/account-type"
                 element={
                   <ProtectedRoute>
                     <Layout>
                       <AccountTypeSelection />
-                    </Layout>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/individual-profile"
-                element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <IndividualProfile />
                     </Layout>
                   </ProtectedRoute>
                 }

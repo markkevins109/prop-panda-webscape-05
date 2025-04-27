@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from '@/components/ui/button';
 import { PropertyData } from './CsvUpload';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface CsvDataPreviewProps {
   data: PropertyData[];
@@ -22,7 +23,8 @@ const CsvDataPreview = ({ data, onConfirm, onCancel }: CsvDataPreviewProps) => {
 
   return (
     <div className="mt-6 space-y-4">
-      <div className="rounded-md border">
+      <h3 className="text-lg font-semibold">Preview Data</h3>
+      <ScrollArea className="h-[400px] rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -40,9 +42,9 @@ const CsvDataPreview = ({ data, onConfirm, onCancel }: CsvDataPreviewProps) => {
             {data.map((row, index) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">{row.property_address}</TableCell>
-                <TableCell>${row.rent_per_month}</TableCell>
+                <TableCell>${row.rent_per_month.toLocaleString()}</TableCell>
                 <TableCell>{row.property_type}</TableCell>
-                <TableCell>{row.available_date}</TableCell>
+                <TableCell>{new Date(row.available_date).toLocaleDateString()}</TableCell>
                 <TableCell>{row.preferred_nationality}</TableCell>
                 <TableCell>{row.preferred_profession}</TableCell>
                 <TableCell>{row.preferred_race}</TableCell>
@@ -51,13 +53,13 @@ const CsvDataPreview = ({ data, onConfirm, onCancel }: CsvDataPreviewProps) => {
             ))}
           </TableBody>
         </Table>
-      </div>
+      </ScrollArea>
       <div className="flex justify-end gap-3">
         <Button variant="outline" onClick={onCancel}>
           Cancel
         </Button>
         <Button onClick={onConfirm}>
-          Confirm Upload
+          Confirm Upload ({data.length} properties)
         </Button>
       </div>
     </div>

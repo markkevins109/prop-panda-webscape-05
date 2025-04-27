@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import CsvFileInfo from './CsvFileInfo';
 import CsvDataPreview from './CsvDataPreview';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export interface PropertyData {
   property_address: string;
@@ -21,22 +23,62 @@ interface CsvUploadProps {
   onUploadSuccess: () => void;
 }
 
+const validateCsvHeaders = (headers: string[]): string | null => {
+  const requiredHeaders = [
+    'property_address',
+    'rent_per_month',
+    'property_type',
+    'available_date',
+    'preferred_nationality',
+    'preferred_profession',
+    'preferred_race',
+    'pets_allowed'
+  ];
+
+  const missingHeaders = requiredHeaders.filter(
+    header => !headers.map(h => h.toLowerCase().trim()).includes(header)
+  );
+
+  if (missingHeaders.length > 0) {
+    return `Missing required columns: ${missingHeaders.join(', ')}`;
+  }
+
+  return null;
+};
+
 const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [rowCount, setRowCount] = useState(0);
   const [columnNames, setColumnNames] = useState<string[]>([]);
   const [extractedData, setExtractedData] = useState<PropertyData[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const validatePropertyData = (data: any): data is PropertyData => {
-    if (!data.property_address || typeof data.property_address !== 'string') return false;
-    if (!data.rent_per_month || isNaN(Number(data.rent_per_month))) return false;
-    if (!['HDB', 'LANDED', 'CONDOMINIUM', 'SHOP'].includes(data.property_type)) return false;
-    if (!data.available_date || isNaN(Date.parse(data.available_date))) return false;
-    if (!data.preferred_nationality) return false;
-    if (!['RETIRED', 'STUDENT', 'PROFESSIONAL', 'ANY'].includes(data.preferred_profession)) return false;
-    if (!['INDIAN', 'CHINESE', 'MALAY', 'ANY'].includes(data.preferred_race)) return false;
-    if (typeof data.pets_allowed !== 'boolean' && !['true', 'false'].includes(data.pets_allowed.toLowerCase())) return false;
+    if (!data.property_address || typeof data.property_address !== 'string') {
+      throw new Error('Invalid property address');
+    }
+    if (!data.rent_per_month || isNaN(Number(data.rent_per_month))) {
+      throw new Error('Invalid rent amount');
+    }
+    if (!['HDB', 'LANDED', 'CONDOMINIUM', 'SHOP'].includes(data.property_type)) {
+      throw new Error(`Invalid property type: ${data.property_type}`);
+    }
+    if (!data.available_date || isNaN(Date.parse(data.available_date))) {
+      throw new Error('Invalid date format');
+    }
+    if (!data.preferred_nationality) {
+      throw new Error('Missing preferred nationality');
+    }
+    if (!['RETIRED', 'STUDENT', 'PROFESSIONAL', 'ANY'].includes(data.preferred_profession)) {
+      throw new Error(`Invalid profession type: ${data.preferred_profession}`);
+    }
+    if (!['INDIAN', 'CHINESE', 'MALAY', 'ANY'].includes(data.preferred_race)) {
+      throw new Error(`Invalid race option: ${data.preferred_race}`);
+    }
+    if (typeof data.pets_allowed !== 'boolean' && !['true', 'false'].includes(data.pets_allowed.toLowerCase())) {
+      throw new Error('Invalid pets allowed value');
+    }
     return true;
   };
 
@@ -47,33 +89,54 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
         try {
           const text = e.target?.result as string;
           const lines = text.split('\n');
-          const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+          
+          // Remove any empty lines
+          const nonEmptyLines = lines.filter(line => line.trim());
+          
+          // Get headers and validate them
+          const headers = nonEmptyLines[0].split(',').map(h => h.trim().toLowerCase());
+          const headerError = validateCsvHeaders(headers);
+          if (headerError) {
+            reject(new Error(headerError));
+            return;
+          }
+          
           setColumnNames(headers);
           
-          const data = lines.slice(1)
+          const data = nonEmptyLines.slice(1)
             .filter(line => line.trim())
-            .map(line => {
-              const values = line.split(',').map(v => v.trim());
-              const obj: any = {};
-              headers.forEach((header, i) => {
-                if (header === 'pets_allowed') {
-                  obj[header] = values[i].toLowerCase() === 'true';
-                } else if (header === 'rent_per_month') {
-                  obj[header] = Number(values[i]);
-                } else {
-                  obj[header] = values[i].replace(/^"(.*)"$/, '$1');
-                }
-              });
-              return obj;
+            .map((line, index) => {
+              try {
+                const values = line.split(',').map(v => v.trim());
+                const obj: any = {};
+                headers.forEach((header, i) => {
+                  if (header === 'pets_allowed') {
+                    obj[header] = values[i].toLowerCase() === 'true';
+                  } else if (header === 'rent_per_month') {
+                    obj[header] = Number(values[i]);
+                  } else {
+                    // Remove surrounding quotes if present
+                    obj[header] = values[i].replace(/^"(.*)"$/, '$1');
+                  }
+                });
+                return obj;
+              } catch (error) {
+                throw new Error(`Error parsing row ${index + 2}: ${error.message}`);
+              }
             });
 
           setRowCount(data.length);
           
-          const validData = data.filter(validatePropertyData);
-          if (validData.length !== data.length) {
-            throw new Error('Some rows contain invalid data');
-          }
-          resolve(validData as PropertyData[]);
+          // Validate each row
+          data.forEach((row, index) => {
+            try {
+              validatePropertyData(row);
+            } catch (error) {
+              throw new Error(`Row ${index + 2}: ${error.message}`);
+            }
+          });
+
+          resolve(data as PropertyData[]);
         } catch (error) {
           reject(error);
         }
@@ -85,9 +148,12 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    setError(null);
+    
     if (!file) return;
 
     if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+      setError('Please upload a CSV file');
       toast.error('Please upload a CSV file');
       return;
     }
@@ -97,10 +163,15 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
     try {
       const propertyData = await parseCsvFile(file);
       setExtractedData(propertyData);
+      toast.success('CSV file parsed successfully');
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error('Failed to parse CSV file. Please check the file format and try again.');
+      setError(error.message);
+      toast.error(`Failed to parse CSV file: ${error.message}`);
       setCurrentFile(null);
+      setExtractedData([]);
+      setRowCount(0);
+      setColumnNames([]);
     }
   };
 
@@ -122,9 +193,11 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
       onUploadSuccess();
       setCurrentFile(null);
       setExtractedData([]);
+      setError(null);
     } catch (error) {
       console.error('Upload error:', error);
       toast.error('Failed to upload properties. Please try again.');
+      setError('Failed to upload to database. Please try again.');
     } finally {
       setIsUploading(false);
     }
@@ -135,10 +208,17 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
     setExtractedData([]);
     setRowCount(0);
     setColumnNames([]);
+    setError(null);
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full space-y-4">
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      
       <div className="flex items-center gap-2">
         <input
           type="file"

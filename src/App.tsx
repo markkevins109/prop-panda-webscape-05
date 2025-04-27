@@ -1,3 +1,4 @@
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -24,7 +25,6 @@ import Signup from "./pages/Signup";
 import PropertyListing from "./pages/PropertyListing";
 import PropertyListings from "./pages/PropertyListings";
 import NotFound from "./pages/NotFound";
-import AccountTypeSelection from "./pages/AccountTypeSelection";
 
 const queryClient = new QueryClient();
 
@@ -62,16 +62,6 @@ const App = () => (
                 }
               />
               <Route path="/property-listings" element={<Layout><PropertyListings /></Layout>} />
-              <Route
-                path="/account-type"
-                element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <AccountTypeSelection />
-                    </Layout>
-                  </ProtectedRoute>
-                }
-              />
               <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>
           </TooltipProvider>

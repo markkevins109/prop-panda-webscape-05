@@ -6,7 +6,8 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import CsvFileInfo from './CsvFileInfo';
 import CsvDataPreview from './CsvDataPreview';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { InfoIcon } from 'lucide-react';
 
 export interface PropertyData {
   property_address: string;
@@ -35,8 +36,12 @@ const validateCsvHeaders = (headers: string[]): string | null => {
     'pets_allowed'
   ];
 
+  // Convert headers to lowercase for case-insensitive comparison
+  const normalizedHeaders = headers.map(h => h.toLowerCase().trim());
+  
+  // Find missing headers
   const missingHeaders = requiredHeaders.filter(
-    header => !headers.map(h => h.toLowerCase().trim()).includes(header)
+    header => !normalizedHeaders.includes(header)
   );
 
   if (missingHeaders.length > 0) {
@@ -93,16 +98,25 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
           // Remove any empty lines
           const nonEmptyLines = lines.filter(line => line.trim());
           
-          // Get headers and validate them
-          const headers = nonEmptyLines[0].split(',').map(h => h.trim().toLowerCase());
+          if (nonEmptyLines.length === 0) {
+            reject(new Error('CSV file is empty'));
+            return;
+          }
+          
+          // Get headers and normalize them
+          const rawHeaders = nonEmptyLines[0].split(',').map(h => h.trim());
+          const headers = rawHeaders.map(h => h.toLowerCase());
+          
+          // Validate headers
           const headerError = validateCsvHeaders(headers);
           if (headerError) {
-            reject(new Error(headerError));
+            const errorMsg = `${headerError}\n\nExpected headers: property_address, rent_per_month, property_type, available_date, preferred_nationality, preferred_profession, preferred_race, pets_allowed`;
+            reject(new Error(errorMsg));
             return;
           }
           
           // Store original header names for display
-          setColumnNames(nonEmptyLines[0].split(',').map(h => h.trim()));
+          setColumnNames(rawHeaders);
           
           const data = nonEmptyLines.slice(1)
             .filter(line => line.trim())
@@ -111,12 +125,14 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
                 const values = line.split(',').map(v => v.trim());
                 const obj: any = {};
                 headers.forEach((header, i) => {
-                  if (header === 'pets_allowed') {
-                    obj[header] = values[i].toLowerCase() === 'true';
-                  } else if (header === 'rent_per_month') {
-                    obj[header] = Number(values[i]);
+                  // Normalize header to lowercase for consistent mapping
+                  const normalizedHeader = header.toLowerCase();
+                  if (normalizedHeader === 'pets_allowed') {
+                    obj[normalizedHeader] = values[i].toLowerCase() === 'true';
+                  } else if (normalizedHeader === 'rent_per_month') {
+                    obj[normalizedHeader] = Number(values[i]);
                   } else {
-                    obj[header] = values[i].replace(/^"(.*)"$/, '$1');
+                    obj[normalizedHeader] = values[i].replace(/^"(.*)"$/, '$1');
                   }
                 });
                 return obj;
@@ -215,7 +231,9 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
     <div className="w-full space-y-4">
       {error && (
         <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
+          <InfoIcon className="h-4 w-4" />
+          <AlertTitle>Error with CSV file</AlertTitle>
+          <AlertDescription className="whitespace-pre-line">{error}</AlertDescription>
         </Alert>
       )}
       

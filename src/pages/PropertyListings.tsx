@@ -1,10 +1,10 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { Building, FileText, Plus } from 'lucide-react';
-import CsvUpload from '@/components/CsvUpload';
 import {
   Table,
   TableBody,
@@ -130,10 +130,6 @@ const PropertyListings = () => {
             </Button>
           </Link>
         </div>
-      </div>
-
-      <div className="mb-8">
-        <CsvUpload onUploadSuccess={() => fetchListings()} />
       </div>
 
       {listings.length > 0 ? (

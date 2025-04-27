@@ -1,12 +1,12 @@
-
 import React, { useState } from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import CsvFileInfo from './CsvFileInfo';
+import CsvDataPreview from './CsvDataPreview';
 
-interface PropertyData {
+export interface PropertyData {
   property_address: string;
   rent_per_month: number;
   property_type: 'HDB' | 'LANDED' | 'CONDOMINIUM' | 'SHOP';
@@ -26,6 +26,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [rowCount, setRowCount] = useState(0);
   const [columnNames, setColumnNames] = useState<string[]>([]);
+  const [extractedData, setExtractedData] = useState<PropertyData[]>([]);
 
   const validatePropertyData = (data: any): data is PropertyData => {
     if (!data.property_address || typeof data.property_address !== 'string') return false;
@@ -92,12 +93,21 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
     }
 
     setCurrentFile(file);
-    setIsUploading(true);
     
     try {
       const propertyData = await parseCsvFile(file);
-      
-      for (const property of propertyData) {
+      setExtractedData(propertyData);
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to parse CSV file. Please check the file format and try again.');
+      setCurrentFile(null);
+    }
+  };
+
+  const handleConfirmUpload = async () => {
+    setIsUploading(true);
+    try {
+      for (const property of extractedData) {
         const { error } = await supabase
           .from('property_listings')
           .insert({
@@ -108,15 +118,23 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
         if (error) throw error;
       }
 
-      toast.success(`Successfully uploaded ${propertyData.length} properties`);
+      toast.success(`Successfully uploaded ${extractedData.length} properties`);
       onUploadSuccess();
+      setCurrentFile(null);
+      setExtractedData([]);
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error('Failed to upload properties. Please check the file format and try again.');
+      toast.error('Failed to upload properties. Please try again.');
     } finally {
       setIsUploading(false);
-      event.target.value = '';
     }
+  };
+
+  const handleCancelUpload = () => {
+    setCurrentFile(null);
+    setExtractedData([]);
+    setRowCount(0);
+    setColumnNames([]);
   };
 
   return (
@@ -146,11 +164,18 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
       </div>
       
       {currentFile && (
-        <CsvFileInfo
-          file={currentFile}
-          rowCount={rowCount}
-          columnNames={columnNames}
-        />
+        <>
+          <CsvFileInfo
+            file={currentFile}
+            rowCount={rowCount}
+            columnNames={columnNames}
+          />
+          <CsvDataPreview 
+            data={extractedData}
+            onConfirm={handleConfirmUpload}
+            onCancel={handleCancelUpload}
+          />
+        </>
       )}
     </div>
   );

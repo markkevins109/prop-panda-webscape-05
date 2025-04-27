@@ -42,9 +42,15 @@ export default function IndividualProfile() {
 
   const onSubmit = async (data: ProfileFormValues) => {
     try {
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+      if (!userId) throw new Error('No authenticated user found');
+
       const { error } = await supabase
         .from('individual_profiles')
-        .insert([data]);
+        .insert({
+          ...data,
+          user_id: userId
+        });
 
       if (error) throw error;
 

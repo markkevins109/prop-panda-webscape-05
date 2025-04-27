@@ -13,9 +13,10 @@ export default function AccountTypeSelection() {
     try {
       const { error } = await supabase
         .from('user_account_types')
-        .insert([
-          { account_type: type }
-        ]);
+        .insert({
+          user_id: (await supabase.auth.getUser()).data.user?.id,
+          account_type: type
+        });
 
       if (error) throw error;
 

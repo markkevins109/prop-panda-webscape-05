@@ -24,46 +24,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
   const location = useLocation();
 
-  const checkUserAccountType = async (userId: string) => {
-    try {
-      const { data } = await supabase
-        .from('user_account_types')
-        .select('account_type')
-        .eq('user_id', userId)
-        .maybeSingle();
-      
-      return data;
-    } catch (error) {
-      console.error("Error checking user account type:", error);
-      return null;
-    }
-  };
+  const checkUserProfile = async (userId: string) => {
+    const { data: accountType } = await supabase
+      .from('user_account_types')
+      .select('account_type')
+      .eq('user_id', userId)
+      .single();
 
-  const handleAuthRedirect = async (userId: string) => {
-    try {
-      const { data: accountType } = await supabase
-        .from('user_account_types')
-        .select('account_type')
+    if (!accountType) {
+      navigate('/account-type');
+      return;
+    }
+
+    if (accountType.account_type === 'individual') {
+      const { data: profile } = await supabase
+        .from('individual_profiles')
+        .select('id')
         .eq('user_id', userId)
-        .maybeSingle();
-      
-      if (!accountType && location.pathname !== '/account-type') {
-        navigate('/account-type');
-      } else if (accountType?.account_type === 'individual') {
-        const { data: profile } = await supabase
-          .from('individual_profiles')
-          .select('*')
-          .eq('user_id', userId)
-          .maybeSingle();
-        
-        if (!profile && location.pathname !== '/individual-profile') {
-          navigate('/individual-profile');
-        } else if (location.pathname === '/login') {
-          navigate('/');
-        }
+        .single();
+
+      if (!profile) {
+        navigate('/individual-profile');
+        return;
       }
-    } catch (error) {
-      console.error("Error during auth redirect:", error);
+    }
+
+    if (location.pathname === '/login' || 
+        location.pathname === '/account-type' || 
+        location.pathname === '/individual-profile') {
+      navigate('/');
     }
   };
 
@@ -84,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         setTimeout(() => {
           if (isMounted && newSession?.user) {
-            handleAuthRedirect(newSession.user.id);
+            checkUserProfile(newSession.user.id);
           }
         }, 100);
       }
@@ -108,10 +97,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(currentSession?.user ?? null);
         
         if (currentSession?.user) {
-          // Delay this check slightly to ensure the router is fully initialized
           setTimeout(() => {
             if (isMounted && currentSession?.user) {
-              handleAuthRedirect(currentSession.user.id);
+              checkUserProfile(currentSession.user.id);
             }
           }, 100);
         }
@@ -213,7 +201,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await supabase.auth.signOut();
   };
 
-  // Only provide the context when initial load is complete
   const value = {
     session,
     user,

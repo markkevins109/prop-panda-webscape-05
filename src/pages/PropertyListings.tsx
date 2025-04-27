@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Link } from 'react-router-dom';
-import CsvUpload from '@/components/csv/CsvUpload';
 
 interface PropertyListing {
   id: string;
@@ -98,10 +96,6 @@ const PropertyListings = () => {
             </Button>
           </Link>
         </div>
-      </div>
-
-      <div className="mb-8">
-        <CsvUpload onUploadSuccess={fetchListings} />
       </div>
 
       {listings.length > 0 ? (

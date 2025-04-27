@@ -22,40 +22,47 @@ const CsvDataPreview = ({ data, headers, onConfirm, onCancel }: CsvDataPreviewPr
   if (!data.length) return null;
 
   const formatValue = (value: any) => {
+    if (value === null || value === undefined) return '-';
     if (typeof value === 'boolean') return value ? 'Yes' : 'No';
     if (typeof value === 'number') return value.toLocaleString();
     if (value instanceof Date) return value.toLocaleDateString();
     return String(value);
   };
 
-  const getLowercaseHeader = (header: string) => header.toLowerCase();
-
   return (
     <div className="mt-6 space-y-4">
       <h3 className="text-lg font-semibold">Data Preview</h3>
-      <ScrollArea className="h-[400px] rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {headers.map((header, index) => (
-                <TableHead key={index} className="whitespace-nowrap">
-                  {header}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((row, rowIndex) => (
-              <TableRow key={rowIndex}>
-                {headers.map((header, colIndex) => (
-                  <TableCell key={`${rowIndex}-${colIndex}`} className="whitespace-nowrap">
-                    {formatValue(row[getLowercaseHeader(header)])}
-                  </TableCell>
+      <div className="text-sm text-muted-foreground mb-4">
+        {data.length} rows found in the CSV file
+      </div>
+      <ScrollArea className="h-[400px] w-full rounded-md border">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {headers.map((header, index) => (
+                  <TableHead key={index} className="whitespace-nowrap min-w-[150px]">
+                    {header}
+                  </TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {data.map((row, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  {headers.map((header, colIndex) => (
+                    <TableCell 
+                      key={`${rowIndex}-${colIndex}`} 
+                      className="whitespace-pre-wrap break-words min-w-[150px]"
+                    >
+                      {formatValue(row[header.toLowerCase()])}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </ScrollArea>
       <div className="flex justify-end gap-3">
         <Button variant="outline" onClick={onCancel}>

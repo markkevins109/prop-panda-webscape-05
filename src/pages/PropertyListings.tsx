@@ -1,9 +1,8 @@
-
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { Building, FileText, Plus } from 'lucide-react';
+import { Building, FileText, Plus, Download } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -43,6 +42,34 @@ const PropertyListings = () => {
     setListings(data || []);
   };
 
+  const downloadTemplate = () => {
+    const headers = [
+      'propertyid', 'propertyname', 'email', 'add1', 'add2', 'city', 'state', 
+      'country', 'postcode', 'createdon', 'updatedon', 'hkcharge', 'spacno', 
+      'billday', 'dueday', 'roomtype', 'ppname', 'ppaddress', 'propertytype', 
+      'visitorspolicy', 'petspolicy', 'commontv', 'wifi', 'diningtable', 'sofa', 
+      'fridge', 'washer', 'dryer', 'gym', 'swimming', 'tenniscourt', 'badminton', 
+      'golfdrive', 'squashcourt', 'futasal', 'nearestmrt', 'nearestsupermarket', 
+      'nearestfoodcourt', 'description', 'microwave', 'nearestbusstop', 'company', 
+      'agent', 'owner', 'profileimg', 'propmanager', 'beneficiary', 'bankname', 
+      'swiftcode', 'accountnumber', 'mrt', 'buildingname', 'level', 'levelna', 
+      'unit', 'unitna', 'zone', 'district', 'coverage', 'accesscode', 'wifiname1', 
+      'wifiname2', 'wifipassword', 'ian', 'gastype', 'gplate', 'eretailer', 
+      'workplaces', 'metersubmitfrom', 'metersubmitto'
+    ];
+
+    const csvContent = headers.join(',') + '\n';
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'property_listing_template.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   useEffect(() => {
     fetchListings();
   }, []);
@@ -54,6 +81,14 @@ const PropertyListings = () => {
           Property Listings
         </h1>
         <div className="flex flex-wrap gap-3">
+          <Button
+            variant="outline"
+            onClick={downloadTemplate}
+            className="flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Download Template
+          </Button>
           <Link to="/property-listing">
             <Button className="flex items-center gap-2">
               <Plus className="w-4 h-4" />
@@ -109,4 +144,3 @@ const PropertyListings = () => {
 };
 
 export default PropertyListings;
-

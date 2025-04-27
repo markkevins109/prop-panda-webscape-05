@@ -53,7 +53,7 @@ const AccountTypeSelection = () => {
             </div>
             <h2 className="text-xl font-semibold mb-2">Individual</h2>
             <p className="text-muted-foreground text-sm mb-4">Create a personal account to browse and rent properties</p>
-            <Button className="w-full">Select Individual</Button>
+            <Button className="w-full">Individual</Button>
           </div>
         </Card>
 
@@ -64,7 +64,7 @@ const AccountTypeSelection = () => {
             </div>
             <h2 className="text-xl font-semibold mb-2">Company</h2>
             <p className="text-muted-foreground text-sm mb-4">List and manage properties as a business entity</p>
-            <Button className="w-full">Select Company</Button>
+            <Button className="w-full">Company</Button>
           </div>
         </Card>
       </div>

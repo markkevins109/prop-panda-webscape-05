@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { Download, FileText, Plus, Building } from 'lucide-react';
+import { Building, Plus } from 'lucide-react';
 import CsvUpload from '@/components/CsvUpload';
 import {
   Table,
@@ -48,78 +48,6 @@ const PropertyListings = () => {
     fetchListings();
   }, []);
 
-  const handleDownloadTemplate = () => {
-    const headers = [
-      'Property Address',
-      'Rent per Month',
-      'Property Type (HDB/LANDED/CONDOMINIUM/SHOP)',
-      'Available Date (YYYY-MM-DD)',
-      'Preferred Nationality',
-      'Preferred Profession (RETIRED/STUDENT/PROFESSIONAL/ANY)',
-      'Preferred Race (INDIAN/CHINESE/MALAY/ANY)',
-      'Pets Allowed (true/false)'
-    ].join(',');
-
-    const sampleData = [
-      '"123 Sample Street, #12-34"',
-      '2500',
-      'HDB',
-      '2025-12-31',
-      'Any',
-      'PROFESSIONAL',
-      'ANY',
-      'true'
-    ].join(',');
-
-    const csvContent = [headers, sampleData].join('\n');
-    
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'property-listing-template.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleDownload = () => {
-    const headers = [
-      'Property Address',
-      'Rent per Month',
-      'Property Type',
-      'Available Date',
-      'Preferred Nationality',
-      'Preferred Profession',
-      'Preferred Race',
-      'Pets Allowed'
-    ].join(',');
-
-    const rows = listings.map(listing => [
-      `"${listing.property_address}"`,
-      listing.rent_per_month,
-      listing.property_type,
-      format(new Date(listing.available_date), 'PP'),
-      listing.preferred_nationality,
-      listing.preferred_profession,
-      listing.preferred_race,
-      listing.pets_allowed ? 'Yes' : 'No'
-    ].join(','));
-
-    const csvContent = [headers, ...rows].join('\n');
-    
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', `property-listings-${format(new Date(), 'yyyy-MM-dd')}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -127,22 +55,6 @@ const PropertyListings = () => {
           Property Listings
         </h1>
         <div className="flex flex-wrap gap-3">
-          <Button
-            onClick={handleDownloadTemplate}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <FileText className="w-4 h-4" />
-            Download Template
-          </Button>
-          <Button
-            onClick={handleDownload}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            Download CSV
-          </Button>
           <Link to="/property-listing">
             <Button className="flex items-center gap-2">
               <Plus className="w-4 h-4" />

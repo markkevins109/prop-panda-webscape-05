@@ -55,7 +55,7 @@ const CsvDataPreview = ({ data, headers, onConfirm, onCancel }: CsvDataPreviewPr
                       key={`${rowIndex}-${colIndex}`} 
                       className="whitespace-pre-wrap break-words min-w-[150px]"
                     >
-                      {formatValue(row[header.toLowerCase()])}
+                      {formatValue(row[header])}
                     </TableCell>
                   ))}
                 </TableRow>

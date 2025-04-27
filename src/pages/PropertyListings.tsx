@@ -1,10 +1,9 @@
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { Building, Plus } from 'lucide-react';
+import { Building, FileText, Plus } from 'lucide-react';
 import CsvUpload from '@/components/CsvUpload';
 import {
   Table,
@@ -44,6 +43,67 @@ const PropertyListings = () => {
     setListings(data || []);
   };
 
+  const handleDownloadTemplate = () => {
+    const headers = [
+      'Property Address',
+      'Rent per Month',
+      'Property Type (HDB/LANDED/CONDOMINIUM/SHOP)',
+      'Available Date (YYYY-MM-DD)',
+      'Preferred Nationality',
+      'Preferred Profession (RETIRED/STUDENT/PROFESSIONAL/ANY)',
+      'Preferred Race (INDIAN/CHINESE/MALAY/ANY)',
+      'Pets Allowed (true/false)'
+    ].join(',');
+
+    const sampleRows = [
+      [
+        '"Block 123 Clementi Ave 4, #12-34"',
+        '2500',
+        'HDB',
+        '2025-01-01',
+        'Any',
+        'PROFESSIONAL',
+        'ANY',
+        'false'
+      ].join(','),
+      [
+        '"15 Holland Road"',
+        '8000',
+        'LANDED',
+        '2025-02-01',
+        'Singapore',
+        'ANY',
+        'ANY',
+        'true'
+      ].join(',')
+    ];
+
+    const instructions = [
+      '# Instructions:',
+      '# 1. Keep the header row as is',
+      '# 2. Each row should contain all required fields',
+      '# 3. Property Type must be one of: HDB, LANDED, CONDOMINIUM, SHOP',
+      '# 4. Date format: YYYY-MM-DD (e.g., 2025-12-31)',
+      '# 5. Profession options: RETIRED, STUDENT, PROFESSIONAL, ANY',
+      '# 6. Race options: INDIAN, CHINESE, MALAY, ANY',
+      '# 7. Pets Allowed: true or false',
+      '#'
+    ].join('\n');
+
+    const csvContent = [instructions, headers, ...sampleRows].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'property-listing-template.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   useEffect(() => {
     fetchListings();
   }, []);
@@ -55,6 +115,14 @@ const PropertyListings = () => {
           Property Listings
         </h1>
         <div className="flex flex-wrap gap-3">
+          <Button
+            onClick={handleDownloadTemplate}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <FileText className="w-4 h-4" />
+            Download Template
+          </Button>
           <Link to="/property-listing">
             <Button className="flex items-center gap-2">
               <Plus className="w-4 h-4" />

@@ -1,8 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+
+import React, { createContext, useContext, useEffect } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useAuthState } from '@/hooks/useAuthState';
+import { checkUserProfile } from '@/utils/profileUtils';
 
 interface AuthContextType {
   session: Session | null;
@@ -16,45 +18,23 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-  const { toast } = useToast();
-  const navigate = useNavigate();
+  const {
+    session,
+    setSession,
+    user,
+    setUser,
+    loading,
+    setLoading,
+    initialLoadComplete,
+    setInitialLoadComplete,
+    signIn,
+    signUp,
+    signOut,
+    toast,
+    navigate
+  } = useAuthState();
+  
   const location = useLocation();
-
-  const checkUserProfile = async (userId: string) => {
-    const { data: accountType } = await supabase
-      .from('user_account_types')
-      .select('account_type')
-      .eq('user_id', userId)
-      .single();
-
-    if (!accountType) {
-      navigate('/account-type');
-      return;
-    }
-
-    if (accountType.account_type === 'individual') {
-      const { data: profile } = await supabase
-        .from('individual_profiles')
-        .select('id')
-        .eq('user_id', userId)
-        .single();
-
-      if (!profile) {
-        navigate('/individual-profile');
-        return;
-      }
-    }
-
-    if (location.pathname === '/login' || 
-        location.pathname === '/account-type' || 
-        location.pathname === '/individual-profile') {
-      navigate('/');
-    }
-  };
 
   useEffect(() => {
     let isMounted = true;
@@ -73,7 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         setTimeout(() => {
           if (isMounted && newSession?.user) {
-            checkUserProfile(newSession.user.id);
+            checkUserProfile(newSession.user.id, navigate, location.pathname);
           }
         }, 100);
       }
@@ -99,7 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (currentSession?.user) {
           setTimeout(() => {
             if (isMounted && currentSession?.user) {
-              checkUserProfile(currentSession.user.id);
+              checkUserProfile(currentSession.user.id, navigate, location.pathname);
             }
           }, 100);
         }
@@ -121,85 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [toast, navigate, location.pathname]);
-
-  const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-        options: {
-          // Set cookie expiry based on "remember me" option
-          // If rememberMe is true, session lasts longer
-          // If false, session is shorter (e.g., expires when browser is closed)
-        }
-      });
-
-      if (error) {
-        console.error('Sign in error:', error);
-        toast({
-          title: 'Sign in failed',
-          description: error.message,
-          variant: 'destructive',
-        });
-        return { error };
-      }
-
-      return { error: null };
-    } catch (error: any) {
-      console.error('Unexpected sign in error:', error);
-      toast({
-        title: 'Sign in failed',
-        description: 'An unexpected error occurred. Please try again.',
-        variant: 'destructive',
-      });
-      return { error };
-    }
-  };
-
-  const signUp = async (email: string, password: string, metadata?: { fullName: string; phone?: string }) => {
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: metadata?.fullName,
-            phone: metadata?.phone || null,
-          },
-        },
-      });
-
-      if (error) {
-        console.error('Sign up error:', error);
-        toast({
-          title: 'Sign up failed',
-          description: error.message,
-          variant: 'destructive',
-        });
-        return { error };
-      }
-
-      toast({
-        title: 'Account created',
-        description: 'Please check your email to verify your account.',
-      });
-
-      return { error: null };
-    } catch (error: any) {
-      console.error('Unexpected sign up error:', error);
-      toast({
-        title: 'Sign up failed',
-        description: 'An unexpected error occurred. Please try again.',
-        variant: 'destructive',
-      });
-      return { error };
-    }
-  };
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
-  };
+  }, [toast, navigate, location.pathname, setSession, setUser, setLoading, setInitialLoadComplete]);
 
   const value = {
     session,

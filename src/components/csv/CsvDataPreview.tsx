@@ -28,6 +28,8 @@ const CsvDataPreview = ({ data, headers, onConfirm, onCancel }: CsvDataPreviewPr
     return String(value);
   };
 
+  const getLowercaseHeader = (header: string) => header.toLowerCase();
+
   return (
     <div className="mt-6 space-y-4">
       <h3 className="text-lg font-semibold">Data Preview</h3>
@@ -47,7 +49,7 @@ const CsvDataPreview = ({ data, headers, onConfirm, onCancel }: CsvDataPreviewPr
               <TableRow key={rowIndex}>
                 {headers.map((header, colIndex) => (
                   <TableCell key={`${rowIndex}-${colIndex}`} className="whitespace-nowrap">
-                    {formatValue(row[header])}
+                    {formatValue(row[getLowercaseHeader(header)])}
                   </TableCell>
                 ))}
               </TableRow>

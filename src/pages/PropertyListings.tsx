@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Link } from 'react-router-dom';
 import CsvUpload from '@/components/csv/CsvUpload';
 
@@ -125,6 +125,9 @@ const PropertyListings = () => {
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>Upload Property Listings</DialogTitle>
+            <DialogDescription>
+              Upload a CSV file with property listings data. The file should include columns for property_address, rent_per_month, property_type, etc.
+            </DialogDescription>
           </DialogHeader>
           <CsvUpload onUploadSuccess={handleUploadSuccess} />
         </DialogContent>

@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,18 +24,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
 
   const checkUserAccountType = async (userId: string) => {
-    const { data } = await supabase
-      .from('user_account_types')
-      .select('account_type')
-      .eq('user_id', userId)
-      .maybeSingle();
-    
-    return data;
+    try {
+      const { data } = await supabase
+        .from('user_account_types')
+        .select('account_type')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      return data;
+    } catch (error) {
+      console.error("Error checking user account type:", error);
+      return null;
+    }
   };
 
   useEffect(() => {
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, newSession) => {
+      (event, newSession) => {
         console.log('Auth state changed:', event);
         setSession(newSession);
         setUser(newSession?.user ?? null);
@@ -45,14 +52,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             description: 'You are now logged in.',
           });
 
-          // Check if user has selected account type
+          // Use setTimeout to avoid potential Supabase auth deadlocks
           if (newSession?.user) {
-            const accountType = await checkUserAccountType(newSession.user.id);
-            if (!accountType) {
-              navigate('/selection');
-            } else {
-              navigate('/');
-            }
+            setTimeout(async () => {
+              const accountType = await checkUserAccountType(newSession.user.id);
+              if (!accountType) {
+                navigate('/selection');
+              } else {
+                navigate('/');
+              }
+            }, 0);
           }
         }
         
@@ -66,11 +75,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Check for existing session
+    // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setLoading(false);
+      
+      // If we have an existing session, check account type
+      if (currentSession?.user) {
+        setTimeout(async () => {
+          const accountType = await checkUserAccountType(currentSession.user.id);
+          if (!accountType && window.location.pathname !== '/selection') {
+            navigate('/selection');
+          }
+        }, 0);
+      }
     });
 
     return () => {

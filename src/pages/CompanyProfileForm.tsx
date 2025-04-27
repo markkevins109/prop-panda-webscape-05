@@ -199,46 +199,28 @@ const CompanyProfileForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Specializations</FormLabel>
-                <Select 
-                  onValueChange={(value) => {
-                    const currentSpecializations = field.value || [];
-                    const newSpecializations = currentSpecializations.includes(value)
-                      ? currentSpecializations.filter(spec => spec !== value)
-                      : [...currentSpecializations, value];
-                    field.onChange(newSpecializations);
-                  }}
-                  value=""
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select specializations" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {specializations.map(spec => (
-                      <SelectItem key={spec} value={spec}>
-                        {spec} {field.value?.includes(spec) ? "✓" : ""}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-                {field.value && field.value.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {field.value.map(spec => (
-                      <span key={spec} className="bg-primary/10 px-2 py-1 rounded-md text-sm">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {specializations.map((spec) => (
+                    <div key={spec} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`spec-${spec}`}
+                        checked={field.value?.includes(spec)}
+                        onChange={(e) => {
+                          const updatedSpecializations = e.target.checked
+                            ? [...(field.value || []), spec]
+                            : (field.value || []).filter((s) => s !== spec);
+                          field.onChange(updatedSpecializations);
+                        }}
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <label htmlFor={`spec-${spec}`} className="text-sm font-medium leading-none">
                         {spec}
-                        <button 
-                          type="button" 
-                          onClick={() => field.onChange(field.value.filter(s => s !== spec))}
-                          className="ml-2 text-destructive"
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                <FormMessage />
               </FormItem>
             )}
           />

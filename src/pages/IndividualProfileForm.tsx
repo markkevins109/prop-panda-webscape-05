@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -19,7 +18,6 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 
-// Define specializations as a constant
 const SPECIALIZATIONS = [
   'Residential',
   'Commercial', 
@@ -39,7 +37,10 @@ const individualProfileSchema = z.object({
   operating_areas: z.string().optional(),
   office_address: z.string().optional(),
   working_hours: z.string().optional(),
-  website: z.string().url("Invalid URL").optional()
+  website: z.string().url("Invalid URL").optional(),
+  profile_purpose: z.enum(['buying', 'selling', 'both'], { 
+    required_error: "Please select your profile purpose" 
+  })
 });
 
 const IndividualProfileForm = () => {
@@ -59,7 +60,8 @@ const IndividualProfileForm = () => {
       operating_areas: '',
       office_address: '',
       working_hours: '',
-      website: ''
+      website: '',
+      profile_purpose: undefined
     }
   });
 
@@ -87,7 +89,7 @@ const IndividualProfileForm = () => {
         description: "Your individual profile has been created successfully.",
       });
 
-      navigate('/'); // Redirect to home or dashboard
+      navigate('/');
     } catch (error) {
       toast({
         title: "Error",
@@ -100,6 +102,13 @@ const IndividualProfileForm = () => {
   return (
     <div className="container max-w-xl mx-auto py-12 px-4">
       <h1 className="text-3xl font-bold mb-6 text-center">Individual Profile</h1>
+      
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-center">
+        <p className="text-blue-800 font-semibold">
+          Are you here to buy or sell properties? Let us help you connect with the right opportunities!
+        </p>
+      </div>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -251,6 +260,31 @@ const IndividualProfileForm = () => {
                 <FormControl>
                   <Input placeholder="Enter website URL" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="profile_purpose"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>What is your primary purpose?</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  value={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your purpose" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="buying">Buying Property</SelectItem>
+                    <SelectItem value="selling">Selling Property</SelectItem>
+                    <SelectItem value="both">Both Buying and Selling</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

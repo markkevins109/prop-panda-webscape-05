@@ -1,116 +1,54 @@
+
 import React, { useState } from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 import CsvFileInfo from './CsvFileInfo';
 import CsvDataPreview from './CsvDataPreview';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { InfoIcon } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 
-interface PropertyData {
-  property_address: string;
-  rent_per_month: number;
-  property_type: string;
-  available_date: string;
-  preferred_nationality: string;
-  preferred_profession: string;
-  preferred_race: string;
-  pets_allowed: boolean;
-  [key: string]: any;
+interface PropertyListingCsv {
+  property_id?: string;
+  property_name?: string;
+  address_line1?: string;
+  address_line2?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postcode?: string;
+  property_type?: 'HDB' | 'LANDED' | 'CONDOMINIUM' | 'SHOP';
+  room_type?: string;
+  description?: string;
+  [key: string]: any; // For additional fields that will go into additional_data
 }
 
 interface CsvUploadProps {
   onUploadSuccess: () => void;
 }
 
-const validateCsvHeaders = (headers: string[]): string | null => {
-  const requiredHeaders = [
-    'property_address',
-    'rent_per_month',
-    'property_type',
-    'available_date',
-    'preferred_nationality',
-    'preferred_profession',
-    'preferred_race',
-    'pets_allowed'
-  ];
-
-  const optionalHeaders = ['propertyid'];
-  
-  // Convert headers to lowercase for case-insensitive comparison
-  const normalizedHeaders = headers.map(h => h.toLowerCase().trim());
-  
-  // Find missing required headers
-  const missingHeaders = requiredHeaders.filter(
-    header => !normalizedHeaders.includes(header)
-  );
-
-  if (missingHeaders.length > 0) {
-    return `Missing required columns: ${missingHeaders.join(', ')}\n\nExpected headers: ${requiredHeaders.join(', ')}`;
-  }
-
-  return null;
-};
-
 const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [rowCount, setRowCount] = useState(0);
   const [columnNames, setColumnNames] = useState<string[]>([]);
-  const [extractedData, setExtractedData] = useState<PropertyData[]>([]);
+  const [extractedData, setExtractedData] = useState<PropertyListingCsv[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const validatePropertyData = (data: any): boolean => {
-    if (!data.property_address || typeof data.property_address !== 'string') {
-      throw new Error('Invalid property address');
-    }
-    
-    if (isNaN(Number(data.rent_per_month))) {
-      throw new Error('Invalid rent amount');
-    }
-    
-    const validPropertyTypes = ['HDB', 'LANDED', 'CONDOMINIUM', 'SHOP'];
-    if (!validPropertyTypes.includes(data.property_type?.toUpperCase())) {
-      throw new Error(`Invalid property type: ${data.property_type}. Must be one of: ${validPropertyTypes.join(', ')}`);
-    }
-    
-    if (isNaN(Date.parse(data.available_date))) {
-      throw new Error('Invalid date format');
-    }
-    
-    if (!data.preferred_nationality) {
-      throw new Error('Missing preferred nationality');
-    }
-    
-    const validProfessions = ['RETIRED', 'STUDENT', 'PROFESSIONAL', 'ANY'];
-    if (!validProfessions.includes(data.preferred_profession?.toUpperCase())) {
-      throw new Error(`Invalid profession type: ${data.preferred_profession}. Must be one of: ${validProfessions.join(', ')}`);
-    }
-    
-    const validRaces = ['INDIAN', 'CHINESE', 'MALAY', 'ANY'];
-    if (!validRaces.includes(data.preferred_race?.toUpperCase())) {
-      throw new Error(`Invalid race option: ${data.preferred_race}. Must be one of: ${validRaces.join(', ')}`);
-    }
-    
-    if (typeof data.pets_allowed !== 'boolean' && 
-        !['true', 'false', 'yes', 'no', '0', '1'].includes(String(data.pets_allowed).toLowerCase())) {
-      throw new Error('Invalid pets allowed value. Use true/false, yes/no, or 0/1');
-    }
-    
-    return true;
+  const validatePropertyType = (type: string): boolean => {
+    const validTypes = ['HDB', 'LANDED', 'CONDOMINIUM', 'SHOP'];
+    return validTypes.includes(type?.toUpperCase());
   };
 
-  const parseCsvFile = async (file: File) => {
-    return new Promise<PropertyData[]>((resolve, reject) => {
+  const parseCsvFile = async (file: File): Promise<PropertyListingCsv[]> => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      
       reader.onload = async (e) => {
         try {
           const text = e.target?.result as string;
           const lines = text.split('\n');
           
-          // Remove any empty lines
           const nonEmptyLines = lines.filter(line => line.trim());
           
           if (nonEmptyLines.length === 0) {
@@ -118,20 +56,9 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
             return;
           }
           
-          // Get headers and keep original case for display
-          const rawHeaders = nonEmptyLines[0].split(',').map(h => h.trim());
-          // Create a lowercase version for lookups
-          const normalizedHeaders = rawHeaders.map(h => h.toLowerCase());
-          
-          // Validate headers
-          const headerError = validateCsvHeaders(normalizedHeaders);
-          if (headerError) {
-            reject(new Error(headerError));
-            return;
-          }
-          
-          // Store original header names for display
-          setColumnNames(rawHeaders);
+          // Get headers and normalize them
+          const headers = nonEmptyLines[0].split(',').map(h => h.trim());
+          setColumnNames(headers);
           
           const data = nonEmptyLines.slice(1)
             .filter(line => line.trim())
@@ -139,27 +66,61 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
               try {
                 const values = line.split(',').map(v => v.trim());
                 const obj: Record<string, any> = {};
+                const additionalData: Record<string, any> = {};
                 
-                // Add all columns to the object, including optional ones
-                rawHeaders.forEach((header, i) => {
-                  const normalizedHeader = header.toLowerCase();
-                  const value = values[i];
+                headers.forEach((header, i) => {
+                  const value = values[i]?.replace(/^"(.*)"$/, '$1');
                   
-                  // Process specific field types
-                  if (normalizedHeader === 'pets_allowed') {
-                    const lowerValue = String(value || '').toLowerCase();
-                    obj[header] = ['true', 'yes', '1'].includes(lowerValue);
-                  } else if (normalizedHeader === 'rent_per_month') {
-                    obj[header] = Number(value);
-                  } else if (normalizedHeader === 'property_type') {
-                    obj[header] = value?.toUpperCase();
-                  } else if (normalizedHeader === 'preferred_profession' || normalizedHeader === 'preferred_race') {
-                    obj[header] = value?.toUpperCase();
-                  } else {
-                    // Keep original case for the property name but normalize the value
-                    obj[header] = value?.replace(/^"(.*)"$/, '$1');
+                  // Map known columns to their respective fields
+                  switch(header.toLowerCase()) {
+                    case 'propertyid':
+                      obj.property_id = value;
+                      break;
+                    case 'propertyname':
+                      obj.property_name = value;
+                      break;
+                    case 'add1':
+                      obj.address_line1 = value;
+                      break;
+                    case 'add2':
+                      obj.address_line2 = value;
+                      break;
+                    case 'city':
+                      obj.city = value;
+                      break;
+                    case 'state':
+                      obj.state = value;
+                      break;
+                    case 'country':
+                      obj.country = value;
+                      break;
+                    case 'postcode':
+                      obj.postcode = value;
+                      break;
+                    case 'propertytype':
+                      if (value && !validatePropertyType(value)) {
+                        throw new Error(`Invalid property type: ${value}. Must be one of: HDB, LANDED, CONDOMINIUM, SHOP`);
+                      }
+                      obj.property_type = value?.toUpperCase();
+                      break;
+                    case 'roomtype':
+                      obj.room_type = value;
+                      break;
+                    case 'description':
+                      obj.description = value;
+                      break;
+                    default:
+                      // Store any other columns in additional_data
+                      if (value) {
+                        additionalData[header] = value;
+                      }
                   }
                 });
+                
+                // Add additional_data to the object if there are any extra fields
+                if (Object.keys(additionalData).length > 0) {
+                  obj.additional_data = additionalData;
+                }
                 
                 return obj;
               } catch (error) {
@@ -168,29 +129,11 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
             });
 
           setRowCount(data.length);
-          
-          // Validate each row
-          data.forEach((row, index) => {
-            try {
-              // Create a lowercase version for validation
-              const normalizedRow: Record<string, any> = {};
-              Object.keys(row).forEach(key => {
-                normalizedRow[key.toLowerCase()] = row[key];
-              });
-              
-              validatePropertyData(normalizedRow);
-            } catch (error) {
-              throw new Error(`Row ${index + 2}: ${error.message}`);
-            }
-          });
-
-          console.log('Extracted data:', data);
-          resolve(data as PropertyData[]);
+          resolve(data as PropertyListingCsv[]);
         } catch (error) {
           reject(error);
         }
       };
-      
       reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsText(file);
     });
@@ -239,22 +182,12 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
       
       // Insert each property listing
       for (const property of extractedData) {
-        // Extract required fields for database, ensure correct naming
-        const propertyListing = {
-          property_address: property.property_address || property['Property Address'] || property['property_address'],
-          rent_per_month: property.rent_per_month || property['Rent Per Month'] || property['rent_per_month'],
-          property_type: property.property_type || property['Property Type'] || property['property_type'],
-          available_date: property.available_date || property['Available Date'] || property['available_date'],
-          preferred_nationality: property.preferred_nationality || property['Preferred Nationality'] || property['preferred_nationality'],
-          preferred_profession: property.preferred_profession || property['Preferred Profession'] || property['preferred_profession'],
-          preferred_race: property.preferred_race || property['Preferred Race'] || property['preferred_race'],
-          pets_allowed: property.pets_allowed || property['Pets Allowed'] || property['pets_allowed'],
-          user_id: userId
-        };
-
         const { error } = await supabase
-          .from('property_listings')
-          .insert(propertyListing);
+          .from('property_listings_csv')
+          .insert({
+            ...property,
+            user_id: userId
+          });
 
         if (error) throw error;
       }

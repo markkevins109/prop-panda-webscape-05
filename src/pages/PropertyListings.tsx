@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -26,22 +27,51 @@ interface PropertyListing {
   pets_allowed: boolean;
 }
 
+interface CsvPropertyListing {
+  id: string;
+  property_id?: string;
+  property_name?: string;
+  address_line1?: string;
+  address_line2?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postcode?: string;
+  property_type?: string;
+  room_type?: string;
+  description?: string;
+  additional_data?: Record<string, any>;
+  created_at: string;
+}
+
 const PropertyListings = () => {
   const [listings, setListings] = useState<PropertyListing[]>([]);
+  const [csvListings, setCsvListings] = useState<CsvPropertyListing[]>([]);
   const [showCsvUpload, setShowCsvUpload] = useState(false);
 
   const fetchListings = async () => {
-    const { data, error } = await supabase
+    // Fetch regular property listings
+    const { data: regularListings, error: regularError } = await supabase
       .from('property_listings')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Error fetching listings:', error);
-      return;
+    if (regularError) {
+      console.error('Error fetching regular listings:', regularError);
     }
 
-    setListings(data || []);
+    // Fetch CSV property listings
+    const { data: csvData, error: csvError } = await supabase
+      .from('property_listings_csv')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (csvError) {
+      console.error('Error fetching CSV listings:', csvError);
+    }
+
+    setListings(regularListings || []);
+    setCsvListings(csvData || []);
   };
 
   const downloadTemplate = () => {
@@ -81,6 +111,18 @@ const PropertyListings = () => {
     fetchListings();
   }, []);
 
+  const formatAddress = (listing: CsvPropertyListing) => {
+    const parts = [
+      listing.address_line1,
+      listing.address_line2,
+      listing.city,
+      listing.state,
+      listing.country,
+      listing.postcode
+    ].filter(Boolean);
+    return parts.join(', ') || 'No address provided';
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -119,47 +161,98 @@ const PropertyListings = () => {
         </div>
       )}
 
-      {listings.length > 0 ? (
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Property</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Rent/Month</TableHead>
-                <TableHead>Available From</TableHead>
-                <TableHead>Preferences</TableHead>
-                <TableHead>Pets</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {listings.map((listing) => (
-                <TableRow key={listing.id}>
-                  <TableCell className="font-medium">{listing.property_address}</TableCell>
-                  <TableCell>
-                    <div className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-primary text-sm">
-                      <Building className="w-4 h-4" />
-                      {listing.property_type}
-                    </div>
-                  </TableCell>
-                  <TableCell>${listing.rent_per_month.toFixed(2)}</TableCell>
-                  <TableCell>{format(new Date(listing.available_date), 'PP')}</TableCell>
-                  <TableCell>
-                    <span className="text-sm text-muted-foreground">
-                      {listing.preferred_nationality}, {listing.preferred_profession}, {listing.preferred_race}
-                    </span>
-                  </TableCell>
-                  <TableCell>{listing.pets_allowed ? 'Allowed' : 'Not Allowed'}</TableCell>
+      <div className="space-y-8">
+        {/* Regular Listings */}
+        {listings.length > 0 && (
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Property</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Rent/Month</TableHead>
+                  <TableHead>Available From</TableHead>
+                  <TableHead>Preferences</TableHead>
+                  <TableHead>Pets</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">No property listings found. Create your first listing!</p>
-        </div>
-      )}
+              </TableHeader>
+              <TableBody>
+                {listings.map((listing) => (
+                  <TableRow key={listing.id}>
+                    <TableCell className="font-medium">{listing.property_address}</TableCell>
+                    <TableCell>
+                      <div className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-primary text-sm">
+                        <Building className="w-4 h-4" />
+                        {listing.property_type}
+                      </div>
+                    </TableCell>
+                    <TableCell>${listing.rent_per_month.toFixed(2)}</TableCell>
+                    <TableCell>{format(new Date(listing.available_date), 'PP')}</TableCell>
+                    <TableCell>
+                      <span className="text-sm text-muted-foreground">
+                        {listing.preferred_nationality}, {listing.preferred_profession}, {listing.preferred_race}
+                      </span>
+                    </TableCell>
+                    <TableCell>{listing.pets_allowed ? 'Allowed' : 'Not Allowed'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+
+        {/* CSV Listings */}
+        {csvListings.length > 0 && (
+          <div className="rounded-md border">
+            <h2 className="text-xl font-semibold p-4 border-b">Imported CSV Listings</h2>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Property ID</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Address</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Room Type</TableHead>
+                  <TableHead>Additional Info</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {csvListings.map((listing) => (
+                  <TableRow key={listing.id}>
+                    <TableCell>{listing.property_id || '-'}</TableCell>
+                    <TableCell className="font-medium">{listing.property_name || '-'}</TableCell>
+                    <TableCell className="max-w-xs truncate">{formatAddress(listing)}</TableCell>
+                    <TableCell>
+                      {listing.property_type && (
+                        <div className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-primary text-sm">
+                          <Building className="w-4 h-4" />
+                          {listing.property_type}
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell>{listing.room_type || '-'}</TableCell>
+                    <TableCell>
+                      {listing.additional_data && Object.keys(listing.additional_data).length > 0 ? (
+                        <div className="text-sm text-muted-foreground">
+                          {Object.entries(listing.additional_data)
+                            .map(([key, value]) => `${key}: ${value}`)
+                            .join(', ')}
+                        </div>
+                      ) : '-'}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+
+        {listings.length === 0 && csvListings.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">No property listings found. Create your first listing!</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

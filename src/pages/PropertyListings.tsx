@@ -1,9 +1,7 @@
-
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { format } from 'date-fns';
-import { Building, FileText, Plus, Upload, Download } from 'lucide-react';
+import { FileText, Plus, Upload, Download } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -15,52 +13,16 @@ import {
 import { Link } from 'react-router-dom';
 import CsvUpload from '@/components/csv/CsvUpload';
 
-interface PropertyListing {
-  id: string;
-  property_address: string;
-  rent_per_month: number;
-  property_type: string;
-  available_date: string;
-  preferred_nationality: string;
-  preferred_profession: string;
-  preferred_race: string;
-  pets_allowed: boolean;
-}
-
 interface CsvPropertyListing {
-  id: string;
-  property_id?: string;
-  property_name?: string;
-  address_line1?: string;
-  address_line2?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  postcode?: string;
-  property_type?: string;
-  room_type?: string;
-  description?: string;
-  additional_data?: Record<string, any>;
-  created_at: string;
+  [key: string]: any;
 }
 
 const PropertyListings = () => {
-  const [listings, setListings] = useState<PropertyListing[]>([]);
   const [csvListings, setCsvListings] = useState<CsvPropertyListing[]>([]);
   const [showCsvUpload, setShowCsvUpload] = useState(false);
+  const [csvColumns, setCsvColumns] = useState<string[]>([]);
 
   const fetchListings = async () => {
-    // Fetch regular property listings
-    const { data: regularListings, error: regularError } = await supabase
-      .from('property_listings')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (regularError) {
-      console.error('Error fetching regular listings:', regularError);
-    }
-
-    // Fetch CSV property listings
     const { data: csvData, error: csvError } = await supabase
       .from('property_listings_csv')
       .select('*')
@@ -68,10 +30,30 @@ const PropertyListings = () => {
 
     if (csvError) {
       console.error('Error fetching CSV listings:', csvError);
+      return;
     }
 
-    setListings(regularListings || []);
-    setCsvListings(csvData || []);
+    const allColumns = new Set<string>();
+    csvData?.forEach(listing => {
+      Object.keys(listing).forEach(key => allColumns.add(key));
+      if (listing.additional_data) {
+        Object.keys(listing.additional_data).forEach(key => allColumns.add(key));
+      }
+    });
+
+    const flattenedData = csvData?.map(listing => {
+      const flatListing = { ...listing };
+      if (listing.additional_data) {
+        Object.entries(listing.additional_data).forEach(([key, value]) => {
+          flatListing[key] = value;
+        });
+        delete flatListing.additional_data;
+      }
+      return flatListing;
+    });
+
+    setCsvColumns(Array.from(allColumns));
+    setCsvListings(flattenedData || []);
   };
 
   const downloadTemplate = () => {
@@ -111,18 +93,6 @@ const PropertyListings = () => {
     fetchListings();
   }, []);
 
-  const formatAddress = (listing: CsvPropertyListing) => {
-    const parts = [
-      listing.address_line1,
-      listing.address_line2,
-      listing.city,
-      listing.state,
-      listing.country,
-      listing.postcode
-    ].filter(Boolean);
-    return parts.join(', ') || 'No address provided';
-  };
-
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -161,98 +131,41 @@ const PropertyListings = () => {
         </div>
       )}
 
-      <div className="space-y-8">
-        {/* Regular Listings */}
-        {listings.length > 0 && (
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Property</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Rent/Month</TableHead>
-                  <TableHead>Available From</TableHead>
-                  <TableHead>Preferences</TableHead>
-                  <TableHead>Pets</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {listings.map((listing) => (
-                  <TableRow key={listing.id}>
-                    <TableCell className="font-medium">{listing.property_address}</TableCell>
-                    <TableCell>
-                      <div className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-primary text-sm">
-                        <Building className="w-4 h-4" />
-                        {listing.property_type}
-                      </div>
-                    </TableCell>
-                    <TableCell>${listing.rent_per_month.toFixed(2)}</TableCell>
-                    <TableCell>{format(new Date(listing.available_date), 'PP')}</TableCell>
-                    <TableCell>
-                      <span className="text-sm text-muted-foreground">
-                        {listing.preferred_nationality}, {listing.preferred_profession}, {listing.preferred_race}
-                      </span>
-                    </TableCell>
-                    <TableCell>{listing.pets_allowed ? 'Allowed' : 'Not Allowed'}</TableCell>
-                  </TableRow>
+      {csvListings.length > 0 && (
+        <div className="rounded-md border overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {csvColumns.map((column) => (
+                  <TableHead key={column} className="whitespace-nowrap">
+                    {column}
+                  </TableHead>
                 ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
-
-        {/* CSV Listings */}
-        {csvListings.length > 0 && (
-          <div className="rounded-md border">
-            <h2 className="text-xl font-semibold p-4 border-b">Imported CSV Listings</h2>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Property ID</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Address</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Room Type</TableHead>
-                  <TableHead>Additional Info</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {csvListings.map((listing, index) => (
+                <TableRow key={index}>
+                  {csvColumns.map((column) => (
+                    <TableCell key={`${index}-${column}`} className="whitespace-nowrap">
+                      {listing[column]?.toString() || '-'}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {csvListings.map((listing) => (
-                  <TableRow key={listing.id}>
-                    <TableCell>{listing.property_id || '-'}</TableCell>
-                    <TableCell className="font-medium">{listing.property_name || '-'}</TableCell>
-                    <TableCell className="max-w-xs truncate">{formatAddress(listing)}</TableCell>
-                    <TableCell>
-                      {listing.property_type && (
-                        <div className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-primary text-sm">
-                          <Building className="w-4 h-4" />
-                          {listing.property_type}
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell>{listing.room_type || '-'}</TableCell>
-                    <TableCell>
-                      {listing.additional_data && Object.keys(listing.additional_data).length > 0 ? (
-                        <div className="text-sm text-muted-foreground">
-                          {Object.entries(listing.additional_data)
-                            .map(([key, value]) => `${key}: ${value}`)
-                            .join(', ')}
-                        </div>
-                      ) : '-'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
 
-        {listings.length === 0 && csvListings.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">No property listings found. Create your first listing!</p>
+      {csvListings.length === 0 && (
+        <div className="text-center py-12">
+          <div className="flex items-center justify-center mb-4">
+            <FileText className="w-12 h-12 text-muted-foreground" />
           </div>
-        )}
-      </div>
+          <p className="text-muted-foreground">No property listings found. Upload a CSV file to get started!</p>
+        </div>
+      )}
     </div>
   );
 };

@@ -18,10 +18,10 @@ interface PropertyListingCsv {
   state?: string;
   country?: string;
   postcode?: string;
-  property_type?: 'HDB' | 'LANDED' | 'CONDOMINIUM' | 'SHOP';
+  property_type?: 'HDB' | 'LANDED' | 'CONDOMINIUM' | 'SHOP' | null;
   room_type?: string;
   description?: string;
-  [key: string]: any; // For additional fields that will go into additional_data
+  [key: string]: any;
 }
 
 interface CsvUploadProps {
@@ -36,9 +36,13 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
   const [extractedData, setExtractedData] = useState<PropertyListingCsv[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const validatePropertyType = (type: string): boolean => {
+  const validatePropertyType = (type: string | null): string | null => {
+    if (!type) return null;
+    
     const validTypes = ['HDB', 'LANDED', 'CONDOMINIUM', 'SHOP'];
-    return validTypes.includes(type?.toUpperCase());
+    const normalizedType = type.trim().toUpperCase();
+    
+    return validTypes.includes(normalizedType) ? normalizedType : null;
   };
 
   const parseCsvFile = async (file: File): Promise<PropertyListingCsv[]> => {
@@ -69,7 +73,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
                 const additionalData: Record<string, any> = {};
                 
                 headers.forEach((header, i) => {
-                  const value = values[i]?.replace(/^"(.*)"$/, '$1');
+                  const value = values[i]?.replace(/^"(.*)"$/, '$1')?.trim() || null;
                   
                   // Map known columns to their respective fields
                   switch(header.toLowerCase()) {
@@ -98,10 +102,11 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
                       obj.postcode = value;
                       break;
                     case 'propertytype':
-                      if (value && !validatePropertyType(value)) {
-                        throw new Error(`Invalid property type: ${value}. Must be one of: HDB, LANDED, CONDOMINIUM, SHOP`);
+                      const validatedType = validatePropertyType(value);
+                      if (value && !validatedType) {
+                        throw new Error(`Invalid property type in row ${index + 2}: "${value}". Must be one of: HDB, LANDED, CONDOMINIUM, SHOP (or leave empty)`);
                       }
-                      obj.property_type = value?.toUpperCase();
+                      obj.property_type = validatedType;
                       break;
                     case 'roomtype':
                       obj.room_type = value;
@@ -111,7 +116,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
                       break;
                     default:
                       // Store any other columns in additional_data
-                      if (value) {
+                      if (value !== null) {
                         additionalData[header] = value;
                       }
                   }

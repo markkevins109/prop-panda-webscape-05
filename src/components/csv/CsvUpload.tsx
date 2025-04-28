@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -66,71 +65,68 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
           
           const data = nonEmptyLines.slice(1)
             .filter(line => line.trim())
-            .map((line, index) => {
-              try {
-                const values = line.split(',').map(v => v.trim());
-                const obj: Record<string, any> = {};
-                const additionalData: Record<string, any> = {};
+            .map((line) => {
+              const values = line.split(',').map(v => v.trim());
+              const obj: Record<string, any> = {};
+              const additionalData: Record<string, any> = {};
+              
+              headers.forEach((header, i) => {
+                const value = values[i]?.replace(/^"(.*)"$/, '$1')?.trim() || null;
                 
-                headers.forEach((header, i) => {
-                  const value = values[i]?.replace(/^"(.*)"$/, '$1')?.trim() || null;
-                  
-                  // Map known columns to their respective fields
-                  switch(header.toLowerCase()) {
-                    case 'propertyid':
-                      obj.property_id = value;
-                      break;
-                    case 'propertyname':
-                      obj.property_name = value;
-                      break;
-                    case 'add1':
-                      obj.address_line1 = value;
-                      break;
-                    case 'add2':
-                      obj.address_line2 = value;
-                      break;
-                    case 'city':
-                      obj.city = value;
-                      break;
-                    case 'state':
-                      obj.state = value;
-                      break;
-                    case 'country':
-                      obj.country = value;
-                      break;
-                    case 'postcode':
-                      obj.postcode = value;
-                      break;
-                    case 'propertytype':
-                      const validatedType = validatePropertyType(value);
-                      if (value && !validatedType) {
-                        throw new Error(`Invalid property type in row ${index + 2}: "${value}". Must be one of: HDB, LANDED, CONDOMINIUM, SHOP (or leave empty)`);
-                      }
-                      obj.property_type = validatedType;
-                      break;
-                    case 'roomtype':
-                      obj.room_type = value;
-                      break;
-                    case 'description':
-                      obj.description = value;
-                      break;
-                    default:
-                      // Store any other columns in additional_data
-                      if (value !== null) {
-                        additionalData[header] = value;
-                      }
-                  }
-                });
-                
-                // Add additional_data to the object if there are any extra fields
-                if (Object.keys(additionalData).length > 0) {
-                  obj.additional_data = additionalData;
+                // Map known columns to their respective fields
+                switch(header.toLowerCase()) {
+                  case 'propertyid':
+                    obj.property_id = value;
+                    break;
+                  case 'propertyname':
+                    obj.property_name = value;
+                    break;
+                  case 'add1':
+                    obj.address_line1 = value;
+                    break;
+                  case 'add2':
+                    obj.address_line2 = value;
+                    break;
+                  case 'city':
+                    obj.city = value;
+                    break;
+                  case 'state':
+                    obj.state = value;
+                    break;
+                  case 'country':
+                    obj.country = value;
+                    break;
+                  case 'postcode':
+                    obj.postcode = value;
+                    break;
+                  case 'propertytype':
+                    const validatedType = validatePropertyType(value);
+                    if (value && !validatedType) {
+                      // If it's not a valid property type, store it in additional_data
+                      additionalData['original_property_type'] = value;
+                    }
+                    obj.property_type = validatedType;
+                    break;
+                  case 'roomtype':
+                    obj.room_type = value;
+                    break;
+                  case 'description':
+                    obj.description = value;
+                    break;
+                  default:
+                    // Store any other columns in additional_data
+                    if (value !== null) {
+                      additionalData[header] = value;
+                    }
                 }
-                
-                return obj;
-              } catch (error) {
-                throw new Error(`Error parsing row ${index + 2}: ${error.message}`);
+              });
+              
+              // Add additional_data to the object if there are any extra fields
+              if (Object.keys(additionalData).length > 0) {
+                obj.additional_data = additionalData;
               }
+              
+              return obj;
             });
 
           setRowCount(data.length);

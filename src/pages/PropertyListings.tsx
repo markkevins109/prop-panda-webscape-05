@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -140,7 +141,7 @@ const PropertyListings = () => {
             className="flex items-center gap-2"
           >
             <Upload className="w-4 h-4" />
-            Upload CSV
+            Import CSV
           </Button>
           <Link to="/property-listing">
             <Button className="flex items-center gap-2">
@@ -153,6 +154,9 @@ const PropertyListings = () => {
 
       {showCsvUpload && (
         <div className="mb-8">
+          <p className="text-sm text-muted-foreground mb-4">
+            Click "Choose File" below to select a CSV file for import. Make sure your CSV follows the template format.
+          </p>
           <CsvUpload onUploadSuccess={handleUploadSuccess} />
         </div>
       )}

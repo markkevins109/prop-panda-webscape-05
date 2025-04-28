@@ -243,7 +243,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
           >
             <span>
               <Upload className="w-4 h-4" />
-              {isUploading ? 'Uploading...' : 'Upload CSV'}
+              {isUploading ? 'Uploading...' : 'Choose File'}
             </span>
           </Button>
         </label>

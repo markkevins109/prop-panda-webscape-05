@@ -230,6 +230,69 @@ export type Database = {
         }
         Relationships: []
       }
+      property_listings_csv: {
+        Row: {
+          additional_data: Json | null
+          address_line1: string | null
+          address_line2: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          description: string | null
+          id: string
+          postcode: string | null
+          property_id: string | null
+          property_name: string | null
+          property_type:
+            | Database["public"]["Enums"]["property_listing_type"]
+            | null
+          room_type: string | null
+          state: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          additional_data?: Json | null
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          postcode?: string | null
+          property_id?: string | null
+          property_name?: string | null
+          property_type?:
+            | Database["public"]["Enums"]["property_listing_type"]
+            | null
+          room_type?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          additional_data?: Json | null
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          postcode?: string | null
+          property_id?: string | null
+          property_name?: string | null
+          property_type?:
+            | Database["public"]["Enums"]["property_listing_type"]
+            | null
+          room_type?: string | null
+          state?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_account_types: {
         Row: {
           account_type: Database["public"]["Enums"]["account_type"]
@@ -261,6 +324,7 @@ export type Database = {
     Enums: {
       account_type: "individual" | "company"
       profession_type: "RETIRED" | "STUDENT" | "PROFESSIONAL" | "ANY"
+      property_listing_type: "HDB" | "LANDED" | "CONDOMINIUM" | "SHOP"
       property_type: "HDB" | "LANDED" | "CONDOMINIUM" | "SHOP"
       race_type: "INDIAN" | "CHINESE" | "MALAY" | "ANY"
     }
@@ -380,6 +444,7 @@ export const Constants = {
     Enums: {
       account_type: ["individual", "company"],
       profession_type: ["RETIRED", "STUDENT", "PROFESSIONAL", "ANY"],
+      property_listing_type: ["HDB", "LANDED", "CONDOMINIUM", "SHOP"],
       property_type: ["HDB", "LANDED", "CONDOMINIUM", "SHOP"],
       race_type: ["INDIAN", "CHINESE", "MALAY", "ANY"],
     },

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { Building, FileText, Plus, Download } from 'lucide-react';
+import { Building, FileText, Plus, Upload, Download } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Link } from 'react-router-dom';
+import CsvUpload from '@/components/csv/CsvUpload';
 
 interface PropertyListing {
   id: string;
@@ -27,6 +28,7 @@ interface PropertyListing {
 
 const PropertyListings = () => {
   const [listings, setListings] = useState<PropertyListing[]>([]);
+  const [showCsvUpload, setShowCsvUpload] = useState(false);
 
   const fetchListings = async () => {
     const { data, error } = await supabase
@@ -70,6 +72,11 @@ const PropertyListings = () => {
     document.body.removeChild(link);
   };
 
+  const handleUploadSuccess = () => {
+    fetchListings();
+    setShowCsvUpload(false);
+  };
+
   useEffect(() => {
     fetchListings();
   }, []);
@@ -89,6 +96,14 @@ const PropertyListings = () => {
             <Download className="w-4 h-4" />
             Download Template
           </Button>
+          <Button
+            variant="outline"
+            onClick={() => setShowCsvUpload(!showCsvUpload)}
+            className="flex items-center gap-2"
+          >
+            <Upload className="w-4 h-4" />
+            Upload CSV
+          </Button>
           <Link to="/property-listing">
             <Button className="flex items-center gap-2">
               <Plus className="w-4 h-4" />
@@ -97,6 +112,12 @@ const PropertyListings = () => {
           </Link>
         </div>
       </div>
+
+      {showCsvUpload && (
+        <div className="mb-8">
+          <CsvUpload onUploadSuccess={handleUploadSuccess} />
+        </div>
+      )}
 
       {listings.length > 0 ? (
         <div className="rounded-md border">

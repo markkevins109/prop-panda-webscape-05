@@ -51,11 +51,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           description: 'You are now logged in.',
         });
 
-        setTimeout(() => {
-          if (isMounted && newSession?.user) {
-            checkUserProfile(newSession.user.id, navigate, location.pathname);
-          }
-        }, 100);
+        // We don't need to call checkUserProfile here as we're handling navigation 
+        // directly in the signIn function
       }
       
       if (event === 'SIGNED_OUT') {
@@ -76,16 +73,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         
-        if (currentSession?.user) {
-          // Don't redirect if the user is on the account-type page
-          if (location.pathname !== '/account-type') {
-            setTimeout(() => {
-              if (isMounted && currentSession?.user) {
-                checkUserProfile(currentSession.user.id, navigate, location.pathname);
-              }
-            }, 100);
-          }
-        }
+        // Don't redirect automatically on first load
+        // This allows our manual redirect to /account-type to work properly
         
         setLoading(false);
         setInitialLoadComplete(true);

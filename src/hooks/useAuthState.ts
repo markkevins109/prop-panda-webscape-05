@@ -30,6 +30,9 @@ export const useAuthState = () => {
         return { error };
       }
 
+      // Navigate to account type selection page on successful sign in
+      navigate('/account-type');
+      
       return { error: null };
     } catch (error: any) {
       console.error('Unexpected sign in error:', error);

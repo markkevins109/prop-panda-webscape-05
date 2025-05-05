@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { FileText, Plus, Upload, Download } from 'lucide-react';
+import { FileText, Plus, Upload, Download, Edit, Pencil } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -13,8 +13,25 @@ import {
 } from "@/components/ui/table";
 import { Link } from 'react-router-dom';
 import CsvUpload from '@/components/csv/CsvUpload';
+import EditCsvListingModal from '@/components/csv/EditCsvListingModal';
+import { toast } from 'sonner';
 
 interface CsvPropertyListing {
+  id: string;
+  property_id?: string;
+  property_name?: string;
+  address_line1?: string;
+  address_line2?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postcode?: string;
+  property_type?: string;
+  room_type?: string;
+  description?: string;
+  additional_data?: Record<string, any>;
+  created_at: string;
+  updated_at: string;
   [key: string]: any;
 }
 
@@ -37,6 +54,8 @@ const PropertyListings = () => {
   const [regularListings, setRegularListings] = useState<RegularPropertyListing[]>([]);
   const [showCsvUpload, setShowCsvUpload] = useState(false);
   const [csvColumns, setCsvColumns] = useState<string[]>([]);
+  const [editingListing, setEditingListing] = useState<CsvPropertyListing | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const fetchListings = async () => {
     const { data: csvData, error: csvError } = await supabase
@@ -46,6 +65,7 @@ const PropertyListings = () => {
 
     if (csvError) {
       console.error('Error fetching CSV listings:', csvError);
+      toast.error('Error fetching CSV listings');
       return;
     }
 
@@ -56,6 +76,7 @@ const PropertyListings = () => {
 
     if (regularError) {
       console.error('Error fetching regular listings:', regularError);
+      toast.error('Error fetching regular listings');
       return;
     }
 
@@ -81,6 +102,16 @@ const PropertyListings = () => {
     setCsvColumns(Array.from(allColumns));
     setCsvListings(flattenedData || []);
     setRegularListings(regularData || []);
+  };
+
+  const handleEditListing = (listing: CsvPropertyListing) => {
+    setEditingListing(listing);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingListing(null);
   };
 
   const downloadTemplate = () => {
@@ -206,6 +237,7 @@ const PropertyListings = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="sticky left-0 bg-background z-10">Actions</TableHead>
                   {csvColumns.map((column) => (
                     <TableHead key={column} className="whitespace-nowrap">
                       {column}
@@ -216,6 +248,16 @@ const PropertyListings = () => {
               <TableBody>
                 {csvListings.map((listing, index) => (
                   <TableRow key={index}>
+                    <TableCell className="sticky left-0 bg-background z-10">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => handleEditListing(listing)}
+                        title="Edit Listing"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
                     {csvColumns.map((column) => (
                       <TableCell key={`${index}-${column}`} className="whitespace-nowrap">
                         {listing[column]?.toString() || '-'}
@@ -237,6 +279,13 @@ const PropertyListings = () => {
           <p className="text-muted-foreground">No property listings found. Create a new listing or upload a CSV file to get started!</p>
         </div>
       )}
+
+      <EditCsvListingModal
+        isOpen={isEditModalOpen}
+        onClose={closeEditModal}
+        listing={editingListing}
+        onSave={fetchListings}
+      />
     </div>
   );
 };

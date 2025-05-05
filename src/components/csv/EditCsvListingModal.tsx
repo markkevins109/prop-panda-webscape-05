@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Loader } from 'lucide-react';
 
 interface CsvPropertyListing {
@@ -49,6 +49,7 @@ const EditCsvListingModal: React.FC<EditCsvListingModalProps> = ({
 }) => {
   const [editedListing, setEditedListing] = useState<Record<string, any>>({});
   const [additionalFields, setAdditionalFields] = useState<Record<string, any>>({});
+  const [allFields, setAllFields] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [standardFields] = useState([
     'property_id',
@@ -63,6 +64,9 @@ const EditCsvListingModal: React.FC<EditCsvListingModalProps> = ({
     'room_type',
     'description',
   ]);
+
+  // Reserved fields that shouldn't be displayed in the form
+  const reservedFields = ['id', 'created_at', 'updated_at', 'user_id', 'additional_data'];
 
   useEffect(() => {
     if (listing) {
@@ -80,21 +84,79 @@ const EditCsvListingModal: React.FC<EditCsvListingModalProps> = ({
       } else {
         setAdditionalFields({});
       }
+
+      // Create a list of all fields for display
+      const allFieldKeys = new Set<string>();
+      
+      // Add standard fields
+      standardFields.forEach(field => allFieldKeys.add(field));
+      
+      // Add all fields from the listing object except reserved ones
+      Object.keys(listing).forEach(key => {
+        if (!reservedFields.includes(key)) {
+          allFieldKeys.add(key);
+        }
+      });
+      
+      // Add fields from additional_data
+      if (listing.additional_data) {
+        Object.keys(listing.additional_data).forEach(key => {
+          allFieldKeys.add(key);
+        });
+      }
+      
+      setAllFields(Array.from(allFieldKeys));
     }
   }, [listing, standardFields]);
 
-  const handleStandardFieldChange = (field: string, value: string) => {
-    setEditedListing(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  const handleFieldChange = (field: string, value: string) => {
+    // If field is a standard field, update editedListing
+    if (standardFields.includes(field)) {
+      setEditedListing(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    } else {
+      // Otherwise, update additionalFields
+      setAdditionalFields(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    }
   };
 
-  const handleAdditionalFieldChange = (field: string, value: string) => {
-    setAdditionalFields(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  const renderFieldInput = (field: string) => {
+    // Determine the current value
+    let currentValue = '';
+    
+    if (standardFields.includes(field)) {
+      currentValue = editedListing[field] || '';
+    } else {
+      currentValue = additionalFields[field] || '';
+    }
+
+    // For description field, use Textarea
+    if (field === 'description') {
+      return (
+        <Textarea
+          id={field}
+          value={currentValue}
+          onChange={(e) => handleFieldChange(field, e.target.value)}
+          className="col-span-3"
+          rows={4}
+        />
+      );
+    }
+
+    // For all other fields, use Input
+    return (
+      <Input
+        id={field}
+        value={currentValue}
+        onChange={(e) => handleFieldChange(field, e.target.value)}
+        className="col-span-3"
+      />
+    );
   };
 
   const handleSave = async () => {
@@ -145,40 +207,17 @@ const EditCsvListingModal: React.FC<EditCsvListingModalProps> = ({
         
         <div className="grid gap-4 py-4">
           <div className="space-y-4">
-            <h3 className="text-sm font-medium">Standard Fields</h3>
-            {standardFields.map((field) => (
+            <h3 className="text-sm font-medium">Property Information</h3>
+            
+            {allFields.sort().map((field) => (
               <div key={field} className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor={field} className="text-right capitalize">
                   {field.replace(/_/g, ' ')}
                 </Label>
-                <Input
-                  id={field}
-                  value={editedListing[field] || ''}
-                  onChange={(e) => handleStandardFieldChange(field, e.target.value)}
-                  className="col-span-3"
-                />
+                {renderFieldInput(field)}
               </div>
             ))}
           </div>
-
-          {Object.keys(additionalFields).length > 0 && (
-            <div className="space-y-4 mt-4">
-              <h3 className="text-sm font-medium">Additional Fields</h3>
-              {Object.keys(additionalFields).map((field) => (
-                <div key={field} className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor={`additional-${field}`} className="text-right capitalize">
-                    {field.replace(/_/g, ' ')}
-                  </Label>
-                  <Input
-                    id={`additional-${field}`}
-                    value={additionalFields[field] || ''}
-                    onChange={(e) => handleAdditionalFieldChange(field, e.target.value)}
-                    className="col-span-3"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
         </div>
         
         <DialogFooter>

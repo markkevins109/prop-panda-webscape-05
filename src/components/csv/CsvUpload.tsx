@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import CsvFileInfo from './CsvFileInfo';
 import CsvDataPreview from './CsvDataPreview';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { InfoIcon } from 'lucide-react';
+import { PropertyTemplateType } from './PropertyTypeUploadForm';
 
 interface PropertyListingCsv {
   property_id?: string;
@@ -23,16 +25,28 @@ interface PropertyListingCsv {
   [key: string]: any;
 }
 
-interface CsvUploadProps {
-  onUploadSuccess: () => void;
+interface PropertyDetailsListing {
+  property_address: string;
+  rent_per_month: number;
+  property_type: 'HDB' | 'LANDED' | 'CONDOMINIUM' | 'SHOP';
+  available_date: string;
+  preferred_nationality: string;
+  preferred_profession: string;
+  preferred_race: string;
+  pets_allowed: boolean;
 }
 
-const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
+interface CsvUploadProps {
+  onUploadSuccess: () => void;
+  templateType?: PropertyTemplateType;
+}
+
+const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess, templateType = 'co-living' }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [rowCount, setRowCount] = useState(0);
   const [columnNames, setColumnNames] = useState<string[]>([]);
-  const [extractedData, setExtractedData] = useState<PropertyListingCsv[]>([]);
+  const [extractedData, setExtractedData] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const validatePropertyType = (type: string | null): string | null => {
@@ -44,7 +58,21 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
     return validTypes.includes(normalizedType) ? normalizedType : null;
   };
 
-  const parseCsvFile = async (file: File): Promise<PropertyListingCsv[]> => {
+  const validatePropertyTemplate = (headers: string[]): boolean => {
+    if (templateType === 'property') {
+      const requiredHeaders = [
+        'property_address', 'rent_per_month', 'property_type', 'available_date',
+        'preferred_nationality', 'preferred_profession', 'preferred_race', 'pets_allowed'
+      ].map(h => h.toLowerCase());
+      
+      const normalizedHeaders = headers.map(h => h.toLowerCase());
+      return requiredHeaders.every(header => normalizedHeaders.includes(header));
+    }
+    
+    return true; // Co-living template is more flexible
+  };
+
+  const parseCsvFile = async (file: File): Promise<any[]> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = async (e) => {
@@ -63,74 +91,110 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
           const headers = nonEmptyLines[0].split(',').map(h => h.trim());
           setColumnNames(headers);
           
-          const data = nonEmptyLines.slice(1)
-            .filter(line => line.trim())
-            .map((line) => {
-              const values = line.split(',').map(v => v.trim());
-              const obj: Record<string, any> = {};
-              const additionalData: Record<string, any> = {};
-              
-              headers.forEach((header, i) => {
-                const value = values[i]?.replace(/^"(.*)"$/, '$1')?.trim() || null;
-                
-                // Map known columns to their respective fields
-                switch(header.toLowerCase()) {
-                  case 'propertyid':
-                    obj.property_id = value;
-                    break;
-                  case 'propertyname':
-                    obj.property_name = value;
-                    break;
-                  case 'add1':
-                    obj.address_line1 = value;
-                    break;
-                  case 'add2':
-                    obj.address_line2 = value;
-                    break;
-                  case 'city':
-                    obj.city = value;
-                    break;
-                  case 'state':
-                    obj.state = value;
-                    break;
-                  case 'country':
-                    obj.country = value;
-                    break;
-                  case 'postcode':
-                    obj.postcode = value;
-                    break;
-                  case 'propertytype':
-                    const validatedType = validatePropertyType(value);
-                    if (value && !validatedType) {
-                      // If it's not a valid property type, store it in additional_data
-                      additionalData['original_property_type'] = value;
+          // Validate template type
+          if (!validatePropertyTemplate(headers)) {
+            reject(new Error(`The uploaded file does not match the ${templateType === 'property' ? 'Property Details' : 'Co-Living Room'} template format.`));
+            return;
+          }
+          
+          if (templateType === 'property') {
+            // Parse property details
+            const data = nonEmptyLines.slice(1)
+              .filter(line => line.trim())
+              .map((line, index) => {
+                try {
+                  const values = line.split(',').map(v => v.trim());
+                  const obj: any = {};
+                  headers.forEach((header, i) => {
+                    // Normalize header to lowercase for consistent mapping
+                    const normalizedHeader = header.toLowerCase();
+                    if (normalizedHeader === 'pets_allowed') {
+                      obj[normalizedHeader] = values[i].toLowerCase() === 'true';
+                    } else if (normalizedHeader === 'rent_per_month') {
+                      obj[normalizedHeader] = Number(values[i]);
+                    } else {
+                      obj[normalizedHeader] = values[i].replace(/^"(.*)"$/, '$1');
                     }
-                    obj.property_type = validatedType;
-                    break;
-                  case 'roomtype':
-                    obj.room_type = value;
-                    break;
-                  case 'description':
-                    obj.description = value;
-                    break;
-                  default:
-                    // Store any other columns in additional_data
-                    if (value !== null) {
-                      additionalData[header] = value;
-                    }
+                  });
+                  return obj;
+                } catch (error) {
+                  throw new Error(`Error parsing row ${index + 2}: ${error.message}`);
                 }
               });
-              
-              // Add additional_data to the object if there are any extra fields
-              if (Object.keys(additionalData).length > 0) {
-                obj.additional_data = additionalData;
-              }
-              
-              return obj;
-            });
+            
+            setRowCount(data.length);
+            resolve(data);
+          } else {
+            // Parse co-living details (original logic)
+            const data = nonEmptyLines.slice(1)
+              .filter(line => line.trim())
+              .map((line) => {
+                const values = line.split(',').map(v => v.trim());
+                const obj: Record<string, any> = {};
+                const additionalData: Record<string, any> = {};
+                
+                headers.forEach((header, i) => {
+                  const value = values[i]?.replace(/^"(.*)"$/, '$1')?.trim() || null;
+                  
+                  // Map known columns to their respective fields
+                  switch(header.toLowerCase()) {
+                    case 'propertyid':
+                      obj.property_id = value;
+                      break;
+                    case 'propertyname':
+                      obj.property_name = value;
+                      break;
+                    case 'add1':
+                      obj.address_line1 = value;
+                      break;
+                    case 'add2':
+                      obj.address_line2 = value;
+                      break;
+                    case 'city':
+                      obj.city = value;
+                      break;
+                    case 'state':
+                      obj.state = value;
+                      break;
+                    case 'country':
+                      obj.country = value;
+                      break;
+                    case 'postcode':
+                      obj.postcode = value;
+                      break;
+                    case 'propertytype':
+                      const validatedType = validatePropertyType(value);
+                      if (value && !validatedType) {
+                        // If it's not a valid property type, store it in additional_data
+                        additionalData['original_property_type'] = value;
+                      }
+                      obj.property_type = validatedType;
+                      break;
+                    case 'roomtype':
+                      obj.room_type = value;
+                      break;
+                    case 'description':
+                      obj.description = value;
+                      break;
+                    default:
+                      // Store any other columns in additional_data
+                      if (value !== null) {
+                        additionalData[header] = value;
+                      }
+                  }
+                });
+                
+                // Add additional_data to the object if there are any extra fields
+                if (Object.keys(additionalData).length > 0) {
+                  obj.additional_data = additionalData;
+                }
+                
+                return obj;
+              });
 
-          setRowCount(data.length);
-          resolve(data as PropertyListingCsv[]);
+            setRowCount(data.length);
+            resolve(data);
+          }
         } catch (error) {
           reject(error);
         }
@@ -155,8 +219,8 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
     setCurrentFile(file);
     
     try {
-      const propertyData = await parseCsvFile(file);
-      setExtractedData(propertyData);
+      const data = await parseCsvFile(file);
+      setExtractedData(data);
       toast.success('CSV file parsed successfully');
     } catch (error: any) {
       console.error('Upload error:', error);
@@ -181,19 +245,33 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
         throw new Error('User not authenticated');
       }
       
-      // Insert each property listing
-      for (const property of extractedData) {
-        const { error } = await supabase
-          .from('property_listings_csv')
-          .insert({
-            ...property,
-            user_id: userId
-          });
+      if (templateType === 'property') {
+        // Insert property details to property_listings table
+        for (const property of extractedData) {
+          const { error } = await supabase
+            .from('property_listings')
+            .insert({
+              ...property,
+              user_id: userId
+            });
 
-        if (error) throw error;
+          if (error) throw error;
+        }
+      } else {
+        // Insert co-living details to property_listings_csv table (original logic)
+        for (const property of extractedData) {
+          const { error } = await supabase
+            .from('property_listings_csv')
+            .insert({
+              ...property,
+              user_id: userId
+            });
+
+          if (error) throw error;
+        }
       }
 
-      toast.success(`Successfully uploaded ${extractedData.length} properties`);
+      toast.success(`Successfully uploaded ${extractedData.length} ${templateType === 'property' ? 'properties' : 'co-living rooms'}`);
       onUploadSuccess();
       setCurrentFile(null);
       setExtractedData([]);
@@ -216,7 +294,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess }) => {
   };
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full space-y-4" id="csv-upload-form">
       {error && (
         <Alert variant="destructive">
           <InfoIcon className="h-4 w-4" />

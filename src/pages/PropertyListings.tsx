@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Link } from 'react-router-dom';
 import CsvUpload from '@/components/csv/CsvUpload';
+import PropertyTypeUploadForm from '@/components/csv/PropertyTypeUploadForm';
 import EditCsvListingModal from '@/components/csv/EditCsvListingModal';
 import { toast } from 'sonner';
 
@@ -52,7 +53,7 @@ interface RegularPropertyListing {
 const PropertyListings = () => {
   const [csvListings, setCsvListings] = useState<CsvPropertyListing[]>([]);
   const [regularListings, setRegularListings] = useState<RegularPropertyListing[]>([]);
-  const [showCsvUpload, setShowCsvUpload] = useState(false);
+  const [showUploadForm, setShowUploadForm] = useState(false);
   const [csvColumns, setCsvColumns] = useState<string[]>([]);
   const [editingListing, setEditingListing] = useState<CsvPropertyListing | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -114,37 +115,9 @@ const PropertyListings = () => {
     setEditingListing(null);
   };
 
-  const downloadTemplate = () => {
-    const headers = [
-      'propertyid', 'propertyname', 'email', 'add1', 'add2', 'city', 'state', 
-      'country', 'postcode', 'createdon', 'updatedon', 'hkcharge', 'spacno', 
-      'billday', 'dueday', 'roomtype', 'ppname', 'ppaddress', 'propertytype', 
-      'visitorspolicy', 'petspolicy', 'commontv', 'wifi', 'diningtable', 'sofa', 
-      'fridge', 'washer', 'dryer', 'gym', 'swimming', 'tenniscourt', 'badminton', 
-      'golfdrive', 'squashcourt', 'futasal', 'nearestmrt', 'nearestsupermarket', 
-      'nearestfoodcourt', 'description', 'microwave', 'nearestbusstop', 'company', 
-      'agent', 'owner', 'profileimg', 'propmanager', 'beneficiary', 'bankname', 
-      'swiftcode', 'accountnumber', 'mrt', 'buildingname', 'level', 'levelna', 
-      'unit', 'unitna', 'zone', 'district', 'coverage', 'accesscode', 'wifiname1', 
-      'wifiname2', 'wifipassword', 'ian', 'gastype', 'gplate', 'eretailer', 
-      'workplaces', 'metersubmitfrom', 'metersubmitto'
-    ];
-
-    const csvContent = headers.join(',') + '\n';
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    
-    link.setAttribute('href', url);
-    link.setAttribute('download', 'property_listing_template.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const handleUploadSuccess = () => {
     fetchListings();
-    setShowCsvUpload(false);
+    setShowUploadForm(false);
   };
 
   useEffect(() => {
@@ -160,19 +133,11 @@ const PropertyListings = () => {
         <div className="flex flex-wrap gap-3">
           <Button
             variant="outline"
-            onClick={downloadTemplate}
-            className="flex items-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            Download Template
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setShowCsvUpload(!showCsvUpload)}
+            onClick={() => setShowUploadForm(!showUploadForm)}
             className="flex items-center gap-2"
           >
             <Upload className="w-4 h-4" />
-            Import CSV
+            {showUploadForm ? 'Hide Upload Form' : 'Upload Property'}
           </Button>
           <Link to="/property-listing">
             <Button className="flex items-center gap-2">
@@ -183,18 +148,15 @@ const PropertyListings = () => {
         </div>
       </div>
 
-      {showCsvUpload && (
+      {showUploadForm && (
         <div className="mb-8">
-          <p className="text-sm text-muted-foreground mb-4">
-            Click "Choose File" below to select a CSV file for import. Make sure your CSV follows the template format.
-          </p>
-          <CsvUpload onUploadSuccess={handleUploadSuccess} />
+          <PropertyTypeUploadForm onUploadSuccess={handleUploadSuccess} />
         </div>
       )}
 
       {regularListings.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Regular Property Listings</h2>
+          <h2 className="text-2xl font-semibold mb-4">Property Details Listings</h2>
           <div className="rounded-md border overflow-x-auto">
             <Table>
               <TableHeader>
@@ -232,7 +194,7 @@ const PropertyListings = () => {
 
       {csvListings.length > 0 && (
         <div>
-          <h2 className="text-2xl font-semibold mb-4">CSV Property Listings</h2>
+          <h2 className="text-2xl font-semibold mb-4">Co-Living Room Listings</h2>
           <div className="rounded-md border overflow-x-auto">
             <Table>
               <TableHeader>

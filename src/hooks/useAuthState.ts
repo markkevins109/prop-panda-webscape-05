@@ -30,8 +30,8 @@ export const useAuthState = () => {
         return { error };
       }
 
-      // Navigate to account type selection page on successful sign in
-      navigate('/account-type');
+      // Navigate to property listings page on successful sign in
+      navigate('/property-listings');
       
       return { error: null };
     } catch (error: any) {

@@ -1,3 +1,4 @@
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -64,7 +65,16 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              <Route path="/property-listings" element={<Layout><PropertyListings /></Layout>} />
+              <Route
+                path="/property-listings"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <PropertyListings />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/account-type"
                 element={

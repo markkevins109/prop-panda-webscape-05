@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Menu, X, CalendarPlus, LogIn, LogOut, User } from "lucide-react";
+import { Menu, X, CalendarPlus, LogIn, LogOut, User, Building } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,13 +15,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const navLinks = [
+const publicNavLinks = [
   { name: "Home", path: "/" },
   { name: "Capabilities", path: "/capabilities" },
   { name: "Integrations", path: "/integrations" },
   { name: "Pricing", path: "/pricing" },
   { name: "Live Chat", path: "/live-chat" },
   { name: "Tutorials", path: "/tutorials" }
+];
+
+const authNavLinks = [
+  { name: "Property Listings", path: "/property-listings", icon: Building }
 ];
 
 export default function Navbar() {
@@ -73,7 +78,7 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center space-x-4">
           <nav className="flex items-center space-x-8">
-            {navLinks.map((link) => (
+            {publicNavLinks.map((link) => (
               <NavLink
                 key={link.name}
                 to={link.path}
@@ -82,6 +87,18 @@ export default function Navbar() {
                 }
               >
                 {link.name}
+              </NavLink>
+            ))}
+            
+            {user && authNavLinks.map((link) => (
+              <NavLink
+                key={link.name}
+                to={link.path}
+                className={({ isActive }) => 
+                  `nav-link ${isActive ? "font-medium after:scale-x-100" : ""} flex items-center gap-1`
+                }
+              >
+                {link.icon && <link.icon className="h-4 w-4" />} {link.name}
               </NavLink>
             ))}
           </nav>
@@ -100,6 +117,12 @@ export default function Navbar() {
                     {user.email}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <NavLink to="/property-listings" className="w-full flex items-center">
+                      <Building className="mr-2 h-4 w-4" />
+                      Property Listings
+                    </NavLink>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign out
@@ -140,7 +163,7 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-background shadow-md px-4 py-5 animate-fade-in">
           <nav className="flex flex-col space-y-4">
-            {navLinks.map((link) => (
+            {publicNavLinks.map((link) => (
               <NavLink
                 key={link.name}
                 to={link.path}
@@ -149,6 +172,18 @@ export default function Navbar() {
                 }
               >
                 {link.name}
+              </NavLink>
+            ))}
+            
+            {user && authNavLinks.map((link) => (
+              <NavLink
+                key={link.name}
+                to={link.path}
+                className={({ isActive }) => 
+                  `text-lg ${isActive ? "font-medium" : ""} flex items-center gap-2`
+                }
+              >
+                {link.icon && <link.icon className="h-5 w-5" />} {link.name}
               </NavLink>
             ))}
             

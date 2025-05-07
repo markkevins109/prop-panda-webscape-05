@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Menu, X, CalendarPlus, LogIn, LogOut, User, Building } from "lucide-react";
+import { Menu, X, CalendarPlus, LogIn, LogOut, User } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,7 @@ const publicNavLinks = [
 ];
 
 const authNavLinks = [
-  { name: "Property Listings", path: "/property-listings", icon: Building }
+  { name: "Property Listings", path: "/property-listings" }
 ];
 
 export default function Navbar() {
@@ -95,10 +95,10 @@ export default function Navbar() {
                 key={link.name}
                 to={link.path}
                 className={({ isActive }) => 
-                  `nav-link ${isActive ? "font-medium after:scale-x-100" : ""} flex items-center gap-1`
+                  `nav-link ${isActive ? "font-medium after:scale-x-100" : ""}`
                 }
               >
-                {link.icon && <link.icon className="h-4 w-4" />} {link.name}
+                {link.name}
               </NavLink>
             ))}
           </nav>
@@ -119,7 +119,6 @@ export default function Navbar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <NavLink to="/property-listings" className="w-full flex items-center">
-                      <Building className="mr-2 h-4 w-4" />
                       Property Listings
                     </NavLink>
                   </DropdownMenuItem>
@@ -180,10 +179,10 @@ export default function Navbar() {
                 key={link.name}
                 to={link.path}
                 className={({ isActive }) => 
-                  `text-lg ${isActive ? "font-medium" : ""} flex items-center gap-2`
+                  `text-lg ${isActive ? "font-medium" : ""}`
                 }
               >
-                {link.icon && <link.icon className="h-5 w-5" />} {link.name}
+                {link.name}
               </NavLink>
             ))}
             

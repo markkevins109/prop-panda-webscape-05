@@ -30,11 +30,16 @@ const PropertyTypeUploadForm: React.FC<PropertyTypeUploadFormProps> = ({ onUploa
     // Define headers based on template type
     if (type === 'co-living') {
       headers = [
-        'propertyid', 'propertyname', 'email', 'add1', 'add2', 'city', 'state', 
-        'country', 'postcode', 'createdon', 'updatedon', 'hkcharge', 'spacno', 
-        'billday', 'dueday', 'roomtype', 'ppname', 'ppaddress', 'visitorspolicy', 
-        'petspolicy', 'commontv', 'wifi', 'diningtable', 'sofa', 'fridge', 'washer', 
-        'dryer', 'nearestmrt', 'nearestsupermarket', 'nearestfoodcourt', 'description'
+        'propertyid', 'propertyname', 'email', 'phone', 'status', 'add1', 'add2', 'city', 'state', 
+        'country', 'postcode', 'createdon', 'updatedon', 'hkcharge', 'spacno', 'billday', 'dueday', 
+        'roomtype', 'ppname', 'ppaddress', 'propertytype', 'visitorspolicy', 'petspolicy', 'commontv', 
+        'wifi', 'diningtable', 'sofa', 'fridge', 'washer', 'dryer', 'gym', 'swimming', 'tenniscourt', 
+        'badminton', 'golfdrive', 'squashcourt', 'futasal', 'nearestmrt', 'nearestsupermarket', 
+        'nearestfoodcourt', 'description', 'microwave', 'nearestbusstop', 'company', 'agent', 
+        'owner', 'profileimg', 'propmanager', 'beneficiary', 'bankname', 'swiftcode', 'accountnumber', 
+        'mrt', 'buildingname', 'level', 'levelna', 'unit', 'unitna', 'zone', 'district', 'coverage', 
+        'accesscode', 'wifiname1', 'wifiname2', 'wifipassword', 'ian', 'gastype', 'gplate', 'eretailer', 
+        'workplaces', 'metersubmitfrom', 'metersubmitto'
       ];
     } else {
       // Property details template - comprehensive list of fields

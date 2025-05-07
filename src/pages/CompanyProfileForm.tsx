@@ -83,7 +83,8 @@ const CompanyProfileForm = () => {
         description: "Your company profile has been created successfully.",
       });
 
-      navigate('/');
+      // Redirect to login page after successful profile creation
+      navigate('/login');
     } catch (error) {
       toast({
         title: "Error",

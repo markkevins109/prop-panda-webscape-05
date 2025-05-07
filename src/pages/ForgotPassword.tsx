@@ -262,9 +262,9 @@ export default function ForgotPassword() {
                             disabled={isLoading}
                             render={({ slots }) => (
                               <InputOTPGroup>
-                                {slots.map((slot, idx) => (
+                                {slots && Array.isArray(slots) ? slots.map((slot, idx) => (
                                   <InputOTPSlot key={idx} {...slot} index={idx} />
-                                ))}
+                                )) : null}
                               </InputOTPGroup>
                             )}
                           />

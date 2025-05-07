@@ -37,10 +37,19 @@ const PropertyTypeUploadForm: React.FC<PropertyTypeUploadFormProps> = ({ onUploa
         'dryer', 'nearestmrt', 'nearestsupermarket', 'nearestfoodcourt', 'description'
       ];
     } else {
-      // Property details template
+      // Property details template - comprehensive list of fields
       headers = [
-        'property_address', 'rent_per_month', 'property_type', 'available_date',
-        'preferred_nationality', 'preferred_profession', 'preferred_race', 'pets_allowed'
+        'Property Type', 'Condo Name', 'Floor Level', 'Built Year', 'Floor Area (sqft)', 
+        'Bedrooms', 'Bathrooms', 'Maid Room Available', 'Furnishing Status', 'Availability',
+        'Agency Fee Applicable', 'Rental Price (SGD/month)', 'Minimum Lease Period', 'Security Deposit',
+        'Street', 'Level', 'Unit No', 'Postal Code', 'City', 'Country', 'District',
+        'Nearest MRT', 'Distance from MRT', 'MRT Line', 'Nearest Bus Stop', 
+        'Nearest School', 'Nearest University', 'Nearest Convenience Store',
+        'Aircon', 'Balcony', 'Renovated', 'Pet Friendly', 'Smoking Allowed', 'Cooking Allowed',
+        'Facing', 'BBQ Pits', 'Clubhouse', 'Gym', 'Fitness Corner', 'Jacuzzi', 'Jogging Track',
+        'Swimming Pool', 'Gender Preferred', 'Nationality Preference', 'Cooking Preference',
+        'Visitors Allowed', 'Group Size', 'Preferred Profile', 'Owner Name', 'Owner Address',
+        'Owner Contact', 'Ownership Proof Document', 'Marketing Agreement Document'
       ];
     }
 

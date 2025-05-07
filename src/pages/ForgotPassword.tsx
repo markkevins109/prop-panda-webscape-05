@@ -256,13 +256,14 @@ export default function ForgotPassword() {
                       <FormItem>
                         <FormControl>
                           <InputOTP 
-                            maxLength={6} 
-                            {...field}
+                            maxLength={6}
+                            value={field.value}
+                            onChange={field.onChange}
                             disabled={isLoading}
                             render={({ slots }) => (
                               <InputOTPGroup>
-                                {slots.map((slot, index) => (
-                                  <InputOTPSlot key={index} {...slot} index={index} />
+                                {slots.map((slot, idx) => (
+                                  <InputOTPSlot key={idx} {...slot} index={idx} />
                                 ))}
                               </InputOTPGroup>
                             )}

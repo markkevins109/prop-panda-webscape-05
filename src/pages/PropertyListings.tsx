@@ -89,15 +89,30 @@ const PropertyListings = () => {
       }
     });
 
+    // Helper function to check if a value is a valid object
+    const isObject = (val: any): val is Record<string, any> =>
+      typeof val === "object" && val !== null && !Array.isArray(val);
+
     const flattenedData = csvData?.map(listing => {
       const flatListing = { ...listing };
-      if (listing.additional_data) {
-        Object.entries(listing.additional_data).forEach(([key, value]) => {
-          flatListing[key] = value;
-        });
-        delete flatListing.additional_data;
-      }
-      return flatListing;
+      
+      // Safely handle additional_data by ensuring it's a valid object
+      const additionalData = isObject(listing.additional_data) 
+        ? listing.additional_data 
+        : {};
+      
+      // Remove additional_data from flatListing to avoid having it twice
+      delete flatListing.additional_data;
+      
+      // Spread additional data fields into the listing
+      Object.entries(additionalData).forEach(([key, value]) => {
+        flatListing[key] = value;
+      });
+      
+      // Add back additional_data as Record<string, any> for type safety
+      flatListing.additional_data = additionalData;
+      
+      return flatListing as CsvPropertyListing;
     });
 
     setCsvColumns(Array.from(allColumns));

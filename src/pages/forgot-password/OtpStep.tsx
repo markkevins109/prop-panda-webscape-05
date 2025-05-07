@@ -17,6 +17,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { otpSchema, OtpFormValues } from "./types";
 
 interface OtpStepProps {
@@ -26,6 +27,7 @@ interface OtpStepProps {
   email: string;
   handleResendOTP: () => void;
   otpResendCooldown: number;
+  error?: string | null;
 }
 
 export default function OtpStep({ 
@@ -34,20 +36,34 @@ export default function OtpStep({
   isLoading, 
   email,
   handleResendOTP,
-  otpResendCooldown
+  otpResendCooldown,
+  error
 }: OtpStepProps) {
   const form = useForm<OtpFormValues>({
     resolver: zodResolver(otpSchema),
     defaultValues: {
       otp: "",
     },
+    mode: "onChange",
   });
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-2">
-          <FormLabel>Enter the OTP sent to {email}</FormLabel>
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        
+        <div className="space-y-4">
+          <div className="text-center mb-4">
+            <p className="text-muted-foreground">
+              We've sent a verification code to <span className="font-medium text-foreground">{email}</span>
+            </p>
+          </div>
+
+          <FormLabel>Enter the 6-digit OTP</FormLabel>
           <FormField
             control={form.control}
             name="otp"
@@ -102,10 +118,10 @@ export default function OtpStep({
           </Button>
         </div>
 
-        <div className="text-center text-sm">
+        <div className="text-center text-sm mt-4">
           <button
             type="button"
-            className="text-accent-blue hover:underline"
+            className={`text-accent-blue ${otpResendCooldown > 0 ? 'opacity-50 cursor-not-allowed' : 'hover:underline'}`}
             onClick={handleResendOTP}
             disabled={isLoading || otpResendCooldown > 0}
           >
@@ -113,6 +129,9 @@ export default function OtpStep({
               ? `Resend OTP in ${otpResendCooldown}s` 
               : "Didn't receive the code? Resend OTP"}
           </button>
+          <p className="text-xs text-muted-foreground mt-1">
+            Please check your spam folder if you don't see the email
+          </p>
         </div>
       </form>
     </Form>

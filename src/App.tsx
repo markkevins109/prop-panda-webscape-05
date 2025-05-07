@@ -22,6 +22,7 @@ import Tutorials from "./pages/Tutorials";
 import AgentDataForm from "./pages/AgentDataForm";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
 import PropertyListing from "./pages/PropertyListing";
 import PropertyListings from "./pages/PropertyListings";
 import NotFound from "./pages/NotFound";
@@ -55,6 +56,7 @@ const App = () => (
               <Route path="/agent-data" element={<Layout><AgentDataForm /></Layout>} />
               <Route path="/login" element={<Layout><Login /></Layout>} />
               <Route path="/signup" element={<Layout><Signup /></Layout>} />
+              <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
               <Route
                 path="/property-listing"
                 element={

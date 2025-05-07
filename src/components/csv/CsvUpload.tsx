@@ -63,13 +63,24 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess, templateType = '
       const requiredHeaders = [
         'property_address', 'rent_per_month', 'property_type', 'available_date',
         'preferred_nationality', 'preferred_profession', 'preferred_race', 'pets_allowed'
-      ].map(h => h.toLowerCase());
+      ];
       
-      const normalizedHeaders = headers.map(h => h.toLowerCase());
-      return requiredHeaders.every(header => normalizedHeaders.includes(header));
+      // Create a case-insensitive comparison by normalizing both sets of headers
+      const normalizedRequiredHeaders = requiredHeaders.map(h => h.toLowerCase());
+      const normalizedHeaders = headers.map(h => h.toLowerCase().trim());
+      
+      // Check if all required headers are present
+      return normalizedRequiredHeaders.every(requiredHeader => 
+        normalizedHeaders.some(header => header === requiredHeader)
+      );
     }
     
     return true; // Co-living template is more flexible
+  };
+
+  const getHeaderIndex = (headers: string[], targetHeader: string): number => {
+    const normalizedTarget = targetHeader.toLowerCase();
+    return headers.findIndex(h => h.toLowerCase().trim() === normalizedTarget);
   };
 
   const parseCsvFile = async (file: File): Promise<any[]> => {
@@ -87,7 +98,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess, templateType = '
             return;
           }
           
-          // Get headers and normalize them
+          // Get headers and normalize them for display
           const headers = nonEmptyLines[0].split(',').map(h => h.trim());
           setColumnNames(headers);
           
@@ -104,20 +115,30 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess, templateType = '
               .map((line, index) => {
                 try {
                   const values = line.split(',').map(v => v.trim());
-                  const obj: any = {};
-                  headers.forEach((header, i) => {
-                    // Normalize header to lowercase for consistent mapping
-                    const normalizedHeader = header.toLowerCase();
-                    if (normalizedHeader === 'pets_allowed') {
-                      obj[normalizedHeader] = values[i].toLowerCase() === 'true';
-                    } else if (normalizedHeader === 'rent_per_month') {
-                      obj[normalizedHeader] = Number(values[i]);
-                    } else {
-                      obj[normalizedHeader] = values[i].replace(/^"(.*)"$/, '$1');
-                    }
-                  });
+                  const obj: Record<string, any> = {};
+                  
+                  // Map headers to their expected database column names
+                  const propertyAddressIndex = getHeaderIndex(headers, 'property_address');
+                  const rentPerMonthIndex = getHeaderIndex(headers, 'rent_per_month');
+                  const propertyTypeIndex = getHeaderIndex(headers, 'property_type');
+                  const availableDateIndex = getHeaderIndex(headers, 'available_date');
+                  const preferredNationalityIndex = getHeaderIndex(headers, 'preferred_nationality');
+                  const preferredProfessionIndex = getHeaderIndex(headers, 'preferred_profession');
+                  const preferredRaceIndex = getHeaderIndex(headers, 'preferred_race');
+                  const petsAllowedIndex = getHeaderIndex(headers, 'pets_allowed');
+                  
+                  // Assign values to the correct fields
+                  if (propertyAddressIndex >= 0) obj.property_address = values[propertyAddressIndex];
+                  if (rentPerMonthIndex >= 0) obj.rent_per_month = Number(values[rentPerMonthIndex]);
+                  if (propertyTypeIndex >= 0) obj.property_type = values[propertyTypeIndex];
+                  if (availableDateIndex >= 0) obj.available_date = values[availableDateIndex];
+                  if (preferredNationalityIndex >= 0) obj.preferred_nationality = values[preferredNationalityIndex];
+                  if (preferredProfessionIndex >= 0) obj.preferred_profession = values[preferredProfessionIndex];
+                  if (preferredRaceIndex >= 0) obj.preferred_race = values[preferredRaceIndex];
+                  if (petsAllowedIndex >= 0) obj.pets_allowed = values[petsAllowedIndex].toLowerCase() === 'true';
+
                   return obj;
-                } catch (error) {
+                } catch (error: any) {
                   throw new Error(`Error parsing row ${index + 2}: ${error.message}`);
                 }
               });
@@ -195,7 +216,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onUploadSuccess, templateType = '
             setRowCount(data.length);
             resolve(data);
           }
-        } catch (error) {
+        } catch (error: any) {
           reject(error);
         }
       };

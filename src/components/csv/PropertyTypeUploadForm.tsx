@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -29,6 +28,7 @@ const PropertyTypeUploadForm: React.FC<PropertyTypeUploadFormProps> = ({ onUploa
     
     // Define headers based on template type
     if (type === 'co-living') {
+      // Keep the co-living headers as they are
       headers = [
         'propertyid', 'propertyname', 'email', 'phone', 'status', 'add1', 'add2', 'city', 'state', 
         'country', 'postcode', 'createdon', 'updatedon', 'hkcharge', 'spacno', 'billday', 'dueday', 
@@ -42,19 +42,10 @@ const PropertyTypeUploadForm: React.FC<PropertyTypeUploadFormProps> = ({ onUploa
         'workplaces', 'metersubmitfrom', 'metersubmitto'
       ];
     } else {
-      // Property details template - comprehensive list of fields
+      // Update property headers to match snake_case validation requirements
       headers = [
-        'Property Type', 'Condo Name', 'Floor Level', 'Built Year', 'Floor Area (sqft)', 
-        'Bedrooms', 'Bathrooms', 'Maid Room Available', 'Furnishing Status', 'Availability',
-        'Agency Fee Applicable', 'Rental Price (SGD/month)', 'Minimum Lease Period', 'Security Deposit',
-        'Street', 'Level', 'Unit No', 'Postal Code', 'City', 'Country', 'District',
-        'Nearest MRT', 'Distance from MRT', 'MRT Line', 'Nearest Bus Stop', 
-        'Nearest School', 'Nearest University', 'Nearest Convenience Store',
-        'Aircon', 'Balcony', 'Renovated', 'Pet Friendly', 'Smoking Allowed', 'Cooking Allowed',
-        'Facing', 'BBQ Pits', 'Clubhouse', 'Gym', 'Fitness Corner', 'Jacuzzi', 'Jogging Track',
-        'Swimming Pool', 'Gender Preferred', 'Nationality Preference', 'Cooking Preference',
-        'Visitors Allowed', 'Group Size', 'Preferred Profile', 'Owner Name', 'Owner Address',
-        'Owner Contact', 'Ownership Proof Document', 'Marketing Agreement Document'
+        'property_address', 'rent_per_month', 'property_type', 'available_date', 
+        'preferred_nationality', 'preferred_profession', 'preferred_race', 'pets_allowed'
       ];
     }
 

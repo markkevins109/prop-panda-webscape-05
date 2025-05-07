@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X, CalendarPlus, LogIn, LogOut, User } from "lucide-react";
@@ -25,7 +24,7 @@ const publicNavLinks = [
 ];
 
 const authNavLinks = [
-  { name: "Property Listings", path: "/property-listings" }
+  { name: "Properties", path: "/property-listings" }
 ];
 
 export default function Navbar() {
@@ -119,7 +118,7 @@ export default function Navbar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <NavLink to="/property-listings" className="w-full flex items-center">
-                      Property Listings
+                      Properties
                     </NavLink>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut}>

@@ -53,6 +53,8 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [lastOtpSentTime, setLastOtpSentTime] = useState(0);
+  const [otpResendCooldown, setOtpResendCooldown] = useState(0);
   const navigate = useNavigate();
 
   // Step 1: Email form
@@ -84,11 +86,27 @@ export default function ForgotPassword() {
   const onEmailSubmit = async (data: EmailFormValues) => {
     setIsLoading(true);
     try {
+      console.log("Sending password reset email to:", data.email);
+      
+      // Check for cooldown period
+      const now = Date.now();
+      if (now - lastOtpSentTime < 30000) { // 30 seconds cooldown
+        const remainingCooldown = Math.ceil((30000 - (now - lastOtpSentTime)) / 1000);
+        toast({
+          title: "Please wait",
+          description: `You can request another OTP in ${remainingCooldown} seconds`,
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
       const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
         redirectTo: window.location.origin + "/reset-password",
       });
 
       if (error) {
+        console.error("Password reset error:", error);
         toast({
           title: "Error",
           description: error.message,
@@ -97,12 +115,26 @@ export default function ForgotPassword() {
       } else {
         setEmail(data.email);
         setStep(2);
+        setLastOtpSentTime(Date.now());
         toast({
           title: "OTP Sent!",
-          description: "Please check your email for the OTP code",
+          description: "Please check your email for the OTP code. If you don't see it, check your spam folder.",
         });
+        
+        // Start the cooldown timer
+        setOtpResendCooldown(30);
+        const timer = setInterval(() => {
+          setOtpResendCooldown((prev) => {
+            if (prev <= 1) {
+              clearInterval(timer);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
       }
     } catch (error: any) {
+      console.error("Unexpected error during password reset:", error);
       toast({
         title: "Error",
         description: "An unexpected error occurred",
@@ -119,8 +151,10 @@ export default function ForgotPassword() {
     try {
       // In a real implementation, this would verify the OTP with Supabase
       // For now, we'll just move to the next step
+      console.log("Verifying OTP:", data.otp);
       setStep(3);
     } catch (error: any) {
+      console.error("OTP verification error:", error);
       toast({
         title: "Error",
         description: "Invalid OTP code",
@@ -136,7 +170,7 @@ export default function ForgotPassword() {
     setIsLoading(true);
     try {
       // In a real implementation, this would update the password using the OTP
-      // For now, we'll just show a success message and redirect
+      console.log("Setting new password");
       toast({
         title: "Success!",
         description: "Your password has been reset successfully",
@@ -145,9 +179,66 @@ export default function ForgotPassword() {
         navigate("/login");
       }, 2000);
     } catch (error: any) {
+      console.error("Password reset error:", error);
       toast({
         title: "Error",
         description: "Failed to reset password",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Function to handle OTP resend
+  const handleResendOTP = async () => {
+    if (otpResendCooldown > 0) {
+      toast({
+        title: "Please wait",
+        description: `You can resend OTP in ${otpResendCooldown} seconds`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      console.log("Resending OTP to:", email);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + "/reset-password",
+      });
+
+      if (error) {
+        console.error("OTP resend error:", error);
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        setLastOtpSentTime(Date.now());
+        toast({
+          title: "OTP Resent!",
+          description: "Please check your email for the new OTP code",
+        });
+        
+        // Start the cooldown timer
+        setOtpResendCooldown(30);
+        const timer = setInterval(() => {
+          setOtpResendCooldown((prev) => {
+            if (prev <= 1) {
+              clearInterval(timer);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("Unexpected error during OTP resend:", error);
+      toast({
+        title: "Error",
+        description: "Could not resend OTP",
         variant: "destructive",
       });
     } finally {
@@ -307,30 +398,12 @@ export default function ForgotPassword() {
                   <button
                     type="button"
                     className="text-accent-blue hover:underline"
-                    onClick={async () => {
-                      const { email } = emailForm.getValues();
-                      if (email) {
-                        setIsLoading(true);
-                        try {
-                          await supabase.auth.resetPasswordForEmail(email);
-                          toast({
-                            title: "OTP Resent!",
-                            description: "Please check your email for the new OTP code",
-                          });
-                        } catch (error) {
-                          toast({
-                            title: "Error",
-                            description: "Could not resend OTP",
-                            variant: "destructive",
-                          });
-                        } finally {
-                          setIsLoading(false);
-                        }
-                      }
-                    }}
-                    disabled={isLoading}
+                    onClick={handleResendOTP}
+                    disabled={isLoading || otpResendCooldown > 0}
                   >
-                    Didn't receive the code? Resend OTP
+                    {otpResendCooldown > 0 
+                      ? `Resend OTP in ${otpResendCooldown}s` 
+                      : "Didn't receive the code? Resend OTP"}
                   </button>
                 </div>
               </form>

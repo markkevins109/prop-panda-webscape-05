@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,7 +34,6 @@ const companyProfileSchema = z.object({
   operating_areas: z.string().min(2, "Operating areas are required"),
   office_address: z.string().min(2, "Office address is required"),
   working_hours: z.string().min(2, "Working hours are required"),
-  website: z.string().optional(),
   profile_purpose: z.enum(['buying', 'selling', 'both'], { 
     required_error: "Please select your company's profile purpose" 
   })
@@ -56,7 +56,6 @@ const CompanyProfileForm = () => {
       operating_areas: '',
       office_address: '',
       working_hours: '',
-      website: '',
       profile_purpose: undefined
     }
   });
@@ -264,20 +263,6 @@ const CompanyProfileForm = () => {
                 <FormLabel>Working Hours</FormLabel>
                 <FormControl>
                   <Input placeholder="e.g., Monday-Friday, 9am-5pm" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="website"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Website or Portfolio Link (Optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter website URL" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

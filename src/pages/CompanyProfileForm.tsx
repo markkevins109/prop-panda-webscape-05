@@ -71,12 +71,27 @@ const CompanyProfileForm = () => {
     }
 
     try {
+      console.log("Submitting company profile:", values);
+      console.log("User ID:", user.id);
+      
       const { error } = await supabase.from('company_profiles').insert({
         user_id: user.id,
-        ...values
+        agency_name: values.agency_name,
+        contact_person_name: values.contact_person_name,
+        phone_number: values.phone_number,
+        email: values.email,
+        years_experience: values.years_experience,
+        specializations: values.specializations,
+        operating_areas: values.operating_areas,
+        office_address: values.office_address,
+        working_hours: values.working_hours,
+        profile_purpose: values.profile_purpose
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
 
       toast({
         title: "Profile Created",
@@ -85,10 +100,11 @@ const CompanyProfileForm = () => {
 
       // Redirect to login page after successful profile creation
       navigate('/login');
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Profile creation error:", error);
       toast({
         title: "Error",
-        description: "Failed to create profile. Please try again.",
+        description: error.message || "Failed to create profile. Please try again.",
         variant: "destructive"
       });
     }

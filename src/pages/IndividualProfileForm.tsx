@@ -30,7 +30,7 @@ const individualProfileSchema = z.object({
   email: z.string().email("Invalid email address"),
   agency_name: z.string().min(2, "Agency name is required"),
   years_experience: z.coerce.number().min(0, "Years of experience is required"),
-  specializations: z.array(z.enum(SPECIALIZATIONS as [string, ...string[]])).min(1, "Select at least one specialization"),
+  specializations: z.array(z.string()).min(1, "Select at least one specialization"),
   operating_areas: z.string().min(2, "Operating areas are required"),
   office_address: z.string().min(2, "Office address is required"),
   working_hours: z.string().min(2, "Working hours are required"),
@@ -71,13 +71,27 @@ const IndividualProfileForm = () => {
     }
 
     try {
+      console.log("Submitting individual profile:", values);
+      console.log("User ID:", user.id);
+      
       const { error } = await supabase.from('individual_profiles').insert({
         user_id: user.id,
-        ...values,
-        specializations: values.specializations || []
+        full_name: values.full_name,
+        phone_number: values.phone_number,
+        email: values.email,
+        agency_name: values.agency_name,
+        years_experience: values.years_experience,
+        specializations: values.specializations,
+        operating_areas: values.operating_areas,
+        office_address: values.office_address,
+        working_hours: values.working_hours,
+        profile_purpose: values.profile_purpose
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
 
       toast({
         title: "Profile Created",
@@ -86,10 +100,11 @@ const IndividualProfileForm = () => {
 
       // Redirect to login page after successful profile creation
       navigate('/login');
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Profile creation error:", error);
       toast({
         title: "Error",
-        description: "Failed to create profile. Please try again.",
+        description: error.message || "Failed to create profile. Please try again.",
         variant: "destructive"
       });
     }

@@ -146,6 +146,108 @@ export type Database = {
         }
         Relationships: []
       }
+      company_profiles: {
+        Row: {
+          agency_name: string
+          contact_person_name: string
+          created_at: string | null
+          email: string
+          id: string
+          office_address: string
+          operating_areas: string
+          phone_number: string
+          profile_purpose: string
+          specializations: string[]
+          updated_at: string | null
+          user_id: string
+          working_hours: string
+          years_experience: number
+        }
+        Insert: {
+          agency_name: string
+          contact_person_name: string
+          created_at?: string | null
+          email: string
+          id?: string
+          office_address: string
+          operating_areas: string
+          phone_number: string
+          profile_purpose: string
+          specializations: string[]
+          updated_at?: string | null
+          user_id: string
+          working_hours: string
+          years_experience: number
+        }
+        Update: {
+          agency_name?: string
+          contact_person_name?: string
+          created_at?: string | null
+          email?: string
+          id?: string
+          office_address?: string
+          operating_areas?: string
+          phone_number?: string
+          profile_purpose?: string
+          specializations?: string[]
+          updated_at?: string | null
+          user_id?: string
+          working_hours?: string
+          years_experience?: number
+        }
+        Relationships: []
+      }
+      individual_profiles: {
+        Row: {
+          agency_name: string
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          office_address: string
+          operating_areas: string
+          phone_number: string
+          profile_purpose: string
+          specializations: string[]
+          updated_at: string | null
+          user_id: string
+          working_hours: string
+          years_experience: number
+        }
+        Insert: {
+          agency_name: string
+          created_at?: string | null
+          email: string
+          full_name: string
+          id?: string
+          office_address: string
+          operating_areas: string
+          phone_number: string
+          profile_purpose: string
+          specializations: string[]
+          updated_at?: string | null
+          user_id: string
+          working_hours: string
+          years_experience: number
+        }
+        Update: {
+          agency_name?: string
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          office_address?: string
+          operating_areas?: string
+          phone_number?: string
+          profile_purpose?: string
+          specializations?: string[]
+          updated_at?: string | null
+          user_id?: string
+          working_hours?: string
+          years_experience?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

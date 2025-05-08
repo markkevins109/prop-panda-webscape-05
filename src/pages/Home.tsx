@@ -1,4 +1,3 @@
-
 import { ArrowRight, Book, MessageSquare, Clock, Shield, BarChart, BadgeCheck } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -59,6 +58,9 @@ export default function Home() {
     return matchedResponse ? matchedResponse[1] : queries['default'];
   };
 
+  // ... keep existing code (Hero Section)
+
+  // Demo Dialog
   return (
     <div className="overflow-x-hidden">
       {/* Hero Section */}

@@ -1,19 +1,25 @@
 
-import React from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bot } from 'lucide-react';
+import { FC } from 'react';
 
-export const PandaAvatar = () => {
+interface PandaAvatarProps {
+  size?: 'xs' | 'small' | 'medium' | 'large';
+}
+
+export const PandaAvatar: FC<PandaAvatarProps> = ({ size = 'medium' }) => {
+  const sizeClasses = {
+    xs: 'h-6 w-6',
+    small: 'h-8 w-8',
+    medium: 'h-10 w-10',
+    large: 'h-16 w-16'
+  };
+
   return (
-    <Avatar className="h-10 w-10 border-2 border-accent-blue">
-      <AvatarImage 
-        src="/lovable-uploads/dd2be9f3-db6f-4ce7-91e3-51204245dde6.png" 
-        alt="Prop Panda AI Logo" 
-        className="object-contain p-1"
+    <div className={`rounded-full bg-accent-blue flex items-center justify-center ${sizeClasses[size]}`}>
+      <img 
+        src="/public/panda-ai-logo.svg" 
+        alt="Prop Panda Avatar" 
+        className="h-4/5 w-4/5 object-contain" 
       />
-      <AvatarFallback>
-        <Bot className="h-8 w-8 text-accent-blue" />
-      </AvatarFallback>
-    </Avatar>
+    </div>
   );
 };

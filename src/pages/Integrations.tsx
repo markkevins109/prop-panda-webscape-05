@@ -105,9 +105,7 @@ export default function Integrations() {
               </Button>
             </div>
             <div className="flex items-center justify-center">
-              <div className="h-32 w-32 bg-white/10 rounded-full p-4 backdrop-blur-sm">
-                <PandaAvatar size="large" />
-              </div>
+              <PandaAvatar size="large" />
             </div>
           </div>
         </div>

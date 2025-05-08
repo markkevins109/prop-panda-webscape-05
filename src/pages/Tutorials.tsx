@@ -40,36 +40,46 @@ const Tutorials = () => {
         description="Explore our comprehensive tutorials to get the most out of your AI real estate assistant"
       />
       
-      <SectionContainer className="py-16">
+      <SectionContainer bgColor="bg-gradient-to-br from-white to-secondary/60" className="py-16">
+        <div className="max-w-3xl mx-auto text-center mb-10 animate-fade-in">
+          <h2 className="text-3xl font-bold mb-4">Video Tutorials</h2>
+          <p className="text-muted-foreground">
+            Watch these step-by-step guides to learn how to use all of Prop Panda's features
+          </p>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {tutorials.map((tutorial, index) => (
             <TutorialCard
               key={index}
               {...tutorial}
-              className="hover-scale border-t-4 border-t-accent-blue"
+              className="hover-scale border-t-4 border-t-accent-blue animate-fade-in"
+              style={{ animationDelay: `${index * 0.1}s` }}
             />
           ))}
         </div>
         
         <div className="mt-12 text-center">
-          <Button variant="default" size="lg" className="btn-accent">
+          <Button variant="default" size="lg" className="btn-accent transform transition-transform hover:scale-105">
             Request Custom Tutorial <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </div>
       </SectionContainer>
       
-      <SectionContainer bgColor="bg-gradient-to-br from-secondary/80 to-secondary" className="text-center">
-        <h2 className="text-3xl font-bold mb-6">Need Additional Help?</h2>
-        <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Our support team is available 24/7 to assist with any questions you may have about using Prop Panda.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button variant="outline" className="bg-white hover:bg-white/90">
-            Contact Support
-          </Button>
-          <Button variant="default" className="btn-accent">
-            Schedule a Demo
-          </Button>
+      <SectionContainer bgColor="bg-gradient-to-br from-secondary/30 to-secondary/80" className="text-center">
+        <div className="max-w-3xl mx-auto bg-white p-8 md:p-12 rounded-xl shadow-lg animate-fade-in">
+          <h2 className="text-3xl font-bold mb-6">Need Additional Help?</h2>
+          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Our support team is available 24/7 to assist with any questions you may have about using Prop Panda.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button variant="outline" className="bg-white hover:bg-white/90 transform transition-transform hover:scale-105">
+              Contact Support
+            </Button>
+            <Button variant="default" className="btn-accent transform transition-transform hover:scale-105">
+              Schedule a Demo
+            </Button>
+          </div>
         </div>
       </SectionContainer>
     </PageContainer>

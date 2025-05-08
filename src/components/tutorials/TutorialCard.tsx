@@ -8,11 +8,12 @@ interface TutorialCardProps {
   description: string;
   videoUrl: string;
   thumbnailUrl: string;
+  className?: string; // Added className prop to fix the TypeScript error
 }
 
-const TutorialCard = ({ title, description, videoUrl, thumbnailUrl }: TutorialCardProps) => {
+const TutorialCard = ({ title, description, videoUrl, thumbnailUrl, className }: TutorialCardProps) => {
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <Card className={`overflow-hidden hover:shadow-lg transition-shadow ${className}`}>
       <CardHeader className="p-0">
         <AspectRatio ratio={16/9}>
           <img 

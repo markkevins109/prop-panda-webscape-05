@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -10,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageUpload } from "@/components/profile/ImageUpload";
+import { Phone, Building, MapPin, User } from "lucide-react";
 
 interface ProfileFormData {
   phone: string;
@@ -169,73 +171,101 @@ export default function ProfileSetup() {
 
   if (authChecking) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Checking authentication status...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-blue-50">
+        <div className="animate-pulse text-accent-blue font-medium">
+          Checking authentication status...
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[url('/placeholder.svg')] bg-cover bg-center bg-no-repeat py-20">
-      <div className="container-custom max-w-2xl">
-        <Card className="border-[#28A745] shadow-lg">
-          <CardHeader className="text-center">
-            <CardTitle className="text-3xl">Let's get started!</CardTitle>
-            <CardDescription>
+    <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 py-12 px-4">
+      <div className="container max-w-3xl mx-auto">
+        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-accent-blue/10 to-blue-400/20 rounded-bl-full -z-10"></div>
+          <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-accent-blue/10 to-blue-400/20 rounded-tr-full -z-10"></div>
+          
+          <CardHeader className="text-center pb-6 border-b">
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent">
+              Let's get started!
+            </CardTitle>
+            <CardDescription className="text-base">
               Complete your profile to unlock Prop Panda's features
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          
+          <CardContent className="pt-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
               <div className="flex justify-center">
-                <ImageUpload
-                  onChange={(file) => setAvatarFile(file)}
-                />
+                <div className="relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-accent-blue to-blue-500 rounded-full blur"></div>
+                  <div className="relative">
+                    <ImageUpload onChange={(file) => setAvatarFile(file)} />
+                    <p className="text-center text-sm text-muted-foreground mt-2">
+                      Click to upload profile picture
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-accent-blue" /> Phone Number
+                  </Label>
+                  <Input
+                    id="phone"
+                    placeholder="+6581234567"
+                    className="border-blue-100 focus:border-accent-blue bg-white"
+                    {...register("phone", {
+                      required: "Phone number is required",
+                      validate: validatePhone
+                    })}
+                  />
+                  {errors.phone && (
+                    <p className="text-sm text-red-500">{errors.phone.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="organization" className="flex items-center gap-2">
+                    <Building className="h-4 w-4 text-accent-blue" /> Organization
+                  </Label>
+                  <Input
+                    id="organization"
+                    placeholder="Enter your organization"
+                    className="border-blue-100 focus:border-accent-blue bg-white"
+                    {...register("organization", { required: "Organization is required" })}
+                  />
+                  {errors.organization && (
+                    <p className="text-sm text-red-500">{errors.organization.message}</p>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  placeholder="+6581234567"
-                  {...register("phone", {
-                    required: "Phone number is required",
-                    validate: validatePhone
-                  })}
-                />
-                {errors.phone && (
-                  <p className="text-sm text-red-500">{errors.phone.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="organization">Organization</Label>
-                <Input
-                  id="organization"
-                  placeholder="Enter your organization (if applicable)"
-                  {...register("organization", { required: "Organization is required" })}
-                />
-                {errors.organization && (
-                  <p className="text-sm text-red-500">{errors.organization.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="bio">Bio (Optional)</Label>
+                <Label htmlFor="bio" className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-accent-blue" /> Bio (Optional)
+                </Label>
                 <Textarea
                   id="bio"
                   placeholder="Tell us about yourself"
                   maxLength={200}
+                  className="resize-none border-blue-100 focus:border-accent-blue bg-white h-24"
                   {...register("bio")}
                 />
+                <p className="text-xs text-muted-foreground text-right">Max 200 characters</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="location">Preferred Location (Optional)</Label>
+                <Label htmlFor="location" className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-accent-blue" /> Preferred Location (Optional)
+                </Label>
                 <Select
                   onValueChange={(value) => register("location").onChange({ target: { value } })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="border-blue-100 focus:border-accent-blue bg-white">
                     <SelectValue placeholder="Select your preferred location" />
                   </SelectTrigger>
                   <SelectContent>
@@ -249,10 +279,20 @@ export default function ProfileSetup() {
 
               <Button
                 type="submit"
-                className="w-full bg-[#28A745] hover:bg-[#28A745]/90"
+                className="w-full bg-gradient-to-r from-accent-blue to-blue-600 hover:from-accent-blue/90 hover:to-blue-600/90 h-12 transition-all duration-300"
                 disabled={isLoading}
               >
-                {isLoading ? "Saving..." : "Save and Continue"}
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Saving...
+                  </span>
+                ) : (
+                  "Save and Continue"
+                )}
               </Button>
             </form>
           </CardContent>

@@ -1,5 +1,7 @@
+
 import { SearchCheck, Clock, CalendarCheck, BarChart3, UserCheck, MessageSquareText, Building2, LineChart, BrainCircuit, ShieldCheck, HandCoins, Target, Users, FileText, PieChart } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { PageContainer, PageHero, SectionContainer } from "@/components/ui/page-container";
 
 export default function Capabilities() {
   const capabilities = [
@@ -84,78 +86,73 @@ export default function Capabilities() {
   ];
 
   return (
-    <div>
-      {/* Header */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold">Prop Panda Capabilities</h1>
-            <p className="text-lg text-muted-foreground">
-              Discover how our AI assistant transforms your real estate business with these powerful features.
-            </p>
-          </div>
-        </div>
-      </section>
+    <PageContainer>
+      <PageHero
+        title="Prop Panda Capabilities"
+        description="Discover how our AI assistant transforms your real estate business with these powerful features."
+      />
 
       {/* Core Capabilities */}
-      <section className="section-padding bg-secondary">
-        <div className="container-custom">
-          <h2 className="text-3xl font-bold mb-12 text-center">Core Capabilities</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {capabilities.map((capability, index) => (
-              <div key={index} className="card hover-scale">
-                <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <capability.icon className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{capability.title}</h3>
-                <p className="text-muted-foreground">{capability.description}</p>
-              </div>
-            ))}
-          </div>
+      <SectionContainer bgColor="bg-gradient-to-br from-white to-secondary/60">
+        <div className="max-w-3xl mx-auto text-center mb-10">
+          <h2 className="text-3xl font-bold mb-4">Core Capabilities</h2>
+          <p className="text-muted-foreground">Powerful features designed to enhance your real estate business operations</p>
         </div>
-      </section>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {capabilities.map((capability, index) => (
+            <div key={index} className="card hover-scale border-t-4 border-t-accent-blue bg-white shadow-lg animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+              <div className="h-14 w-14 bg-accent-blue/10 rounded-xl flex items-center justify-center mb-5">
+                <capability.icon className="h-8 w-8 text-accent-blue" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">{capability.title}</h3>
+              <p className="text-muted-foreground">{capability.description}</p>
+            </div>
+          ))}
+        </div>
+      </SectionContainer>
 
       {/* Advanced Features */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <h2 className="text-3xl font-bold mb-12 text-center">Advanced Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {advancedFeatures.map((feature, index) => (
-              <div key={index} className="card hover-scale flex">
-                <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4 shrink-0">
-                  <feature.icon className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+      <SectionContainer bgColor="bg-white">
+        <div className="max-w-3xl mx-auto text-center mb-10">
+          <h2 className="text-3xl font-bold mb-4">Advanced Features</h2>
+          <p className="text-muted-foreground">Cutting-edge capabilities that set Prop Panda apart from other solutions</p>
         </div>
-      </section>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {advancedFeatures.map((feature, index) => (
+            <div key={index} className="card hover-scale flex border-l-4 border-l-accent-blue bg-white shadow-lg animate-fade-in" style={{ animationDelay: `${index * 0.1 + 0.9}s` }}>
+              <div className="h-14 w-14 bg-accent-blue/10 rounded-xl flex items-center justify-center mr-5 shrink-0">
+                <feature.icon className="h-8 w-8 text-accent-blue" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </SectionContainer>
 
       {/* CTA */}
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="rounded-xl bg-gradient-to-r from-black to-neutral-800 text-white p-8 md:p-12">
-            <div className="max-w-2xl mx-auto text-center space-y-6">
-              <h2 className="text-2xl md:text-3xl font-bold">Experience Prop Panda in Action</h2>
-              <p className="text-lg opacity-90">
-                See how these features work together to transform your real estate business.
-              </p>
-              <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <NavLink to="/live-chat" className="btn-primary bg-white text-black">
-                  Try Interactive Demo
-                </NavLink>
-                <NavLink to="/pricing" className="btn-secondary bg-transparent border border-white hover:bg-white/10">
-                  View Pricing
-                </NavLink>
-              </div>
+      <SectionContainer bgColor="bg-gradient-to-br from-secondary/30 to-secondary/80">
+        <div className="rounded-xl bg-gradient-to-r from-black to-neutral-800 text-white p-8 md:p-12 shadow-xl transform hover:scale-[1.01] transition-transform duration-300">
+          <div className="max-w-2xl mx-auto text-center space-y-6">
+            <h2 className="text-2xl md:text-3xl font-bold">Experience Prop Panda in Action</h2>
+            <p className="text-lg opacity-90">
+              See how these features work together to transform your real estate business.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <NavLink to="/live-chat" className="btn-primary bg-accent-blue text-white border-none">
+                Try Interactive Demo
+              </NavLink>
+              <NavLink to="/pricing" className="btn-secondary bg-transparent border border-white hover:bg-white/10">
+                View Pricing
+              </NavLink>
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </SectionContainer>
+    </PageContainer>
   );
 }

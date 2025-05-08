@@ -16,7 +16,7 @@ export const PandaAvatar: FC<PandaAvatarProps> = ({ size = 'medium' }) => {
   return (
     <div className={`rounded-full bg-accent-blue flex items-center justify-center ${sizeClasses[size]}`}>
       <img 
-        src="/public/panda-ai-logo.svg" 
+        src="/panda-ai-logo.svg" 
         alt="Prop Panda Avatar" 
         className="h-4/5 w-4/5 object-contain" 
       />

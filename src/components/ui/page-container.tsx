@@ -24,10 +24,10 @@ export function PageHero({
   className?: string;
 }) {
   return (
-    <section className={`section-padding bg-gradient-to-br from-white to-secondary ${className}`}>
+    <section className={`section-padding bg-gradient-to-br from-white to-accent-blue/10 ${className}`}>
       <div className="container-custom text-center max-w-3xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">{title}</h1>
-        <p className="text-lg md:text-xl text-muted-foreground">{description}</p>
+        <h1 className="text-4xl md:text-5xl font-bold mb-5 animate-fade-in">{title}</h1>
+        <p className="text-lg md:text-xl text-muted-foreground animate-fade-in" style={{ animationDelay: '0.2s' }}>{description}</p>
       </div>
     </section>
   );

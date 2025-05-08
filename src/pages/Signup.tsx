@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -101,8 +102,8 @@ export default function Signup() {
   const passwordStrength = getPasswordStrength(form.watch("password"));
 
   return (
-    <div className="container-custom section-padding flex flex-col items-center">
-      <div className="w-full max-w-lg">
+    <div className="min-h-screen bg-gradient-to-br from-white to-secondary/80 py-10 px-4 flex flex-col items-center justify-center">
+      <div className="w-full max-w-lg animate-fade-in">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold mb-2">Create an account</h1>
           <p className="text-muted-foreground">
@@ -110,7 +111,7 @@ export default function Signup() {
           </p>
         </div>
 
-        <div className="bg-card p-8 rounded-xl shadow-sm">
+        <div className="bg-white p-8 rounded-xl shadow-lg border border-secondary/50 hover:shadow-xl transition-all duration-300">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <FormField
@@ -120,7 +121,12 @@ export default function Signup() {
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} disabled={isLoading} />
+                      <Input 
+                        placeholder="John Doe" 
+                        {...field} 
+                        disabled={isLoading} 
+                        className="bg-secondary/30 border-secondary focus:border-accent-blue"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -134,7 +140,13 @@ export default function Signup() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="name@example.com" {...field} disabled={isLoading} />
+                      <Input 
+                        type="email" 
+                        placeholder="name@example.com" 
+                        {...field} 
+                        disabled={isLoading} 
+                        className="bg-secondary/30 border-secondary focus:border-accent-blue"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -148,7 +160,12 @@ export default function Signup() {
                   <FormItem>
                     <FormLabel>Phone Number (Optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="+1 (555) 123-4567" {...field} disabled={isLoading} />
+                      <Input 
+                        placeholder="+1 (555) 123-4567" 
+                        {...field} 
+                        disabled={isLoading} 
+                        className="bg-secondary/30 border-secondary focus:border-accent-blue"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -168,6 +185,7 @@ export default function Signup() {
                           placeholder="••••••••"
                           {...field}
                           disabled={isLoading}
+                          className="bg-secondary/30 border-secondary focus:border-accent-blue"
                         />
                         <button
                           type="button"
@@ -237,6 +255,7 @@ export default function Signup() {
                           placeholder="••••••••"
                           {...field}
                           disabled={isLoading}
+                          className="bg-secondary/30 border-secondary focus:border-accent-blue"
                         />
                         <button
                           type="button"
@@ -302,7 +321,7 @@ export default function Signup() {
 
               <Button
                 type="submit"
-                className="w-full mt-6 bg-accent-blue hover:bg-accent-blue/90"
+                className="w-full mt-6 bg-accent-blue hover:bg-accent-blue/90 transform transition-all duration-300 hover:scale-105"
                 disabled={isLoading}
               >
                 {isLoading ? (

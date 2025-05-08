@@ -67,8 +67,8 @@ export default function Login() {
   };
 
   return (
-    <div className="container-custom section-padding flex flex-col items-center">
-      <div className="w-full max-w-lg">
+    <div className="min-h-screen bg-gradient-to-br from-white to-secondary/80 section-padding flex flex-col items-center justify-center">
+      <div className="w-full max-w-lg animate-fade-in">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold mb-2">Welcome back</h1>
           <p className="text-muted-foreground">
@@ -76,7 +76,7 @@ export default function Login() {
           </p>
         </div>
 
-        <div className="bg-card p-8 rounded-xl shadow-sm">
+        <div className="bg-white p-8 rounded-xl shadow-lg border border-secondary/50 hover:shadow-xl transition-all duration-300">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -91,6 +91,7 @@ export default function Login() {
                         placeholder="name@example.com" 
                         {...field} 
                         disabled={isLoading}
+                        className="bg-secondary/30 border-secondary focus:border-accent-blue"
                       />
                     </FormControl>
                     <FormMessage />
@@ -111,6 +112,7 @@ export default function Login() {
                           placeholder="••••••••"
                           {...field}
                           disabled={isLoading}
+                          className="bg-secondary/30 border-secondary focus:border-accent-blue"
                         />
                         <button
                           type="button"
@@ -156,7 +158,7 @@ export default function Login() {
 
               <Button
                 type="submit"
-                className="w-full bg-accent-blue hover:bg-accent-blue/90"
+                className="w-full bg-accent-blue hover:bg-accent-blue/90 transform transition-all duration-300 hover:scale-105"
                 disabled={isLoading}
               >
                 {isLoading ? (
